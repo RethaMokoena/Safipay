@@ -31,5 +31,8 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String phoneNumber;
+
+    @Column(nullable = false,unique= true)
+    private String nationalId;
     
 }
