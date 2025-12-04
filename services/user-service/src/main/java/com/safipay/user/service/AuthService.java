@@ -25,12 +25,12 @@ public class AuthService {
         if (repo.findByNationalId(req.getNationalId()).isPresent()) {
             throw new RuntimeException("National ID already registered");
         }
-        if (repo.findByPhoneNumber(req.getPhoneNumber()).isPresent()) {  // Optional: add this too
+        if (repo.findByPhoneNumber(req.getPhoneNumber()).isPresent()) {
             throw new RuntimeException("Phone number already registered");
         }
 
         User user = User.builder()
-                .username(req.getUsername())      // Add this line
+                .username(req.getUsername())
                 .email(req.getEmail())
                 .password(encoder.encode(req.getPassword()))
                 .fullName(req.getFullName())
