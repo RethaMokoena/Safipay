@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: fraud-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/frauddb
+    username: user_user
+    password: ${DB_PASSWORD:secret}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  cache:
+    type: redis
+  rabbitmq:
+    host: localhost
+    port: 5672
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,threaddump,heapdump
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 8081
+
+logging:
+  level:
+    com.safipay.fraud: DEBUG
+    org.springframework.transaction: INFO
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:change-me-to-a-very-long-random-string-2025}

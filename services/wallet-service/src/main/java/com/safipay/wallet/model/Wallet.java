@@ -19,6 +19,9 @@ public class Wallet {
     @Column(nullable = false, unique = true)
     private UUID userId;
 
+    @Column(nullable  = false,unique = true)
+    private int walletnumber;
+
     @Column(nullable = false)
     private BigDecimal balance;
 }
