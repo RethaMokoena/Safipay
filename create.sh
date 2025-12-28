@@ -1,17 +1,17 @@
 #!/bin/bash
-cd services/merchant-service || mkdir -p services/merchant-service && cd services/merchant-service
+cd services/paymentgateway-service || mkdir -p services/paymentgateway-service && cd services/paymentgateway-service
 
-echo "Generating Maven-based merchant-service with all production dependencies..."
+echo "Generating Maven-based paymentgateway-service with all production dependencies..."
 
 curl https://start.spring.io/starter.zip \
   -d type=maven-project \
   -d language=java \
   -d bootVersion=3.3.5 \
   -d groupId=com.safipay \
-  -d artifactId=merchant-service \
-  -d name=merchant-service \
-  -d description="SafiPay merchant Service - Core financial engine" \
-  -d packageName=com.safipay.merchant \
+  -d artifactId=paymentgateway-service \
+  -d name=paymentgateway-service \
+  -d description="SafiPay paymentgateway Service - Core financial engine" \
+  -d packageName=com.safipay.paymentgateway \
   -d javaVersion=21 \
   -d dependencies=web,data-jpa,postgresql,validation,security \
   -d dependencies=lombok,actuator \
@@ -20,11 +20,11 @@ curl https://start.spring.io/starter.zip \
   -d dependencies=mail \
   -d dependencies=oauth2-resource-server \
   -d dependencies=observability \
-  -o merchant-service.zip
+  -o paymentgateway-service.zip
 
-unzip -q merchant-service.zip -d merchant-service-temp
-mv merchant-service-temp/* .
-rm -rf merchant-service-temp merchant-service.zip
+unzip -q paymentgateway-service.zip -d paymentgateway-service-temp
+mv paymentgateway-service-temp/* .
+rm -rf paymentgateway-service-temp paymentgateway-service.zip
 
 echo "Maven project generated!"
 
@@ -43,10 +43,10 @@ cat > pom.xml << 'EOF'
         <relativePath/>
     </parent>
     <groupId>com.safipay</groupId>
-    <artifactId>merchant-service</artifactId>
+    <artifactId>paymentgateway-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>merchant-service</name>
-    <description>SafiPay merchant Service - Core financial engine</description>
+    <name>paymentgateway-service</name>
+    <description>SafiPay paymentgateway Service - Core financial engine</description>
     <properties>
         <java.version>21</java.version>
         <spring-boot.version>3.3.5</spring-boot.version>
@@ -191,9 +191,9 @@ mkdir -p src/main/resources
 cat > src/main/resources/application.yml << 'EOF'
 spring:
   application:
-    name: merchant-service
+    name: paymentgateway-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/merchantdb
+    url: jdbc:postgresql://localhost:5432/paymentgatewaydb
     username: user_user
     password: ${DB_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
@@ -231,7 +231,7 @@ server:
 
 logging:
   level:
-    com.safipay.merchant: DEBUG
+    com.safipay.paymentgateway: DEBUG
     org.springframework.transaction: INFO
 
 app:
@@ -240,9 +240,9 @@ app:
 EOF
 
 # ------------------------------------------------------------------
-# 3. Basic folder structure for a merchant service
+# 3. Basic folder structure for a paymentgateway service
 # ------------------------------------------------------------------
-mkdir -p src/main/java/com/safipay/merchant/{model,dto,service,repository,controller,config,exception,security}
+mkdir -p src/main/java/com/safipay/paymentgateway/{model,dto,service,repository,controller,config,exception,security}
 mkdir -p src/main/resources/db/changelog
 
 # ------------------------------------------------------------------
@@ -259,7 +259,7 @@ RUN ./mvnw -B -DskipTests clean package
 # Runtime stage
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/merchant-service-*.jar app.jar
+COPY --from=build /app/target/paymentgateway-service-*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 EOF
@@ -286,7 +286,7 @@ EOF
 cat > docker-compose.yml << 'EOF'
 version: '3.9'
 services:
-  merchant-service:
+  paymentgateway-service:
     build: .
     ports:
       - "8081:8081"
@@ -302,7 +302,7 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_DB: merchantdb
+      POSTGRES_DB: paymentgatewaydb
       POSTGRES_USER: user_user
       POSTGRES_PASSWORD: secret
     ports:
@@ -325,7 +325,7 @@ volumes:
   postgres_data:
 EOF
 
-echo "Maven merchant-service is ready!"
+echo "Maven paymentgateway-service is ready!"
 echo ""
 echo "To run locally:"
 echo "  Option 1 (fast): ./mvnw spring-boot:run"

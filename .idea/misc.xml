@@ -6,9 +6,6 @@
       <list>
         <option value="$PROJECT_DIR$/services/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/services/wallet-service/pom.xml" />
-        <option value="$PROJECT_DIR$/services/paymentgateway-service/pom.xml" />
-        <option value="$PROJECT_DIR$/services/fraud-service/pom.xml" />
-        <option value="$PROJECT_DIR$/services/merchant-service/pom.xml" />
       </list>
     </option>
   </component>
