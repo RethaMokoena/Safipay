@@ -3,7 +3,7 @@ spring:
     name: wallet-service
   datasource:
     url: jdbc:postgresql://localhost:5432/walletdb
-    username: wallet_user
+    username: user_user
     password: ${DB_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
   jpa:

@@ -16,6 +16,7 @@
     <properties>
         <java.version>21</java.version>
         <spring-boot.version>3.3.5</spring-boot.version>
+        <lombok.version>1.18.34</lombok.version>  <!-- Added Lombok version property -->
     </properties>
 
     <dependencies>
@@ -72,7 +73,9 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>  <!-- Using version property -->
             <optional>true</optional>
+            <scope>provided</scope>  <!-- Changed to provided -->
         </dependency>
 
         <!-- Observability (Micrometer + Prometheus) -->
@@ -111,6 +114,24 @@
 
     <build>
         <plugins>
+            <!-- Maven Compiler Plugin with annotation processor -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
             <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>

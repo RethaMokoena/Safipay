@@ -263,6 +263,22 @@ COPY --from=build /app/target/paymentgateway-service-*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 EOF
+# ------------------------------------------------------------------
+# 3b. Create main application class
+# ------------------------------------------------------------------
+cat > src/main/java/com/safipay/merchant/merchantServiceApplication.java << 'EOF'
+package com.safipay.merchant;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class merchantServiceApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(merchantServiceApplication.class, args);
+    }
+}
+EOF
 
 # ------------------------------------------------------------------
 # 5. docker-compose.yml (ready to run locally)
