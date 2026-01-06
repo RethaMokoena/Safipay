@@ -77,5 +77,3 @@ SafiPay emphasises:
 - **Explicit boundaries** between services and domains  
 - **Readable, testable Java code** over framework-heavy abstractions  
 - Design decisions that reflect **real-world fintech constraints**
-
-
