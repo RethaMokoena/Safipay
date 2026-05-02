@@ -1,0 +1,23 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: wallet-service
+  datasource:
+    url: jdbc:h2:mem:walletdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+jwt:
+  secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
+services:
+  user-service-url: http://localhost:8081
