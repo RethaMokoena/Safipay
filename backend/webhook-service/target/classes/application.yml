@@ -1,0 +1,29 @@
+server:
+  port: 8088
+spring:
+  application:
+    name: webhook-service
+  datasource:
+    url: jdbc:h2:mem:webhookdb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+jwt:
+  secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
+webhook:
+  max-retry-attempts: 3
+  retry-delay-seconds: 30
+  timeout-seconds: 10
+  signature-header: X-SafiPay-Signature
+logging:
+  level:
+    com.safipay.webhook: DEBUG
