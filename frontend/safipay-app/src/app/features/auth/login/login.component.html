@@ -1,0 +1,92 @@
+<div class="auth-wrapper">
+  <!-- Background effects -->
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+  <div class="hero-grid"></div>
+
+  <!-- Back to home -->
+  <a class="back-link" routerLink="/">
+    ← Back to SafiPay
+  </a>
+
+  <div class="auth-card">
+    <div class="card-top-line"></div>
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-mark">SP</div>
+      <span class="logo-text">Safi<em>Pay</em></span>
+    </div>
+
+    <h1>Welcome back</h1>
+    <p class="auth-subtitle">Sign in to your SafiPay account</p>
+
+    <!-- Error Banner -->
+    @if (error()) {
+      <div class="error-banner">
+        ⚠️ {{ error() }}
+      </div>
+    }
+
+    <!-- Form -->
+    <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
+      <div class="form-group">
+        <label for="email">Email address</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="you@example.com"
+          autocomplete="email"
+          [class.error]="emailCtrl.invalid && emailCtrl.touched"
+        />
+        @if (emailCtrl.invalid && emailCtrl.touched) {
+          <span class="error-msg">
+            {{ emailCtrl.hasError('required') ? 'Email is required' : 'Enter a valid email' }}
+          </span>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            formControlName="password"
+            placeholder="Min. 8 characters"
+            autocomplete="current-password"
+            [class.error]="passwordCtrl.invalid && passwordCtrl.touched"
+          />
+          <button type="button" class="toggle-pw" (click)="togglePassword()">
+            {{ showPassword() ? '🙈' : '👁' }}
+          </button>
+        </div>
+        @if (passwordCtrl.invalid && passwordCtrl.touched) {
+          <span class="error-msg">Password must be at least 8 characters</span>
+        }
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary btn-submit"
+        [disabled]="form.invalid || loading()"
+      >
+        @if (loading()) {
+          <span class="spinner"></span>
+          Signing in...
+        } @else {
+          Sign In →
+        }
+      </button>
+    </form>
+
+    <div class="auth-divider">
+      <span>Don't have an account?</span>
+    </div>
+
+    <a routerLink="/auth/register" class="btn btn-ghost btn-block">
+      Create a Free Account
+    </a>
+  </div>
+</div>

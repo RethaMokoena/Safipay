@@ -1,0 +1,97 @@
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1>Payments</h1>
+      <p>Send money and view your payment history</p>
+    </div>
+    <button class="btn btn-primary" (click)="openSend()">+ Send Money</button>
+  </div>
+
+  <!-- Filter tabs -->
+  <!-- FIX 1: use the typed `filters` array from the component instead of an inline string literal
+       array — this lets Angular infer f as 'ALL' | 'SENT' | 'RECEIVED' for activeFilter.set(f) -->
+  <div class="filter-tabs">
+    @for (f of filters; track f) {
+      <button class="filter-tab" [class.active]="activeFilter() === f" (click)="activeFilter.set(f)">
+        {{ f }}
+      </button>
+    }
+  </div>
+
+  <!-- Payment list -->
+  @if (loading()) {
+    @for (i of [1,2,3,4,5]; track i) { <div class="row-skeleton"></div> }
+  } @else if (filteredPayments.length === 0) {
+    <div class="empty-state">
+      <span>💸</span>
+      <p>No payments found. Send money to get started.</p>
+      <button class="btn btn-primary" (click)="openSend()">Send Money</button>
+    </div>
+  } @else {
+    <div class="payment-list">
+      @for (p of filteredPayments; track p.id) {
+        <div class="payment-row">
+          <div class="pay-icon" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
+            {{ isSent(p) ? '↑' : '↓' }}
+          </div>
+          <div class="pay-info">
+            <span class="pay-who">{{ isSent(p) ? 'To: ' + p.recipientUserId : 'From: ' + p.senderUserId }}</span>
+            @if (p.description) { <span class="pay-desc">{{ p.description }}</span> }
+            <span class="pay-date">{{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
+          </div>
+          <div class="pay-right">
+            <span class="pay-amount" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
+              {{ isSent(p) ? '-' : '+' }}R{{ p.amount | number:'1.2-2' }}
+            </span>
+            <span class="status-badge" [class]="statusClass(p.status)">{{ p.status }}</span>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="pagination">
+      <button class="page-btn" [disabled]="page() === 0" (click)="prevPage()">← Prev</button>
+      <span>Page {{ page() + 1 }}</span>
+      <button class="page-btn" [disabled]="payments().length < 20" (click)="nextPage()">Next →</button>
+    </div>
+  }
+</div>
+
+<!-- Send Money Modal -->
+@if (showSendModal()) {
+  <div class="modal-overlay" (click)="closeSend()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>Send Money</h3>
+        <button class="modal-close" (click)="closeSend()">×</button>
+      </div>
+      <form [formGroup]="sendForm" (ngSubmit)="submitSend()">
+        <div class="form-group">
+          <label>Recipient User ID</label>
+          <input type="text" formControlName="recipientUserId" placeholder="Paste recipient's user ID" />
+          @if (sendForm.get('recipientUserId')?.invalid && sendForm.get('recipientUserId')?.touched) {
+            <span class="error-msg">Recipient is required</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Amount (ZAR)</label>
+          <div class="amount-wrap">
+            <span class="prefix">R</span>
+            <input type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description <span class="opt">(optional)</span></label>
+          <input type="text" formControlName="description" placeholder="e.g. Lunch split" />
+        </div>
+        <div class="form-group">
+          <label>Reference <span class="opt">(optional)</span></label>
+          <input type="text" formControlName="referenceNote" placeholder="e.g. INV-001" />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="sendForm.invalid || submitting()">
+          @if (submitting()) { <span class="spinner"></span> Sending... } @else { Send Money → }
+        </button>
+      </form>
+    </div>
+  </div>
+}

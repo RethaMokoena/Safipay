@@ -1,0 +1,95 @@
+<div class="overview">
+
+  <!-- Welcome -->
+  <div class="welcome-row">
+    <div>
+      <h1>Good day, {{ authService.currentUser()?.firstName }} 👋</h1>
+      <p>Here's your financial overview</p>
+    </div>
+  </div>
+
+  <!-- Wallet summary card -->
+  @if (walletLoading()) {
+    <div class="shimmer-card"></div>
+  } @else if (wallet()) {
+    <div class="balance-strip">
+      <div class="bs-top-line"></div>
+      <div class="bs-left">
+        <span class="bs-label">Available Balance</span>
+        <span class="bs-amount">R {{ wallet()!.availableBalance | number:'1.2-2' }}</span>
+        <span class="bs-currency">{{ wallet()!.currency }}</span>
+      </div>
+      <div class="bs-actions">
+        <a routerLink="/dashboard/wallet" class="bs-btn primary">💳 Wallet</a>
+        <a routerLink="/dashboard/payments" class="bs-btn">💸 Send</a>
+        <a routerLink="/dashboard/stokvel" class="bs-btn">🤝 Stokvels</a>
+        <a routerLink="/dashboard/merchant" class="bs-btn">🏪 Merchant</a>
+      </div>
+    </div>
+  }
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="stat-icon">💸</span>
+      <div class="stat-body">
+        <span class="stat-label">Payments sent</span>
+        <span class="stat-val">{{ recentPayments().length }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🤝</span>
+      <div class="stat-body">
+        <span class="stat-label">Stokvels</span>
+        <span class="stat-val">{{ myStokvels().length }}</span>
+      </div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">💰</span>
+      <div class="stat-body">
+        <span class="stat-label">Total pool</span>
+        <span class="stat-val">R{{ totalPoolBalance() | number:'1.0-0' }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent payments -->
+  <div class="section-card">
+    <div class="sc-header">
+      <h3>Recent Payments</h3>
+      <a routerLink="/dashboard/payments">View all →</a>
+    </div>
+    @if (recentPayments().length === 0) {
+      <div class="sc-empty">No payments yet. <a routerLink="/dashboard/payments">Send money →</a></div>
+    } @else {
+      @for (p of recentPayments(); track p.id) {
+        <div class="mini-tx">
+          <span class="mini-icon" [class.credit]="!isSent(p)" [class.debit]="isSent(p)">{{ isSent(p) ? '↑' : '↓' }}</span>
+          <span class="mini-desc">{{ isSent(p) ? 'To: ' + p.recipientUserId : 'From: ' + p.senderUserId }}</span>
+          <span class="mini-amount" [class.credit]="!isSent(p)" [class.debit]="isSent(p)">{{ isSent(p) ? '-' : '+' }}R{{ p.amount | number:'1.2-2' }}</span>
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Stokvels -->
+  <div class="section-card">
+    <div class="sc-header">
+      <h3>My Stokvels</h3>
+      <a routerLink="/dashboard/stokvel">View all →</a>
+    </div>
+    @if (myStokvels().length === 0) {
+      <div class="sc-empty">Not in any stokvels. <a routerLink="/dashboard/stokvel">Browse →</a></div>
+    } @else {
+      @for (s of myStokvels().slice(0,3); track s.id) {
+        <div class="mini-stokvel">
+          <div class="ms-left">
+            <span class="ms-name">{{ s.name }}</span>
+            <span class="ms-type">{{ s.type }} · {{ s.status }}</span>
+          </div>
+          <span class="ms-balance">R{{ s.totalPoolBalance | number:'1.2-2' }}</span>
+        </div>
+      }
+    }
+  </div>
+</div>

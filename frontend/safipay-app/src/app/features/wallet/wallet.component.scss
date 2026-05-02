@@ -1,0 +1,233 @@
+$bg-base:     #080b12;
+$bg-card:     #111827;
+$bg-elevated: #161d2e;
+$cyan:        #00e5ff;
+$cyan-dim:    rgba(0,229,255,0.12);
+$cyan-border: rgba(0,229,255,0.18);
+$cyan-hv:     rgba(0,229,255,0.45);
+$cyan-glow:   rgba(0,229,255,0.4);
+$teal:        #00bcd4;
+$green:       #00e676;
+$green-dim:   rgba(0,230,118,0.12);
+$red:         #ff5252;
+$red-dim:     rgba(255,82,82,0.12);
+$text-p:      #e8edf5;
+$text-s:      #8a97b0;
+$text-m:      #4a556b;
+$font-d: 'Space Mono', monospace;
+$font-b: 'DM Sans', sans-serif;
+
+.page-wrapper { padding: 0; }
+
+.page-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 28px;
+  h1 { font-family: $font-d; font-size: 1.4rem; color: $text-p; margin-bottom: 4px; }
+  p  { font-size: 0.875rem; color: $text-s; }
+}
+
+.header-actions { display: flex; gap: 10px; }
+
+// ── Balance Card ─────────────────────────────────────────────────
+.balance-card {
+  background: $bg-card; border: 1px solid $cyan-hv; border-radius: 16px;
+  padding: 28px; margin-bottom: 28px; position: relative; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,229,255,0.06);
+
+  .card-top-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, $cyan, $teal, transparent);
+  }
+}
+
+.balance-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+
+.balance-label {
+  font-family: $font-d; font-size: 0.68rem; text-transform: uppercase;
+  letter-spacing: 0.12em; color: $text-m; display: block; margin-bottom: 8px;
+}
+
+.balance-amount {
+  font-family: $font-d; font-size: 2.6rem; font-weight: 700; color: $text-p;
+  text-shadow: 0 0 30px rgba(0,229,255,0.1); line-height: 1; margin-bottom: 8px;
+}
+
+.balance-currency {
+  font-size: 0.75rem; color: $text-m; font-family: $font-d;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.balance-stats { display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+
+.stat-pill {
+  display: flex; flex-direction: column; align-items: flex-end;
+  padding: 8px 14px; border-radius: 8px;
+  span { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+  strong { font-family: $font-d; font-size: 0.9rem; }
+  &.locked { background: $red-dim; border: 1px solid rgba(255,82,82,0.2); span { color: $red; } strong { color: $red; } }
+  &.total  { background: $cyan-dim; border: 1px solid $cyan-border; span { color: $text-m; } strong { color: $cyan; } }
+}
+
+.quick-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.action-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 11px 20px; border-radius: 9px;
+  background: $bg-elevated; border: 1px solid $cyan-border;
+  color: $text-s; font-family: $font-b; font-size: 0.875rem;
+  font-weight: 500; cursor: pointer; transition: all 0.2s;
+
+  .action-icon { font-size: 1rem; }
+
+  &:hover { color: $cyan; border-color: $cyan-hv; background: $cyan-dim; transform: translateY(-2px); }
+  &.primary { background: linear-gradient(90deg, #a6e9f0, $cyan); color: $bg-base; border: none; font-weight: 600; box-shadow: 0 4px 14px rgba(0,255,255,0.3); &:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,255,255,0.4); } }
+}
+
+// ── Section ───────────────────────────────────────────────────────
+.section { margin-bottom: 28px; }
+
+.section-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+  h2 { font-family: $font-d; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.1em; color: $text-s; }
+}
+
+.pagination {
+  display: flex; align-items: center; gap: 10px;
+  span { font-size: 0.78rem; color: $text-m; font-family: $font-d; }
+}
+
+.page-btn {
+  background: $bg-elevated; border: 1px solid $cyan-border; color: $text-s;
+  padding: 5px 12px; border-radius: 6px; font-size: 0.85rem; cursor: pointer;
+  transition: all 0.2s;
+  &:hover:not(:disabled) { color: $cyan; border-color: $cyan-hv; }
+  &:disabled { opacity: 0.3; cursor: not-allowed; }
+}
+
+// ── Transactions ──────────────────────────────────────────────────
+.tx-list { display: flex; flex-direction: column; gap: 6px; }
+
+.tx-item {
+  display: flex; align-items: center; gap: 14px;
+  background: $bg-card; border: 1px solid $cyan-border; border-radius: 10px;
+  padding: 14px 16px; transition: border-color 0.2s;
+  &:hover { border-color: $cyan-hv; }
+}
+
+.tx-icon {
+  width: 38px; height: 38px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  &.credit { background: $green-dim; border: 1px solid rgba(0,230,118,0.3); color: $green; }
+  &.debit  { background: $red-dim;   border: 1px solid rgba(255,82,82,0.25); color: $red; }
+}
+
+.tx-info { flex: 1; min-width: 0; }
+.tx-desc { display: block; font-size: 0.875rem; color: $text-p; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx-date { font-size: 0.72rem; color: $text-m; }
+
+.tx-right { text-align: right; flex-shrink: 0; }
+.tx-amount {
+  display: block; font-family: $font-d; font-size: 0.9rem; font-weight: 700; margin-bottom: 2px;
+  &.credit { color: $green; }
+  &.debit  { color: $red; }
+}
+.tx-balance { font-size: 0.7rem; color: $text-m; }
+
+// ── Empty / Skeleton ──────────────────────────────────────────────
+.empty-state {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 0; gap: 10px; text-align: center;
+  span { font-size: 2rem; }
+  p { font-size: 0.85rem; color: $text-m; }
+}
+
+@mixin shimmer {
+  background: linear-gradient(90deg, $bg-card 25%, $bg-elevated 50%, $bg-card 75%);
+  background-size: 200% 100%;
+  animation: shimmer-anim 1.5s infinite;
+}
+@keyframes shimmer-anim { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+.skeleton-card { height: 200px; border-radius: 16px; margin-bottom: 28px; @include shimmer; }
+.tx-skeleton   { height: 60px; border-radius: 10px; margin-bottom: 6px; @include shimmer; }
+
+// ── Modal ─────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(8,11,18,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 24px;
+  animation: fadeIn 0.2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: $bg-card; border: 1px solid $cyan-hv;
+  border-radius: 18px; padding: 32px; width: 100%; max-width: 420px;
+  position: relative; overflow: hidden;
+  animation: slideUp 0.25s ease;
+
+  .modal-top-line {
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, $cyan, $teal, transparent);
+  }
+}
+@keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 24px;
+  h3 { font-family: $font-d; font-size: 1.1rem; color: $text-p; }
+}
+.modal-close {
+  background: none; border: none; color: $text-m; font-size: 1.3rem;
+  cursor: pointer; padding: 2px 6px; border-radius: 4px;
+  &:hover { color: $text-p; background: rgba(255,255,255,0.05); }
+}
+
+.form-group {
+  margin-bottom: 18px;
+  label { display: block; font-size: 0.78rem; font-family: $font-d; color: $text-s; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .optional { text-transform: none; letter-spacing: 0; font-family: $font-b; color: $text-m; }
+  input { width: 100%; background: $bg-elevated; border: 1px solid $cyan-border; border-radius: 8px; padding: 12px 16px; color: $text-p; font-family: $font-b; font-size: 0.95rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; &::placeholder { color: $text-m; } &:focus { border-color: $cyan-hv; box-shadow: 0 0 0 3px $cyan-dim; } }
+  .error-msg { font-size: 0.73rem; color: $red; font-family: $font-d; display: block; margin-top: 4px; }
+}
+
+.amount-input-wrapper {
+  display: flex; align-items: center;
+  background: $bg-elevated; border: 1px solid $cyan-border; border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  &:focus-within { border-color: $cyan-hv; box-shadow: 0 0 0 3px $cyan-dim; }
+  .currency-prefix { padding: 12px 14px; font-family: $font-d; font-size: 1rem; color: $cyan; border-right: 1px solid $cyan-border; }
+  input { border: none; background: transparent; box-shadow: none !important; padding-left: 12px; &:focus { border: none; box-shadow: none; } }
+}
+
+.quick-amounts { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.quick-amt {
+  padding: 6px 14px; background: $bg-elevated; border: 1px solid $cyan-border;
+  border-radius: 6px; color: $cyan; font-family: $font-d; font-size: 0.78rem;
+  cursor: pointer; transition: all 0.15s;
+  &:hover { background: $cyan-dim; border-color: $cyan-hv; }
+}
+
+.balance-hint { font-size: 0.78rem; color: $text-m; margin-bottom: 14px; text-align: right; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 13px 24px; border-radius: 9px;
+  font-family: $font-b; font-size: 0.95rem; font-weight: 600;
+  cursor: pointer; transition: all 0.3s; border: none;
+  &-primary { background: linear-gradient(90deg, #a6e9f0, $cyan); color: $bg-base; box-shadow: 0 4px 14px rgba(0,255,255,0.25); &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,255,255,0.4); } &:disabled { opacity: 0.55; cursor: not-allowed; } }
+  &-ghost { background: transparent; color: $text-s; border: 1px solid $cyan-border; &:hover { color: $cyan; border-color: $cyan-hv; background: $cyan-dim; } }
+  &-full { width: 100%; }
+}
+
+.spinner { width: 16px; height: 16px; border: 2px solid rgba(8,11,18,0.3); border-top-color: $bg-base; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .balance-header { flex-direction: column; gap: 16px; }
+  .balance-stats { flex-direction: row; align-items: center; }
+  .quick-actions { flex-direction: column; }
+  .action-btn { width: 100%; justify-content: center; }
+}

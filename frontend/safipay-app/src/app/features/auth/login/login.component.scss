@@ -1,0 +1,228 @@
+$color-bg-base:        #080b12;
+$color-bg-card:        #111827;
+$color-bg-elevated:    #161d2e;
+$color-cyan:           #00e5ff;
+$color-cyan-light:     #a6e9f0;
+$color-cyan-dim:       rgba(0, 229, 255, 0.12);
+$color-cyan-glow:      rgba(0, 229, 255, 0.4);
+$color-cyan-subtle:    rgba(0, 229, 255, 0.07);
+$color-cyan-border:    rgba(0, 229, 255, 0.18);
+$color-cyan-border-hv: rgba(0, 229, 255, 0.45);
+$color-teal:           #00bcd4;
+$color-red:            #ff5252;
+$color-red-dim:        rgba(255, 82, 82, 0.12);
+$color-text-primary:   #e8edf5;
+$color-text-secondary: #8a97b0;
+$color-text-muted:     #4a556b;
+$font-display: 'Space Mono', monospace;
+$font-body:    'DM Sans', sans-serif;
+
+.auth-wrapper {
+  min-height: 100vh;
+  background: $color-bg-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  &.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,229,255,0.07), transparent 70%); top: -200px; left: -200px; }
+  &.orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,188,212,0.05), transparent 70%); bottom: -100px; right: -100px; }
+}
+
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+}
+
+.back-link {
+  position: fixed;
+  top: 24px; left: 32px;
+  font-size: 0.82rem;
+  color: $color-text-muted;
+  text-decoration: none;
+  font-family: $font-display;
+  transition: color 0.2s;
+  z-index: 10;
+  &:hover { color: $color-cyan; }
+}
+
+.auth-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: $color-bg-card;
+  border: 1px solid $color-cyan-border;
+  border-radius: 20px;
+  padding: 44px 40px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 40px rgba(0,229,255,0.04);
+  animation: slideUp 0.5s ease;
+
+  .card-top-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, $color-cyan, $color-teal, transparent);
+  }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+
+  .logo-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, $color-cyan, $color-teal);
+    color: $color-bg-base;
+    font-family: $font-display;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 9px;
+    box-shadow: 0 0 16px $color-cyan-glow;
+  }
+
+  .logo-text {
+    font-family: $font-display;
+    font-size: 1.25rem;
+    color: $color-text-primary;
+    em { font-style: normal; color: $color-cyan; }
+  }
+}
+
+h1 {
+  font-family: $font-display;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: $color-text-primary;
+  margin-bottom: 6px;
+}
+
+.auth-subtitle {
+  font-size: 0.9rem;
+  color: $color-text-secondary;
+  margin-bottom: 28px;
+}
+
+.error-banner {
+  background: $color-red-dim;
+  border: 1px solid rgba(255,82,82,0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: $color-red;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 0.78rem;
+    font-family: $font-display;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  input {
+    background: $color-bg-elevated;
+    border: 1px solid $color-cyan-border;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: $color-text-primary;
+    font-family: $font-body;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+
+    &::placeholder { color: $color-text-muted; }
+    &:focus { border-color: $color-cyan-border-hv; box-shadow: 0 0 0 3px $color-cyan-dim; }
+    &.error { border-color: $color-red; box-shadow: 0 0 0 3px $color-red-dim; }
+  }
+
+  .error-msg { font-size: 0.75rem; color: $color-red; font-family: $font-display; }
+}
+
+.input-wrapper {
+  position: relative;
+  input { padding-right: 48px; }
+  .toggle-pw {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; font-size: 1rem;
+    padding: 2px; line-height: 1;
+  }
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 8px; border-radius: 8px; font-family: $font-body; font-size: 0.95rem;
+  font-weight: 600; cursor: pointer; transition: all 0.3s; border: none;
+  text-decoration: none; overflow: hidden;
+
+  &-primary {
+    background: linear-gradient(90deg, $color-cyan-light 0%, $color-cyan 100%);
+    color: $color-bg-base;
+    box-shadow: 0 5px 15px rgba(0,255,255,0.3);
+    &:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,255,255,0.5); }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+  }
+
+  &-ghost {
+    background: transparent; color: $color-text-secondary;
+    border: 1px solid $color-cyan-border;
+    &:hover { color: $color-cyan; border-color: $color-cyan-border-hv; background: $color-cyan-dim; }
+  }
+
+  &-submit { padding: 14px; width: 100%; font-size: 1rem; }
+  &-block { padding: 12px; width: 100%; justify-content: center; }
+}
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(8,11,18,0.3);
+  border-top-color: $color-bg-base;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.auth-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 24px 0 16px;
+  &::before, &::after { content: ''; flex: 1; height: 1px; background: $color-cyan-border; }
+  span { font-size: 0.78rem; color: $color-text-muted; white-space: nowrap; }
+}
+
+@media (max-width: 480px) {
+  .auth-card { padding: 32px 24px; }
+  .back-link { left: 16px; }
+}

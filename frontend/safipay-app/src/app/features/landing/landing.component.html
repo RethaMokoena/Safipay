@@ -1,0 +1,405 @@
+<app-navbar />
+
+<!-- ======================================================
+     HERO
+====================================================== -->
+<section class="hero" id="home">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Now live in South Africa
+    </div>
+
+    <h1>
+      The smartest way to<br>
+      <span class="gradient-text">manage your money</span>
+    </h1>
+
+    <div class="typing-wrapper">
+      <h2>
+        <span class="typing-highlight">{{ typingText() }}</span><span class="cursor" [class.hidden]="typingDone()">|</span>
+      </h2>
+      <p>SafiPay is your digital wallet, instant payments platform, and stokvel manager — all in one app.</p>
+    </div>
+
+    <div class="cta-buttons">
+      <a routerLink="/auth/register" class="btn btn-primary btn-large">
+        Start for Free →
+      </a>
+      <a (click)="scrollTo('how-it-works')" class="btn btn-ghost btn-large" style="cursor:pointer">
+        See How It Works
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">50K+</span>
+        <span class="stat-label">Users</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number">R240M+</span>
+        <span class="stat-label">Transferred</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-number">4.9★</span>
+        <span class="stat-label">App Rating</span>
+      </div>
+    </div>
+
+    <div class="friction-removers">
+      <span>✓ No monthly fees</span>
+      <span>✓ No bank account needed</span>
+      <span>✓ Setup in 2 minutes</span>
+    </div>
+  </div>
+
+  <!-- Wallet Card Visual -->
+  <div class="hero-visual">
+    <div class="wallet-card">
+      <div class="wc-top-line"></div>
+      <div class="wc-header">
+        <span class="wc-label">SafiPay Wallet</span>
+        <span class="wc-live"><span class="live-dot"></span>LIVE</span>
+      </div>
+      <div class="wc-balance">
+        R 12,450.00
+        <span class="wc-saved">+R240 this week</span>
+      </div>
+      <div class="wc-row">
+        <div class="wc-item">
+          <span class="wc-item-label">Income</span>
+          <span class="wc-item-value green">+R8,200</span>
+        </div>
+        <div class="wc-item">
+          <span class="wc-item-label">Expenses</span>
+          <span class="wc-item-value red">-R3,960</span>
+        </div>
+      </div>
+      <div class="wc-savings-label">Monthly savings goal — 62%</div>
+      <div class="wc-bar"><div class="wc-fill" style="width:62%"></div></div>
+      <div class="wc-insight">
+        💡 You're spending 18% less on food this month. On track to hit your goal!
+      </div>
+      <div class="wc-services">
+        <span class="service-pill active">Wallet</span>
+        <span class="service-pill active">Stokvel</span>
+        <span class="service-pill">Payments</span>
+        <span class="service-pill">Savings</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     PAIN POINTS
+====================================================== -->
+<section class="pain-points" id="pain-points">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">The Problem</span>
+      <h2>Money management is broken for most South Africans</h2>
+      <p>Traditional banking is too slow, too expensive, and too complicated.</p>
+    </div>
+
+    <div class="pain-grid">
+      <div class="pain-card reveal" style="--delay:0ms">
+        <span class="pain-icon">💸</span>
+        <h3>High Transfer Fees</h3>
+        <p>Banks charge R10–R30 per transfer. That adds up to hundreds of rands a month just to move your own money.</p>
+      </div>
+      <div class="pain-card reveal" style="--delay:100ms">
+        <span class="pain-icon">⏳</span>
+        <h3>Slow Payments</h3>
+        <p>Bank transfers take 1–3 days. In an emergency, that delay can cost you dearly.</p>
+      </div>
+      <div class="pain-card reveal" style="--delay:200ms">
+        <span class="pain-icon">📋</span>
+        <h3>Stokvel Admin Hell</h3>
+        <p>WhatsApp reminders, spreadsheets, trust issues — running a stokvel is a full-time job without the right tools.</p>
+      </div>
+    </div>
+
+    <div class="solution-teaser reveal">
+      <div class="solution-arrow">↓</div>
+      <p>SafiPay solves all of this — for free.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     FEATURES
+====================================================== -->
+<section class="features-section" id="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Features</span>
+      <h2>Everything you need in one wallet</h2>
+      <p>Powerful tools that make your money work harder.</p>
+    </div>
+
+    <div class="features-grid">
+      @for (f of features; track f.title; let i = $index) {
+        <div class="feature-card reveal" [style]="'--delay:' + (i * 60) + 'ms'">
+          <div class="card-glow"></div>
+          <span class="feature-icon">{{ f.icon }}</span>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.desc }}</p>
+          <span class="feature-benefit">{{ f.benefit }}</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     DIFFERENTIATORS
+====================================================== -->
+<section class="differentiators" id="compare">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Why SafiPay</span>
+      <h2>See how we compare</h2>
+    </div>
+
+    <div class="comparison-table reveal">
+      <div class="comparison-row header-row">
+        <div class="col">Feature</div>
+        <div class="col safipay-col">SafiPay ✓</div>
+        <div class="col">Traditional Bank</div>
+      </div>
+      <div class="comparison-row">
+        <div class="col">Instant transfers</div>
+        <div class="col win">✓ Always instant</div>
+        <div class="col loss">1–3 business days</div>
+      </div>
+      <div class="comparison-row">
+        <div class="col">Transfer fees</div>
+        <div class="col win">✓ Free between users</div>
+        <div class="col loss">R10–R30 per transfer</div>
+      </div>
+      <div class="comparison-row">
+        <div class="col">Stokvel management</div>
+        <div class="col win">✓ Built-in automation</div>
+        <div class="col loss">Not available</div>
+      </div>
+      <div class="comparison-row">
+        <div class="col">Account setup</div>
+        <div class="col win">✓ 2 minutes, no branch</div>
+        <div class="col loss">Days + paperwork</div>
+      </div>
+      <div class="comparison-row">
+        <div class="col">Monthly fees</div>
+        <div class="col win">✓ None</div>
+        <div class="col loss">R60–R200/month</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     HOW IT WORKS
+====================================================== -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">How It Works</span>
+      <h2>Up and running in minutes</h2>
+      <p>Three simple steps to take control of your money.</p>
+    </div>
+
+    <div class="steps-container">
+      @for (step of steps; track step.n; let last = $last) {
+        <div class="step reveal" [style]="'--delay:' + ((step.n - 1) * 100) + 'ms'">
+          <div class="step-number">{{ step.n }}</div>
+          <span class="step-icon">{{ step.icon }}</span>
+          <h3>{{ step.title }}</h3>
+          <p>{{ step.desc }}</p>
+          <span class="step-time">⏱ {{ step.time }}</span>
+        </div>
+        @if (!last) {
+          <div class="step-arrow">→</div>
+        }
+      }
+    </div>
+
+    <div class="cta-mini reveal">
+      <a routerLink="/auth/register" class="btn btn-primary btn-large">
+        Create Your Free Account
+      </a>
+      <p class="friction-text">No credit card • No bank account required • Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     TESTIMONIALS
+====================================================== -->
+<section class="testimonials" id="testimonials">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">Testimonials</span>
+      <h2>Loved by thousands of South Africans</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      @for (t of testimonials; track t.name) {
+        <div class="testimonial-card reveal" [class.featured]="t.featured">
+          <div class="testimonial-stars">{{ t.stars }}</div>
+          <div class="testimonial-quote-mark">"</div>
+          <p>{{ t.quote }}</p>
+          <div class="testimonial-user">
+            <div class="user-avatar">{{ t.avatar }}</div>
+            <div>
+              <h4>{{ t.name }}</h4>
+              <span>{{ t.role }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="media-mentions reveal">
+      <span class="media-label">As seen in</span>
+      <div class="media-logos">
+        <span>Business Day</span>
+        <span>TechCentral</span>
+        <span>Fin24</span>
+        <span>MyBroadband</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     FAQ
+====================================================== -->
+<section class="faq-section" id="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="section-badge">FAQ</span>
+      <h2>Got questions? We've got answers.</h2>
+    </div>
+
+    <div class="faq-grid">
+      @for (faq of faqs; track faq.q; let i = $index) {
+        <div class="faq-item reveal" [class.active]="activeFaq() === i" [style]="'--delay:' + (i * 50) + 'ms'">
+          <div class="faq-question" (click)="toggleFaq(i)">
+            {{ faq.q }}
+            <span class="faq-toggle">{{ activeFaq() === i ? '−' : '+' }}</span>
+          </div>
+          @if (activeFaq() === i) {
+            <div class="faq-answer">{{ faq.a }}</div>
+          }
+        </div>
+      }
+    </div>
+
+    <p class="faq-cta reveal">
+      Still have questions? <a routerLink="/auth/register">Contact our support team →</a>
+    </p>
+  </div>
+</section>
+
+<!-- ======================================================
+     FINAL CTA
+====================================================== -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-card reveal">
+      <div class="cta-top-line"></div>
+      <h2>Ready to take control of your money?<br>Join SafiPay for free today.</h2>
+
+      <div class="cta-bullets">
+        <div class="bullet">
+          <span class="bullet-icon">🚀</span>
+          <div>
+            <strong>Instant Setup</strong>
+            <p>Be sending money in under 2 minutes</p>
+          </div>
+        </div>
+        <div class="bullet">
+          <span class="bullet-icon">🔒</span>
+          <div>
+            <strong>Bank-Grade Security</strong>
+            <p>Your money is always protected</p>
+          </div>
+        </div>
+        <div class="bullet">
+          <span class="bullet-icon">💸</span>
+          <div>
+            <strong>Zero Fees</strong>
+            <p>Free transfers between SafiPay users</p>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/auth/register" class="btn btn-primary btn-large">
+        Get Started — It's Free
+      </a>
+      <p class="guarantee">🛡 30-day money-back guarantee · No questions asked</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================
+     FOOTER
+====================================================== -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col brand-col">
+        <div class="footer-logo">
+          <div class="logo-mark">SP</div>
+          <span class="logo-text">Safi<em>Pay</em></span>
+        </div>
+        <p>The smartest digital wallet and savings platform for South Africans. Send, save, and grow your money.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter">𝕏</a>
+          <a href="#" aria-label="Instagram">📸</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Facebook">f</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Stokvel</a>
+        <a href="#">Pricing</a>
+        <a href="#">Security</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+
+      <div class="footer-col">
+        <h4>Support</h4>
+        <a href="#">Help Centre</a>
+        <a href="#">Contact</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 SafiPay (Pty) Ltd · Registered Financial Services Provider · FSP 12345</p>
+      <div class="badges">
+        <span>🔒 256-bit SSL</span>
+        <span>✓ POPIA Compliant</span>
+        <span>🏦 SAPA Member</span>
+      </div>
+    </div>
+  </div>
+</footer>

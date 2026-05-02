@@ -1,0 +1,104 @@
+$bg-base:#080b12;$bg-surface:#0d1220;$bg-card:#111827;$bg-el:#161d2e;
+$cyan:#00e5ff;$cyan-d:rgba(0,229,255,0.12);$cyan-b:rgba(0,229,255,0.18);$cyan-h:rgba(0,229,255,0.45);$cyan-g:rgba(0,229,255,0.4);$cyan-s:rgba(0,229,255,0.07);
+$teal:#00bcd4;$green:#00e676;$text-p:#e8edf5;$text-s:#8a97b0;$text-m:#4a556b;
+$fd:'Space Mono',monospace;$fb:'DM Sans',sans-serif;
+$sidebar-w:240px;
+
+.app-shell { display:flex; min-height:100vh; background:$bg-base; }
+
+// ── Sidebar ───────────────────────────────────────────────────────
+.sidebar {
+  width:$sidebar-w; flex-shrink:0;
+  background:$bg-surface; border-right:1px solid $cyan-b;
+  display:flex; flex-direction:column;
+  position:fixed; top:0; left:0; height:100vh;
+  z-index:200; transition:transform .3s ease;
+}
+
+.sidebar-logo {
+  display:flex; align-items:center; gap:10px;
+  padding:22px 20px 18px; border-bottom:1px solid $cyan-b;
+  .logo-mark { width:32px;height:32px;background:linear-gradient(135deg,$cyan,$teal);color:$bg-base;font-family:$fd;font-weight:700;font-size:.85rem;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px $cyan-g; }
+  .logo-text { font-family:$fd;font-size:1.1rem;color:$text-p;em{font-style:normal;color:$cyan} }
+}
+
+.user-card {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 16px; margin:12px; border-radius:10px;
+  background:$bg-el; border:1px solid $cyan-b;
+}
+.user-avatar {
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,$cyan,$teal);
+  color:$bg-base;font-family:$fd;font-weight:700;font-size:.8rem;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.user-info { min-width:0; }
+.user-name  { display:block;font-size:.8rem;color:$text-p;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+.user-email { display:block;font-size:.68rem;color:$text-m;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+
+.sidebar-nav { display:flex;flex-direction:column;flex:1;padding:8px 12px;gap:2px;overflow-y:auto; }
+
+.nav-item {
+  display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:9px;
+  font-size:.875rem;color:$text-s;
+  text-decoration:none;transition:all .2s;
+
+  .nav-icon { font-size:1rem;flex-shrink:0; }
+  &:hover { color:$text-p;background:$cyan-s; }
+  &.active { color:$cyan;background:$cyan-d;border:1px solid $cyan-b;font-weight:500; }
+}
+
+.logout-btn {
+  margin:12px;padding:10px 14px;
+  background:none;border:1px solid rgba(255,82,82,.18);
+  border-radius:9px;color:$text-m;font-family:$fb;font-size:.82rem;
+  cursor:pointer;transition:all .2s;text-align:left;display:flex;align-items:center;gap:8px;
+  &:hover { color:#ff5252;border-color:rgba(255,82,82,.4);background:rgba(255,82,82,.06); }
+}
+
+// ── Main area ─────────────────────────────────────────────────────
+.main-area {
+  flex:1;
+  margin-left:$sidebar-w;
+  display:flex;flex-direction:column;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+.topbar {
+  height:58px;
+  background:rgba($bg-base,.9);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid $cyan-b;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  position:sticky;top:0;z-index:100;
+}
+
+.hamburger {
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:4px;
+  span { display:block;width:22px;height:2px;background:$text-s;border-radius:2px;transition:.3s; }
+}
+
+.topbar-right { display:flex;align-items:center;gap:14px; }
+.greeting { font-family:$fd;font-size:.78rem;color:$text-m; }
+
+.content { flex:1;padding:32px 36px;max-width:1200px; }
+
+// ── Sidebar overlay (mobile) ──────────────────────────────────────
+.sidebar-overlay {
+  position:fixed;inset:0;background:rgba(8,11,18,.7);z-index:199;
+  animation:fadeIn .2s ease;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+// ── Responsive ───────────────────────────────────────────────────
+@media(max-width:900px) {
+  .sidebar { transform:translateX(-100%); &.open { transform:translateX(0); } }
+  .main-area { margin-left:0; }
+  .hamburger { display:flex; }
+  .content { padding:20px 16px; }
+}

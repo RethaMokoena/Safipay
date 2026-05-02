@@ -1,0 +1,251 @@
+<div class="page-wrapper">
+  <div class="page-header">
+    <div>
+      <h1>Stokvels</h1>
+      <p>Manage your rotating savings groups</p>
+    </div>
+    <button class="btn btn-primary" (click)="openCreate()">+ Create Stokvel</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab" [class.active]="activeTab() === 'mine'" (click)="activeTab.set('mine')">My Stokvels</button>
+    <button class="tab" [class.active]="activeTab() === 'browse'" (click)="activeTab.set('browse')">Browse All</button>
+  </div>
+
+  <!-- My Stokvels -->
+  @if (activeTab() === 'mine') {
+    @if (loading()) {
+      @for (i of [1,2,3]; track i) { <div class="card-skeleton"></div> }
+    } @else if (myStokvels().length === 0) {
+      <div class="empty-state">
+        <span>🤝</span>
+        <p>You haven't joined any stokvels yet.</p>
+        <button class="btn btn-primary" (click)="activeTab.set('browse')">Browse Stokvels</button>
+      </div>
+    } @else {
+      <div class="stokvel-grid">
+        @for (s of myStokvels(); track s.id) {
+          <div class="stokvel-card" (click)="openDetail(s)">
+            <div class="card-top-line"></div>
+            <div class="card-head">
+              <div>
+                <h3>{{ s.name }}</h3>
+                <span class="type-badge" [class]="s.type.toLowerCase()">{{ s.type }}</span>
+              </div>
+              <span class="status-badge" [class]="statusClass(s.status)">{{ s.status }}</span>
+            </div>
+            <div class="card-body">
+              <div class="stat-row">
+                <div class="stat">
+                  <span>Pool Balance</span>
+                  <strong>R{{ s.totalPoolBalance | number:'1.2-2' }}</strong>
+                </div>
+                <div class="stat">
+                  <span>Members</span>
+                  <strong>{{ s.currentMemberCount }}/{{ s.maxMembers }}</strong>
+                </div>
+                <div class="stat">
+                  <span>Contribution</span>
+                  <strong>R{{ s.contributionAmount | number:'1.2-2' }}</strong>
+                </div>
+              </div>
+              <div class="member-bar">
+                <div class="member-fill" [style.width.%]="(s.currentMemberCount / s.maxMembers) * 100"></div>
+              </div>
+              <p class="freq-label">{{ frequencyLabel(s.contributionFrequency) }} contributions</p>
+            </div>
+            <div class="card-footer" (click)="$event.stopPropagation()">
+              @if (s.status === 'ACTIVE') {
+                <button class="btn btn-primary btn-sm" (click)="openContribute(s)">Contribute</button>
+              }
+              @if (isAdmin(s) && s.status === 'FORMING') {
+                <button class="btn btn-ghost btn-sm" (click)="activateStokvel(s.id)">Activate</button>
+              }
+              @if (isAdmin(s) && s.status === 'ACTIVE' && s.type === 'ROSCA') {
+                <button class="btn btn-ghost btn-sm" (click)="triggerPayout(s.id)">Trigger Payout</button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <!-- Browse All -->
+  @if (activeTab() === 'browse') {
+    <div class="stokvel-grid">
+      @for (s of allStokvels(); track s.id) {
+        <div class="stokvel-card">
+          <div class="card-top-line"></div>
+          <div class="card-head">
+            <div>
+              <h3>{{ s.name }}</h3>
+              <span class="type-badge" [class]="s.type.toLowerCase()">{{ s.type }}</span>
+            </div>
+            <span class="status-badge" [class]="statusClass(s.status)">{{ s.status }}</span>
+          </div>
+          <div class="card-body">
+            <p class="card-desc">{{ s.description || 'No description provided.' }}</p>
+            <div class="stat-row">
+              <div class="stat"><span>Contribution</span><strong>R{{ s.contributionAmount | number:'1.2-2' }}</strong></div>
+              <div class="stat"><span>Frequency</span><strong>{{ frequencyLabel(s.contributionFrequency) }}</strong></div>
+              <div class="stat"><span>Spots</span><strong>{{ s.maxMembers - s.currentMemberCount }} left</strong></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            @if (!isMember(s) && s.status === 'FORMING') {
+              <button class="btn btn-primary btn-sm" (click)="joinStokvel(s.id)">Join</button>
+            } @else if (isMember(s)) {
+              <span class="member-tag">✓ Member</span>
+            } @else {
+              <span class="closed-tag">{{ s.status }}</span>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Create Modal -->
+@if (activeModal() === 'create') {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>Create a Stokvel</h3>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+      <form [formGroup]="createForm" (ngSubmit)="submitCreate()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" formControlName="name" placeholder="e.g. Soweto Savers" />
+            @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
+              <span class="error-msg">Name required (min 3 chars)</span>
+            }
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select formControlName="type">
+              <option value="ROSCA">ROSCA – Rotating payout</option>
+              <option value="POOL">POOL – Shared fund</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description <span class="opt">(optional)</span></label>
+          <input type="text" formControlName="description" placeholder="What's this stokvel for?" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contribution Amount (R)</label>
+            <input type="number" formControlName="contributionAmount" placeholder="500" min="1" />
+          </div>
+          <div class="form-group">
+            <label>Frequency</label>
+            <select formControlName="contributionFrequency">
+              <option value="WEEKLY">Weekly</option>
+              <option value="BIWEEKLY">Bi-weekly</option>
+              <option value="MONTHLY">Monthly</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Max Members</label>
+            <input type="number" formControlName="maxMembers" placeholder="10" min="2" max="100" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="createForm.invalid || submitting()">
+          @if (submitting()) { <span class="spinner"></span> Creating... } @else { Create Stokvel 🤝 }
+        </button>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Contribute Modal -->
+@if (activeModal() === 'contribute' && selectedStokvel()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>Make Contribution</h3>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+      <div class="contribute-info">
+        <div class="contrib-amount">R{{ selectedStokvel()!.contributionAmount | number:'1.2-2' }}</div>
+        <p>Required contribution for <strong>{{ selectedStokvel()!.name }}</strong></p>
+        <p class="contrib-note">{{ frequencyLabel(selectedStokvel()!.contributionFrequency) }} · {{ selectedStokvel()!.type }}</p>
+      </div>
+      <form [formGroup]="contributeForm" (ngSubmit)="submitContribute()">
+        <div class="form-group">
+          <label>Transaction Reference</label>
+          <input type="text" formControlName="transactionId" placeholder="TX-..." />
+          <span class="field-hint">Auto-generated. Change if you have an existing payment reference.</span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="submitting()">
+          @if (submitting()) { <span class="spinner"></span> Recording... }
+          @else { Confirm Contribution }
+        </button>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Detail Modal -->
+@if (activeModal() === 'detail' && selectedStokvel()) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal modal-lg" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>{{ selectedStokvel()!.name }}</h3>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-stat"><span>Type</span><strong>{{ selectedStokvel()!.type }}</strong></div>
+        <div class="detail-stat"><span>Status</span><strong>{{ selectedStokvel()!.status }}</strong></div>
+        <div class="detail-stat"><span>Pool Balance</span><strong>R{{ selectedStokvel()!.totalPoolBalance | number:'1.2-2' }}</strong></div>
+        <div class="detail-stat"><span>Members</span><strong>{{ selectedStokvel()!.currentMemberCount }}/{{ selectedStokvel()!.maxMembers }}</strong></div>
+      </div>
+
+      <h4 class="section-mini-title">Members</h4>
+      <div class="member-list">
+        @for (m of selectedStokvel()!.members; track m.id) {
+          <div class="member-row">
+            <span class="member-avatar">👤</span>
+            <span class="member-id">{{ m.userId }}</span>
+            <span class="member-order">#{{ m.payoutOrder + 1 }}</span>
+            @if (m.hasReceivedPayout) { <span class="payout-done">Paid ✓</span> }
+          </div>
+        }
+      </div>
+
+      @if (contributions().length > 0) {
+        <h4 class="section-mini-title">Recent Contributions</h4>
+        <div class="mini-list">
+          @for (c of contributions().slice(0, 5); track c.id) {
+            <div class="mini-row">
+              <span>{{ c.userId }}</span>
+              <span class="amount-green">+R{{ c.amount | number:'1.2-2' }}</span>
+              <span class="date-sm">{{ c.contributedAt | date:'dd MMM' }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      @if (payouts().length > 0) {
+        <h4 class="section-mini-title">Payouts</h4>
+        <div class="mini-list">
+          @for (p of payouts(); track p.id) {
+            <div class="mini-row">
+              <span>{{ p.recipientUserId }}</span>
+              <span class="amount-green">R{{ p.amount | number:'1.2-2' }}</span>
+              <span class="date-sm">{{ p.processedAt | date:'dd MMM' }}</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

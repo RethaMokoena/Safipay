@@ -1,0 +1,317 @@
+// =============================================
+// SafiPay Global Styles — Neon Dark Theme
+// =============================================
+
+// ---- VARIABLES -------------------------
+$color-bg-base:        #080b12;
+$color-bg-surface:     #0d1220;
+$color-bg-card:        #111827;
+$color-bg-elevated:    #161d2e;
+
+$color-cyan:           #00e5ff;
+$color-cyan-light:     #a6e9f0;
+$color-cyan-dim:       rgba(0, 229, 255, 0.12);
+$color-cyan-glow:      rgba(0, 229, 255, 0.4);
+$color-cyan-subtle:    rgba(0, 229, 255, 0.07);
+$color-cyan-border:    rgba(0, 229, 255, 0.18);
+$color-cyan-border-hv: rgba(0, 229, 255, 0.45);
+
+$color-teal:           #00bcd4;
+$color-teal-glow:      rgba(0, 188, 212, 0.3);
+
+$color-green:          #00e676;
+$color-green-dim:      rgba(0, 230, 118, 0.12);
+$color-green-glow:     rgba(0, 230, 118, 0.35);
+
+$color-red:            #ff5252;
+$color-red-dim:        rgba(255, 82, 82, 0.12);
+
+$color-yellow:         #ffd600;
+
+$color-text-primary:   #e8edf5;
+$color-text-secondary: #8a97b0;
+$color-text-muted:     #4a556b;
+
+$font-display: 'Space Mono', 'Courier New', monospace;
+$font-body:    'DM Sans', 'Segoe UI', sans-serif;
+
+$card-radius:  14px;
+$bp-md:        900px;
+$bp-sm:        600px;
+
+// ---- CSS CUSTOM PROPERTIES (for components) ----
+:root {
+  --color-bg-base:        #{$color-bg-base};
+  --color-bg-surface:     #{$color-bg-surface};
+  --color-bg-card:        #{$color-bg-card};
+  --color-bg-elevated:    #{$color-bg-elevated};
+  --color-cyan:           #{$color-cyan};
+  --color-cyan-light:     #{$color-cyan-light};
+  --color-cyan-dim:       #{$color-cyan-dim};
+  --color-cyan-glow:      #{$color-cyan-glow};
+  --color-cyan-subtle:    #{$color-cyan-subtle};
+  --color-cyan-border:    #{$color-cyan-border};
+  --color-cyan-border-hv: #{$color-cyan-border-hv};
+  --color-teal:           #{$color-teal};
+  --color-green:          #{$color-green};
+  --color-green-dim:      #{$color-green-dim};
+  --color-green-glow:     #{$color-green-glow};
+  --color-red:            #{$color-red};
+  --color-yellow:         #{$color-yellow};
+  --color-text-primary:   #{$color-text-primary};
+  --color-text-secondary: #{$color-text-secondary};
+  --color-text-muted:     #{$color-text-muted};
+  --font-display:         #{$font-display};
+  --font-body:            #{$font-body};
+  --card-radius:          #{$card-radius};
+}
+
+// ---- RESET ----
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: $color-bg-base;
+  color: $color-text-primary;
+  font-family: $font-body;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+// ---- LAYOUT ----
+.container {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 6%;
+}
+
+// ---- ANIMATIONS ----
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0); }
+  33%  { transform: translate(30px, -20px); }
+  66%  { transform: translate(-20px, 20px); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+// ---- SCROLL REVEAL ----
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition-delay: var(--delay, 0ms);
+  &.in-view { opacity: 1; transform: translateY(0); }
+}
+
+// ---- SHARED SECTION HEADER ----
+.section-header {
+  text-align: center;
+  margin-bottom: 56px;
+
+  .section-badge {
+    display: inline-block;
+    font-family: $font-display;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: $color-cyan;
+    background: $color-cyan-subtle;
+    border: 1px solid $color-cyan-border;
+    padding: 5px 14px;
+    border-radius: 50px;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-family: $font-display;
+    font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: $color-text-primary;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  p {
+    font-size: 1rem;
+    color: $color-text-secondary;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+}
+
+// ---- BUTTONS ----
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-family: $font-body;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-decoration: none;
+  overflow: hidden;
+
+  &-primary {
+    background: linear-gradient(90deg, $color-cyan-light 0%, $color-cyan 100%);
+    color: $color-bg-base;
+    box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.4), transparent);
+      transition: 0.5s;
+    }
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
+      &::before { left: 100%; }
+    }
+  }
+
+  &-ghost {
+    background: transparent;
+    color: $color-text-secondary;
+    border: 2px solid $color-cyan-border-hv;
+    &:hover {
+      color: $color-cyan;
+      border-color: $color-cyan;
+      background: $color-cyan-dim;
+      transform: translateY(-3px);
+    }
+  }
+
+  &-large {
+    padding: 16px 40px;
+    font-size: 1.05rem;
+    border-radius: 10px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+// ---- FORM ELEMENTS ----
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+
+  label {
+    font-size: 0.8rem;
+    font-family: $font-display;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  input {
+    background: $color-bg-elevated;
+    border: 1px solid $color-cyan-border;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: $color-text-primary;
+    font-family: $font-body;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+
+    &::placeholder { color: $color-text-muted; }
+
+    &:focus {
+      border-color: $color-cyan-border-hv;
+      box-shadow: 0 0 0 3px $color-cyan-dim;
+    }
+
+    &.error {
+      border-color: $color-red;
+      box-shadow: 0 0 0 3px $color-red-dim;
+    }
+  }
+
+  .error-msg {
+    font-size: 0.75rem;
+    color: $color-red;
+    font-family: $font-display;
+  }
+}
+
+// ---- GRADIENT TEXT ----
+.gradient-text {
+  background: linear-gradient(90deg, $color-cyan, $color-teal);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ---- CARD ----
+.card {
+  background: $color-bg-card;
+  border: 1px solid $color-cyan-border;
+  border-radius: $card-radius;
+  padding: 24px;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+
+  &:hover {
+    border-color: $color-cyan-border-hv;
+    box-shadow: 0 8px 32px rgba(0, 229, 255, 0.08);
+  }
+}
+
+// ---- SPINNER ----
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid $color-cyan-dim;
+  border-top-color: $color-cyan;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// ---- SCROLLBAR ----
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: $color-bg-base; }
+::-webkit-scrollbar-thumb {
+  background: $color-cyan-border;
+  border-radius: 3px;
+  &:hover { background: $color-cyan-border-hv; }
+}

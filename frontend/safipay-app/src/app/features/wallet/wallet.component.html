@@ -1,0 +1,174 @@
+<div class="page-wrapper">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1>My Wallet</h1>
+      <p>Manage your balance and transactions</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" (click)="loadWallet()">↻ Refresh</button>
+    </div>
+  </div>
+
+  <!-- Balance Card -->
+  @if (loading()) {
+    <div class="skeleton-card"></div>
+  } @else if (wallet()) {
+    <div class="balance-card">
+      <div class="card-top-line"></div>
+      <div class="balance-header">
+        <div>
+          <span class="balance-label">Available Balance</span>
+          <div class="balance-amount">R {{ wallet()!.availableBalance | number:'1.2-2' }}</div>
+          <span class="balance-currency">{{ wallet()!.currency }} · {{ wallet()!.status }}</span>
+        </div>
+        <div class="balance-stats">
+          @if (wallet()!.lockedBalance > 0) {
+            <div class="stat-pill locked">
+              <span>Locked</span>
+              <strong>R {{ wallet()!.lockedBalance | number:'1.2-2' }}</strong>
+            </div>
+          }
+          <div class="stat-pill total">
+            <span>Total</span>
+            <strong>R {{ wallet()!.balance | number:'1.2-2' }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="quick-actions">
+        <button class="action-btn primary" (click)="openModal('topup')">
+          <span class="action-icon">↑</span>
+          <span>Top Up</span>
+        </button>
+        <button class="action-btn" (click)="openModal('transfer')">
+          <span class="action-icon">→</span>
+          <span>Send Money</span>
+        </button>
+        <button class="action-btn" routerLink="/payments">
+          <span class="action-icon">⏱</span>
+          <span>History</span>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Transaction History -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Transactions</h2>
+      <div class="pagination">
+        <button class="page-btn" [disabled]="page() === 0" (click)="prevPage()">←</button>
+        <span>Page {{ page() + 1 }}</span>
+        <button class="page-btn" [disabled]="transactions().length < 20" (click)="nextPage()">→</button>
+      </div>
+    </div>
+
+    @if (txLoading()) {
+      @for (i of [1,2,3,4,5]; track i) {
+        <div class="tx-skeleton"></div>
+      }
+    } @else if (transactions().length === 0) {
+      <div class="empty-state">
+        <span>💳</span>
+        <p>No transactions yet. Top up your wallet to get started.</p>
+      </div>
+    } @else {
+      <div class="tx-list">
+        @for (tx of transactions(); track tx.id) {
+          <div class="tx-item">
+            <div class="tx-icon" [class]="txColor(tx)">{{ txIcon(tx) }}</div>
+            <div class="tx-info">
+              <span class="tx-desc">{{ tx.description ?? (tx.type === 'CREDIT' ? 'Money received' : 'Money sent') }}</span>
+              <span class="tx-date">{{ tx.createdAt | date:'dd MMM yyyy, HH:mm' }}</span>
+            </div>
+            <div class="tx-right">
+              <span class="tx-amount" [class]="txColor(tx)">
+                {{ tx.type === 'CREDIT' ? '+' : '-' }}R{{ tx.amount | number:'1.2-2' }}
+              </span>
+              <span class="tx-balance">Bal: R{{ tx.balanceAfter | number:'1.2-2' }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Top-Up Modal -->
+@if (activeModal() === 'topup') {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>Top Up Wallet</h3>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+      <form [formGroup]="topUpForm" (ngSubmit)="submitTopUp()">
+        <div class="form-group">
+          <label>Amount (ZAR)</label>
+          <div class="amount-input-wrapper">
+            <span class="currency-prefix">R</span>
+            <input type="number" formControlName="amount" placeholder="0.00" min="1" step="0.01" />
+          </div>
+          @if (topUpForm.get('amount')?.invalid && topUpForm.get('amount')?.touched) {
+            <span class="error-msg">Enter a valid amount (min R1)</span>
+          }
+        </div>
+        <!-- FIX 2: use setTopUpAmount(amt) helper instead of inline patchValue to satisfy
+             strict type checking (control is number | null, amt is number) -->
+        <div class="quick-amounts">
+          @for (amt of [100, 250, 500, 1000]; track amt) {
+            <button type="button" class="quick-amt" (click)="setTopUpAmount(amt)">R{{ amt }}</button>
+          }
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="topUpForm.invalid || submitting()">
+          @if (submitting()) { <span class="spinner"></span> Processing... }
+          @else { Top Up Wallet }
+        </button>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Transfer Modal -->
+@if (activeModal() === 'transfer') {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-top-line"></div>
+      <div class="modal-header">
+        <h3>Send Money</h3>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+      <form [formGroup]="transferForm" (ngSubmit)="submitTransfer()">
+        <div class="form-group">
+          <label>Recipient User ID</label>
+          <input type="text" formControlName="recipientUserId" placeholder="Enter recipient ID" />
+          @if (transferForm.get('recipientUserId')?.invalid && transferForm.get('recipientUserId')?.touched) {
+            <span class="error-msg">Recipient is required</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Amount (ZAR)</label>
+          <div class="amount-input-wrapper">
+            <span class="currency-prefix">R</span>
+            <input type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description <span class="optional">(optional)</span></label>
+          <input type="text" formControlName="description" placeholder="What's it for?" />
+        </div>
+        @if (wallet()) {
+          <p class="balance-hint">Available: R{{ wallet()!.availableBalance | number:'1.2-2' }}</p>
+        }
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="transferForm.invalid || submitting()">
+          @if (submitting()) { <span class="spinner"></span> Sending... }
+          @else { Send Money →  }
+        </button>
+      </form>
+    </div>
+  </div>
+}

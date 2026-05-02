@@ -1,0 +1,40 @@
+$bg-card:#111827;$bg-el:#161d2e;$cyan:#00e5ff;$cyan-d:rgba(0,229,255,0.12);$cyan-b:rgba(0,229,255,0.18);$cyan-h:rgba(0,229,255,0.45);$cyan-g:rgba(0,229,255,0.4);$teal:#00bcd4;$green:#00e676;$green-d:rgba(0,230,118,0.12);$red:#ff5252;$text-p:#e8edf5;$text-s:#8a97b0;$text-m:#4a556b;$fd:'Space Mono',monospace;$fb:'DM Sans',sans-serif;
+
+.overview{display:flex;flex-direction:column;gap:20px}
+.welcome-row{margin-bottom:4px;h1{font-family:$fd;font-size:1.3rem;color:$text-p;margin-bottom:4px}p{font-size:.875rem;color:$text-s}}
+
+.balance-strip{position:relative;background:$bg-card;border:1px solid $cyan-h;border-radius:16px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;overflow:hidden;box-shadow:0 6px 28px rgba(0,229,255,.06);flex-wrap:wrap;gap:20px}
+.bs-top-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,$cyan,$teal,transparent)}
+.bs-left{display:flex;flex-direction:column;gap:4px}
+.bs-label{font-family:$fd;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:$text-m}
+.bs-amount{font-family:$fd;font-size:2.2rem;font-weight:700;color:$text-p;text-shadow:0 0 24px rgba(0,229,255,.1)}
+.bs-currency{font-family:$fd;font-size:.7rem;color:$text-m;text-transform:uppercase;letter-spacing:.1em}
+.bs-actions{display:flex;gap:8px;flex-wrap:wrap}
+.bs-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border-radius:8px;background:$bg-el;border:1px solid $cyan-b;color:$text-s;font-family:$fb;font-size:.82rem;text-decoration:none;transition:all .2s;white-space:nowrap;&:hover{color:$cyan;border-color:$cyan-h;background:$cyan-d}&.primary{background:linear-gradient(90deg,#a6e9f0,$cyan);color:#080b12;border:none;font-weight:600;box-shadow:0 4px 14px rgba(0,255,255,.25);&:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,255,255,.4)}}}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stat-card{background:$bg-card;border:1px solid $cyan-b;border-radius:12px;padding:18px;display:flex;align-items:center;gap:12px;transition:all .2s;&:hover{border-color:$cyan-h}}
+.stat-icon{font-size:1.6rem;flex-shrink:0}
+.stat-body{display:flex;flex-direction:column;gap:3px}
+.stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:$text-m;font-family:$fd}
+.stat-val{font-family:$fd;font-size:1.1rem;color:$text-p;font-weight:700}
+
+.section-card{background:$bg-card;border:1px solid $cyan-b;border-radius:12px;padding:20px}
+.sc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;h3{font-family:$fd;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:$text-s}a{font-size:.78rem;color:$cyan;text-decoration:none;&:hover{text-decoration:underline}}}
+.sc-empty{font-size:.82rem;color:$text-m;padding:8px 0;a{color:$cyan;text-decoration:none;&:hover{text-decoration:underline}}}
+
+.mini-tx{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid $cyan-b;&:last-child{border-bottom:none}}
+.mini-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;&.credit{background:$green-d;color:$green}&.debit{background:rgba(255,82,82,.1);color:$red}}
+.mini-desc{flex:1;font-size:.82rem;color:$text-s;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini-amount{font-family:$fd;font-size:.82rem;font-weight:700;flex-shrink:0;&.credit{color:$green}&.debit{color:$red}}
+
+.mini-stokvel{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid $cyan-b;&:last-child{border-bottom:none}}
+.ms-left{display:flex;flex-direction:column;gap:2px}
+.ms-name{font-size:.875rem;color:$text-p}
+.ms-type{font-size:.7rem;color:$text-m;font-family:$fd;text-transform:uppercase;letter-spacing:.06em}
+.ms-balance{font-family:$fd;font-size:.82rem;color:$cyan}
+
+.shimmer-card{height:120px;border-radius:16px;background:linear-gradient(90deg,$bg-card 25%,$bg-el 50%,$bg-card 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+@media(max-width:600px){.stats-row{grid-template-columns:1fr 1fr}.balance-strip{flex-direction:column;align-items:flex-start}}
