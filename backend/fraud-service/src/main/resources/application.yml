@@ -1,0 +1,37 @@
+server:
+  port: 8087
+spring:
+  application:
+    name: fraud-service
+  datasource:
+    url: jdbc:h2:mem:frauddb;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+jwt:
+  secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
+
+# Risk thresholds
+fraud:
+  risk:
+    low-threshold: 30
+    medium-threshold: 60
+    high-threshold: 80
+  velocity:
+    max-transactions-per-hour: 10
+    max-amount-per-hour: 10000
+    max-amount-per-day: 50000
+  block-on-high-risk: true
+
+logging:
+  level:
+    com.safipay.fraud: DEBUG
