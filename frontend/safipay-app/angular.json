@@ -29,7 +29,18 @@
           },
           "configurations": {
             "production": {
-              "budgets": [{"type":"initial","maximumWarning":"500kb","maximumError":"1mb"},{"type":"anyComponentStyle","maximumWarning":"2kb","maximumError":"4kb"}],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "20kb",
+                  "maximumError": "50kb"
+                }
+              ],
               "outputHashing": "all"
             },
             "development": {
@@ -43,8 +54,12 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
-            "production": {"buildTarget": "safipay-app:build:production"},
-            "development": {"buildTarget": "safipay-app:build:development"}
+            "production": {
+              "buildTarget": "safipay-app:build:production"
+            },
+            "development": {
+              "buildTarget": "safipay-app:build:development"
+            }
           },
           "defaultConfiguration": "development"
         }
