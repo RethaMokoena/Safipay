@@ -35,19 +35,19 @@ export class LandingComponent implements OnInit, OnDestroy, AfterViewInit {
     { q: 'Can I use SafiPay without a bank account?', a: 'Yes. You just need a valid South African ID and phone number to create a wallet and start transacting.' },
   ];
 
-  features = [
-    { icon: '⚡', title: 'Instant Transfers', desc: 'Send money to anyone with a SafiPay wallet in seconds — 24/7, no bank required.', benefit: '→ Zero transfer fees between users' },
-    { icon: '🏦', title: 'Smart Wallet', desc: 'Track spending, set savings goals, and earn rewards on every transaction you make.', benefit: '→ Full transaction history' },
-    { icon: '🤝', title: 'Stokvel Groups', desc: 'Create or join a rotating savings group. We automate contributions, payouts, and notifications.', benefit: '→ Supports ROSCA & pool models' },
-    { icon: '🔒', title: 'Bank-Grade Security', desc: '256-bit encryption, biometric auth, and real-time fraud monitoring on every account.', benefit: '→ POPIA compliant' },
-    { icon: '📊', title: 'Spending Insights', desc: 'AI-powered breakdowns of where your money goes with actionable saving suggestions.', benefit: '→ Monthly reports' },
-    { icon: '🌍', title: 'Pay Anyone', desc: 'Send to any South African bank account. No need for recipients to have a SafiPay account.', benefit: '→ All major SA banks supported' },
-  ];
+ features = [
+  { icon: 'fa-solid fa-bolt', title: 'Instant Transfers', desc: 'Send money to anyone with a SafiPay wallet in seconds — 24/7, no bank required.', benefit: '→ Zero transfer fees between users' },
+  { icon: 'fa-solid fa-wallet', title: 'Smart Wallet', desc: 'Track spending, set savings goals, and earn rewards on every transaction you make.', benefit: '→ Full transaction history' },
+  { icon: 'fa-solid fa-handshake', title: 'Stokvel Groups', desc: 'Create or join a rotating savings group. We automate contributions, payouts, and notifications.', benefit: '→ Supports ROSCA & pool models' },
+  { icon: 'fa-solid fa-shield-alt', title: 'Bank-Grade Security', desc: '256-bit encryption, biometric auth, and real-time fraud monitoring on every account.', benefit: '→ POPIA compliant' },
+  { icon: 'fa-solid fa-chart-line', title: 'Spending Insights', desc: 'AI-powered breakdowns of where your money goes with actionable saving suggestions.', benefit: '→ Monthly reports' },
+  { icon: 'fa-solid fa-globe-africa', title: 'Pay Anyone', desc: 'Send to any South African bank account. No need for recipients to have a SafiPay account.', benefit: '→ All major SA banks supported' },
+];
 
   steps = [
-    { n: 1, icon: '📱', title: 'Create Your Account', desc: 'Sign up in under 2 minutes with your South African ID and phone number.', time: '< 2 min' },
-    { n: 2, icon: '💳', title: 'Fund Your Wallet', desc: 'Top up via EFT, card, or at any participating retailer nationwide.', time: 'Instant' },
-    { n: 3, icon: '💸', title: 'Send & Receive', desc: 'Transfer money, join stokvels, and track every rand in real time.', time: '24/7' },
+    { n: 1, icon: 'fa-solid fa-calculator', title: 'Create Your Account', desc: 'Sign up in under 2 minutes with your South African ID and phone number.', time: '< 2 min' },
+    { n: 2, icon: 'fa-solid fa-credit-card', title: 'Fund Your Wallet', desc: 'Top up via EFT, card, or at any participating retailer nationwide.', time: 'Instant' },
+    { n: 3, icon: 'fa-solid fa-money-bill-trend-up', title: 'Send & Receive', desc: 'Transfer money, join stokvels, and track every rand in real time.', time: '24/7' },
   ];
 
   testimonials = [

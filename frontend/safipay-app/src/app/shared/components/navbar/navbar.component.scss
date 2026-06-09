@@ -34,6 +34,10 @@ $font-body: 'DM Sans', sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  max-width: 100%; // Remove any max-width restriction
+  padding: 0;
+  margin: 0;
 }
 
 .logo {
@@ -42,6 +46,7 @@ $font-body: 'DM Sans', sans-serif;
   gap: 10px;
   text-decoration: none;
   cursor: pointer;
+  flex-shrink: 0; // Prevent shrinking
 
   .logo-mark {
     width: 34px; height: 34px;
@@ -71,6 +76,8 @@ $font-body: 'DM Sans', sans-serif;
   gap: 28px;
   margin: 0;
   padding: 0;
+  margin-left: auto; // Push to the right
+  flex-shrink: 0; // Prevent shrinking
 
   a, button {
     font-size: 0.88rem;
@@ -83,6 +90,7 @@ $font-body: 'DM Sans', sans-serif;
     background: none;
     border: none;
     padding: 0;
+    white-space: nowrap; // Prevent text wrapping
 
     &:hover { color: $color-cyan; }
   }
@@ -148,6 +156,7 @@ $font-body: 'DM Sans', sans-serif;
     transform: translateX(100%);
     transition: transform 0.3s ease;
     gap: 24px;
+    margin-left: 0; // Reset for mobile
 
     &.active { transform: translateX(0); }
     a, button { font-size: 1rem; }

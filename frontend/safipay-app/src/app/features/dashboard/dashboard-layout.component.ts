@@ -16,11 +16,11 @@ export class DashboardLayoutComponent {
   sidebarOpen = signal(false);
 
   navItems = [
-    { path: '/dashboard',          icon: '🏠', label: 'Overview' },
-    { path: '/dashboard/wallet',   icon: '💳', label: 'Wallet' },
-    { path: '/dashboard/payments', icon: '💸', label: 'Payments' },
-    { path: '/dashboard/stokvel',  icon: '🤝', label: 'Stokvels' },
-    { path: '/dashboard/merchant', icon: '🏪', label: 'Merchant' },
+  { path: '/dashboard',        icon: 'fas fa-home', label: 'Overview' },
+{ path: '/dashboard/wallet',   icon: 'fas fa-wallet', label: 'Wallet' },
+{ path: '/dashboard/payments', icon: 'fas fa-paper-plane', label: 'Payments' },
+{ path: '/dashboard/stokvel',  icon: 'fas fa-handshake', label: 'Stokvels' },
+{ path: '/dashboard/merchant', icon: 'fas fa-store', label: 'Merchant' },
   ];
 
   toggleSidebar() { this.sidebarOpen.update(v => !v); }

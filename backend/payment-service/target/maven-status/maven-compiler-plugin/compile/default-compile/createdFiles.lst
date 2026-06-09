@@ -21,7 +21,6 @@ com/safipay/payment/model/Payment$PaymentStatus.class
 com/safipay/payment/repository/PaymentRepository.class
 com/safipay/payment/service/FraudClient$FraudEvaluationResponse.class
 com/safipay/payment/service/WebhookClient$WebhookEventRequest.class
-application.yml
 com/safipay/payment/PaymentServiceApplication.class
 com/safipay/payment/dto/response/PaymentResponse.class
 com/safipay/payment/model/Payment$PaymentType.class

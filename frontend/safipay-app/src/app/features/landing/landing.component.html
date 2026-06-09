@@ -22,7 +22,8 @@
 
     <div class="typing-wrapper">
       <h2>
-        <span class="typing-highlight">{{ typingText() }}</span><span class="cursor" [class.hidden]="typingDone()">|</span>
+        <span class="typing-highlight">{{ typingText() }}</span><span class="cursor"
+          [class.hidden]="typingDone()">|</span>
       </h2>
       <p>SafiPay is your digital wallet, instant payments platform, and stokvel manager — all in one app.</p>
     </div>
@@ -83,7 +84,9 @@
         </div>
       </div>
       <div class="wc-savings-label">Monthly savings goal — 62%</div>
-      <div class="wc-bar"><div class="wc-fill" style="width:62%"></div></div>
+      <div class="wc-bar">
+        <div class="wc-fill" style="width:62%"></div>
+      </div>
       <div class="wc-insight">
         💡 You're spending 18% less on food this month. On track to hit your goal!
       </div>
@@ -110,19 +113,20 @@
 
     <div class="pain-grid">
       <div class="pain-card reveal" style="--delay:0ms">
-        <span class="pain-icon">💸</span>
+        <i class="fas fa-dollar-sign"></i>
         <h3>High Transfer Fees</h3>
         <p>Banks charge R10–R30 per transfer. That adds up to hundreds of rands a month just to move your own money.</p>
       </div>
       <div class="pain-card reveal" style="--delay:100ms">
-        <span class="pain-icon">⏳</span>
+        <i class="fas fa-hourglass-half pain-icon"></i>
         <h3>Slow Payments</h3>
         <p>Bank transfers take 1–3 days. In an emergency, that delay can cost you dearly.</p>
       </div>
       <div class="pain-card reveal" style="--delay:200ms">
-        <span class="pain-icon">📋</span>
+        <i class="fas fa-tasks pain-icon"></i>
         <h3>Stokvel Admin Hell</h3>
-        <p>WhatsApp reminders, spreadsheets, trust issues — running a stokvel is a full-time job without the right tools.</p>
+        <p>WhatsApp reminders, spreadsheets, trust issues — running a stokvel is a full-time job without the right
+          tools.</p>
       </div>
     </div>
 
@@ -143,16 +147,15 @@
       <h2>Everything you need in one wallet</h2>
       <p>Powerful tools that make your money work harder.</p>
     </div>
-
     <div class="features-grid">
       @for (f of features; track f.title; let i = $index) {
-        <div class="feature-card reveal" [style]="'--delay:' + (i * 60) + 'ms'">
-          <div class="card-glow"></div>
-          <span class="feature-icon">{{ f.icon }}</span>
-          <h3>{{ f.title }}</h3>
-          <p>{{ f.desc }}</p>
-          <span class="feature-benefit">{{ f.benefit }}</span>
-        </div>
+      <div class="feature-card reveal" [style]="'--delay:' + (i * 60) + 'ms'">
+        <div class="card-glow"></div>
+        <i [class]="f.icon" class="feature-icon" aria-hidden="true"></i>
+        <h3>{{ f.title }}</h3>
+        <p>{{ f.desc }}</p>
+        <span class="feature-benefit">{{ f.benefit }}</span>
+      </div>
       }
     </div>
   </div>
@@ -216,16 +219,16 @@
 
     <div class="steps-container">
       @for (step of steps; track step.n; let last = $last) {
-        <div class="step reveal" [style]="'--delay:' + ((step.n - 1) * 100) + 'ms'">
-          <div class="step-number">{{ step.n }}</div>
-          <span class="step-icon">{{ step.icon }}</span>
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.desc }}</p>
-          <span class="step-time">⏱ {{ step.time }}</span>
-        </div>
-        @if (!last) {
-          <div class="step-arrow">→</div>
-        }
+      <div class="step reveal" [style]="'--delay:' + ((step.n - 1) * 100) + 'ms'">
+        <div class="step-number">{{ step.n }}</div>
+        <i [class]="step.icon" class="step-icon" aria-hidden="true"></i>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.desc }}</p>
+        <span class="step-time">⏱ {{ step.time }}</span>
+      </div>
+      @if (!last) {
+      <div class="step-arrow">→</div>
+      }
       }
     </div>
 
@@ -250,18 +253,18 @@
 
     <div class="testimonials-grid">
       @for (t of testimonials; track t.name) {
-        <div class="testimonial-card reveal" [class.featured]="t.featured">
-          <div class="testimonial-stars">{{ t.stars }}</div>
-          <div class="testimonial-quote-mark">"</div>
-          <p>{{ t.quote }}</p>
-          <div class="testimonial-user">
-            <div class="user-avatar">{{ t.avatar }}</div>
-            <div>
-              <h4>{{ t.name }}</h4>
-              <span>{{ t.role }}</span>
-            </div>
+      <div class="testimonial-card reveal" [class.featured]="t.featured">
+        <div class="testimonial-stars">{{ t.stars }}</div>
+        <div class="testimonial-quote-mark">"</div>
+        <p>{{ t.quote }}</p>
+        <div class="testimonial-user">
+          <div class="user-avatar">{{ t.avatar }}</div>
+          <div>
+            <h4>{{ t.name }}</h4>
+            <span>{{ t.role }}</span>
           </div>
         </div>
+      </div>
       }
     </div>
 
@@ -289,15 +292,15 @@
 
     <div class="faq-grid">
       @for (faq of faqs; track faq.q; let i = $index) {
-        <div class="faq-item reveal" [class.active]="activeFaq() === i" [style]="'--delay:' + (i * 50) + 'ms'">
-          <div class="faq-question" (click)="toggleFaq(i)">
-            {{ faq.q }}
-            <span class="faq-toggle">{{ activeFaq() === i ? '−' : '+' }}</span>
-          </div>
-          @if (activeFaq() === i) {
-            <div class="faq-answer">{{ faq.a }}</div>
-          }
+      <div class="faq-item reveal" [class.active]="activeFaq() === i" [style]="'--delay:' + (i * 50) + 'ms'">
+        <div class="faq-question" (click)="toggleFaq(i)">
+          {{ faq.q }}
+          <span class="faq-toggle">{{ activeFaq() === i ? '−' : '+' }}</span>
         </div>
+        @if (activeFaq() === i) {
+        <div class="faq-answer">{{ faq.a }}</div>
+        }
+      </div>
       }
     </div>
 
@@ -318,21 +321,21 @@
 
       <div class="cta-bullets">
         <div class="bullet">
-          <span class="bullet-icon">🚀</span>
+          <i class="fas fa-rocket bullet-icon" aria-hidden="true"></i>
           <div>
             <strong>Instant Setup</strong>
             <p>Be sending money in under 2 minutes</p>
           </div>
         </div>
         <div class="bullet">
-          <span class="bullet-icon">🔒</span>
+          <i class="fas fa-shield-alt bullet-icon" aria-hidden="true"></i>
           <div>
             <strong>Bank-Grade Security</strong>
             <p>Your money is always protected</p>
           </div>
         </div>
         <div class="bullet">
-          <span class="bullet-icon">💸</span>
+          <i class="fas fa-coins bullet-icon" aria-hidden="true"></i>
           <div>
             <strong>Zero Fees</strong>
             <p>Free transfers between SafiPay users</p>

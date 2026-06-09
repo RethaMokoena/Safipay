@@ -8,238 +8,244 @@
   </div>
 
   @if (loading()) {
-    @for (i of [1,2]; track i) { <div class="card-skeleton"></div> }
+  @for (i of [1,2]; track i) { <div class="card-skeleton"></div> }
   } @else if (merchants().length === 0) {
-    <div class="empty-state">
-      <span>🏪</span>
-      <h3>No merchant accounts yet</h3>
-      <p>Register your business to start accepting payments, generate API keys, and track revenue.</p>
-      <button class="btn btn-primary" (click)="openRegister()">Register Your Business</button>
-    </div>
+  <div class="empty-state">
+    <span>
+      <i class="fas fa-store" aria-hidden="true"></i>
+    </span>
+    <h3>No merchant accounts yet</h3>
+    <p>Register your business to start accepting payments, generate API keys, and track revenue.</p>
+    <button class="btn btn-primary" (click)="openRegister()">Register Your Business</button>
+  </div>
   } @else {
-    <div class="merchant-grid">
-      @for (m of merchants(); track m.id) {
-        <div class="merchant-card">
-          <div class="card-top-line" [class]="statusClass(m.status)"></div>
-          <div class="mc-head">
-            <div class="mc-logo">{{ m.businessName.charAt(0) }}</div>
-            <div class="mc-info">
-              <h3>{{ m.businessName }}</h3>
-              <span class="category-tag">{{ categoryLabel(m.category) }}</span>
-            </div>
-            <span class="status-badge" [class]="statusClass(m.status)">{{ m.status | titlecase }}</span>
-          </div>
-
-          @if (m.description) {
-            <p class="mc-desc">{{ m.description }}</p>
-          }
-
-          <div class="mc-contacts">
-            @if (m.businessEmail) { <span>✉ {{ m.businessEmail }}</span> }
-            @if (m.businessPhone) { <span>📞 {{ m.businessPhone }}</span> }
-            @if (m.businessRegistrationNumber) { <span>🏢 {{ m.businessRegistrationNumber }}</span> }
-          </div>
-
-          <div class="mc-footer">
-            <button class="btn btn-ghost btn-sm" (click)="openKeys(m)">
-              🔑 API Keys
-            </button>
-            <button class="btn btn-ghost btn-sm" (click)="openPayments(m)">
-              💰 Payments
-            </button>
-          </div>
+  <div class="merchant-grid">
+    @for (m of merchants(); track m.id) {
+    <div class="merchant-card">
+      <div class="card-top-line" [class]="statusClass(m.status)"></div>
+      <div class="mc-head">
+        <div class="mc-logo">{{ m.businessName.charAt(0) }}</div>
+        <div class="mc-info">
+          <h3>{{ m.businessName }}</h3>
+          <span class="category-tag">{{ categoryLabel(m.category) }}</span>
         </div>
+        <span class="status-badge" [class]="statusClass(m.status)">{{ m.status | titlecase }}</span>
+      </div>
+
+      @if (m.description) {
+      <p class="mc-desc">{{ m.description }}</p>
       }
+
+      <div class="mc-contacts">
+        @if (m.businessEmail) { <span> <i class="fas fa-envelope" aria-hidden="true"></i> {{ m.businessEmail }}</span> }
+        @if (m.businessPhone) { <span> <i class="fas fa-phone" aria-hidden="true"></i> {{ m.businessPhone }}</span> }
+        @if (m.businessRegistrationNumber) { <span> <i class="fas fa-building" aria-hidden="true"></i> {{
+          m.businessRegistrationNumber }}</span> }
+      </div>
+
+      <div class="mc-footer">
+        <button class="btn btn-ghost btn-sm" (click)="openKeys(m)">
+          <i class="fas fa-key" aria-hidden="true"></i> API Keys
+        </button>
+        <button class="btn btn-ghost btn-sm" (click)="openPayments(m)">
+          <i class="fas fa-credit-card" aria-hidden="true"></i> Payments
+        </button>
+      </div>
     </div>
+    }
+  </div>
   }
 </div>
 
 <!-- Register Modal -->
 @if (activeModal() === 'register') {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
-      <div class="modal-header">
-        <h3>Register Your Business</h3>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
-      <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Business Name</label>
-            <input type="text" formControlName="businessName" placeholder="Acme Retail (Pty) Ltd" />
-            @if (registerForm.get('businessName')?.invalid && registerForm.get('businessName')?.touched) {
-              <span class="error-msg">Business name required</span>
-            }
-          </div>
-          <div class="form-group">
-            <label>Category</label>
-            <select formControlName="category">
-              @for (c of categories; track c) {
-                <option [value]="c">{{ categoryLabel(c) }}</option>
-              }
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Business Email <span class="opt">(optional)</span></label>
-            <input type="email" formControlName="businessEmail" placeholder="info@yourbusiness.co.za" />
-          </div>
-          <div class="form-group">
-            <label>Business Phone <span class="opt">(optional)</span></label>
-            <input type="tel" formControlName="businessPhone" placeholder="+27 11 123 4567" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Registration Number <span class="opt">(optional)</span></label>
-          <input type="text" formControlName="businessRegistrationNumber" placeholder="2024/123456/07" />
-        </div>
-        <div class="form-group">
-          <label>Description <span class="opt">(optional)</span></label>
-          <input type="text" formControlName="description" placeholder="What does your business do?" />
-        </div>
-        <div class="register-note">
-          ℹ Your account will be reviewed by our team and activated within 1–2 business days.
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" [disabled]="registerForm.invalid || submitting()">
-          @if (submitting()) { <span class="spinner"></span> Submitting... } @else { Submit for Verification }
-        </button>
-      </form>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-line"></div>
+    <div class="modal-header">
+      <h3>Register Your Business</h3>
+      <button class="modal-close" (click)="closeModal()">×</button>
     </div>
+    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Business Name</label>
+          <input type="text" formControlName="businessName" placeholder="Acme Retail (Pty) Ltd" />
+          @if (registerForm.get('businessName')?.invalid && registerForm.get('businessName')?.touched) {
+          <span class="error-msg">Business name required</span>
+          }
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <select formControlName="category">
+            @for (c of categories; track c) {
+            <option [value]="c">{{ categoryLabel(c) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Business Email <span class="opt">(optional)</span></label>
+          <input type="email" formControlName="businessEmail" placeholder="info@yourbusiness.co.za" />
+        </div>
+        <div class="form-group">
+          <label>Business Phone <span class="opt">(optional)</span></label>
+          <input type="tel" formControlName="businessPhone" placeholder="+27 11 123 4567" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Registration Number <span class="opt">(optional)</span></label>
+        <input type="text" formControlName="businessRegistrationNumber" placeholder="2024/123456/07" />
+      </div>
+      <div class="form-group">
+        <label>Description <span class="opt">(optional)</span></label>
+        <input type="text" formControlName="description" placeholder="What does your business do?" />
+      </div>
+      <div class="register-note">
+        ℹ Your account will be reviewed by our team and activated within 1–2 business days.
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" [disabled]="registerForm.invalid || submitting()">
+        @if (submitting()) { <span class="spinner"></span> Submitting... } @else { Submit for Verification }
+      </button>
+    </form>
   </div>
+</div>
 }
 
 <!-- API Keys Modal -->
 @if (activeModal() === 'keys' && selectedMerchant()) {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
-      <div class="modal-header">
-        <div>
-          <h3>API Keys</h3>
-          <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
-        </div>
-        <div class="header-btns">
-          <button class="btn btn-primary btn-sm" (click)="openNewKey()">+ New Key</button>
-          <button class="modal-close" (click)="closeModal()">×</button>
-        </div>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-line"></div>
+    <div class="modal-header">
+      <div>
+        <h3>API Keys</h3>
+        <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
       </div>
+      <div class="header-btns">
+        <button class="btn btn-primary btn-sm" (click)="openNewKey()">+ New Key</button>
+        <button class="modal-close" (click)="closeModal()">×</button>
+      </div>
+    </div>
 
-      <!-- Newly created key alert -->
-      @if (newlyCreatedKey()) {
-        <div class="key-reveal">
-          <p>⚠ Copy this key now — it will never be shown again.</p>
-          <div class="key-display">
-            <code>{{ newlyCreatedKey() }}</code>
-            <button class="copy-btn" (click)="copyKey(newlyCreatedKey()!)">Copy</button>
-          </div>
-        </div>
-      }
+    <!-- Newly created key alert -->
+    @if (newlyCreatedKey()) {
+    <div class="key-reveal">
+      <p>⚠ Copy this key now — it will never be shown again.</p>
+      <div class="key-display">
+        <code>{{ newlyCreatedKey() }}</code>
+        <button class="copy-btn" (click)="copyKey(newlyCreatedKey()!)">Copy</button>
+      </div>
+    </div>
+    }
 
-      @if (apiKeys().length === 0) {
-        <div class="empty-state-sm">
-          <p>No API keys yet. Create one to start accepting payments programmatically.</p>
+    @if (apiKeys().length === 0) {
+    <div class="empty-state-sm">
+      <p>No API keys yet. Create one to start accepting payments programmatically.</p>
+    </div>
+    } @else {
+    <div class="key-list">
+      @for (key of apiKeys(); track key.id) {
+      <div class="key-row">
+        <div class="key-info">
+          <span class="key-label">{{ key.label }}</span>
+          <span class="key-prefix">{{ key.keyPrefix }}••••••••</span>
         </div>
-      } @else {
-        <div class="key-list">
-          @for (key of apiKeys(); track key.id) {
-            <div class="key-row">
-              <div class="key-info">
-                <span class="key-label">{{ key.label }}</span>
-                <span class="key-prefix">{{ key.keyPrefix }}••••••••</span>
-              </div>
-              <div class="key-meta">
-                <span class="env-badge" [class]="key.environment.toLowerCase()">{{ key.environment }}</span>
-                @if (key.expiresAt) { <span class="expires">Expires {{ key.expiresAt | date:'dd MMM yy' }}</span> }
-                <span class="created">Created {{ key.createdAt | date:'dd MMM yy' }}</span>
-              </div>
-              <button class="revoke-btn" (click)="revokeKey(key.id)">Revoke</button>
-            </div>
-          }
+        <div class="key-meta">
+          <span class="env-badge" [class]="key.environment.toLowerCase()">{{ key.environment }}</span>
+          @if (key.expiresAt) { <span class="expires">Expires {{ key.expiresAt | date:'dd MMM yy' }}</span> }
+          <span class="created">Created {{ key.createdAt | date:'dd MMM yy' }}</span>
         </div>
+        <button class="revoke-btn" (click)="revokeKey(key.id)">Revoke</button>
+      </div>
       }
     </div>
+    }
   </div>
+</div>
 }
 
 <!-- New API Key Modal -->
 @if (activeModal() === 'newKey') {
-  <div class="modal-overlay" (click)="activeModal.set('keys')">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
-      <div class="modal-header">
-        <h3>Create API Key</h3>
-        <button class="modal-close" (click)="activeModal.set('keys')">×</button>
-      </div>
-      <form [formGroup]="newKeyForm" (ngSubmit)="submitNewKey()">
-        <div class="form-group">
-          <label>Label</label>
-          <input type="text" formControlName="label" placeholder="e.g. Production, Staging" />
-          @if (newKeyForm.get('label')?.invalid && newKeyForm.get('label')?.touched) {
-            <span class="error-msg">Label is required</span>
-          }
-        </div>
-        <div class="form-group">
-          <label>Environment</label>
-          <select formControlName="environment">
-            <option value="TEST">Test</option>
-            <option value="LIVE">Live</option>
-          </select>
-        </div>
-        <div class="register-note">
-          🔒 The full key will be shown <strong>once</strong> after creation. Store it securely.
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" [disabled]="newKeyForm.invalid || submitting()">
-          @if (submitting()) { <span class="spinner"></span> Generating... } @else { Generate API Key }
-        </button>
-      </form>
+<div class="modal-overlay" (click)="activeModal.set('keys')">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-top-line"></div>
+    <div class="modal-header">
+      <h3>Create API Key</h3>
+      <button class="modal-close" (click)="activeModal.set('keys')">×</button>
     </div>
+    <form [formGroup]="newKeyForm" (ngSubmit)="submitNewKey()">
+      <div class="form-group">
+        <label>Label</label>
+        <input type="text" formControlName="label" placeholder="e.g. Production, Staging" />
+        @if (newKeyForm.get('label')?.invalid && newKeyForm.get('label')?.touched) {
+        <span class="error-msg">Label is required</span>
+        }
+      </div>
+      <div class="form-group">
+        <label>Environment</label>
+        <select formControlName="environment">
+          <option value="TEST">Test</option>
+          <option value="LIVE">Live</option>
+        </select>
+      </div>
+      <div class="register-note">
+        <i class="fas fa-lock" aria-hidden="true"></i> The full key will be shown <strong>once</strong> after creation.
+        Store it securely.
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" [disabled]="newKeyForm.invalid || submitting()">
+        @if (submitting()) { <span class="spinner"></span> Generating... } @else { Generate API Key }
+      </button>
+    </form>
   </div>
+</div>
 }
 
 <!-- Payments Modal -->
 @if (activeModal() === 'payments' && selectedMerchant()) {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal modal-lg" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
-      <div class="modal-header">
-        <div>
-          <h3>Payment History</h3>
-          <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
-        </div>
-        <button class="modal-close" (click)="closeModal()">×</button>
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal modal-lg" (click)="$event.stopPropagation()">
+    <div class="modal-top-line"></div>
+    <div class="modal-header">
+      <div>
+        <h3>Payment History</h3>
+        <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
       </div>
+      <button class="modal-close" (click)="closeModal()">×</button>
+    </div>
 
-      @if (payments().length === 0) {
-        <div class="empty-state-sm">
-          <p>No payments received yet.</p>
+    @if (payments().length === 0) {
+    <div class="empty-state-sm">
+      <p>No payments received yet.</p>
+    </div>
+    } @else {
+    <div class="payment-list">
+      @for (p of payments(); track p.id) {
+      <div class="pay-row">
+        <div class="pay-icon">💳</div>
+        <div class="pay-info">
+          <span class="pay-payer">{{ p.payerUserId }}</span>
+          @if (p.description) { <span class="pay-desc">{{ p.description }}</span> }
+          <span class="pay-date">{{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
         </div>
-      } @else {
-        <div class="payment-list">
-          @for (p of payments(); track p.id) {
-            <div class="pay-row">
-              <div class="pay-icon">💳</div>
-              <div class="pay-info">
-                <span class="pay-payer">{{ p.payerUserId }}</span>
-                @if (p.description) { <span class="pay-desc">{{ p.description }}</span> }
-                <span class="pay-date">{{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
-              </div>
-              <div class="pay-right">
-                <div class="pay-amounts">
-                  <span class="gross">R{{ p.amount | number:'1.2-2' }}</span>
-                  <span class="fee">Fee: R{{ p.feeAmount | number:'1.2-2' }}</span>
-                  <span class="net">Net: R{{ p.netAmount | number:'1.2-2' }}</span>
-                </div>
-                <span class="status-badge" [class]="p.status === 'COMPLETED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'warning'">{{ p.status }}</span>
-                @if (p.status === 'COMPLETED') {
-                  <button class="refund-btn" (click)="refundPayment(p.id)">Refund</button>
-                }
-              </div>
-            </div>
+        <div class="pay-right">
+          <div class="pay-amounts">
+            <span class="gross">R{{ p.amount | number:'1.2-2' }}</span>
+            <span class="fee">Fee: R{{ p.feeAmount | number:'1.2-2' }}</span>
+            <span class="net">Net: R{{ p.netAmount | number:'1.2-2' }}</span>
+          </div>
+          <span class="status-badge"
+            [class]="p.status === 'COMPLETED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'warning'">{{ p.status
+            }}</span>
+          @if (p.status === 'COMPLETED') {
+          <button class="refund-btn" (click)="refundPayment(p.id)">Refund</button>
           }
         </div>
+      </div>
       }
     </div>
+    }
   </div>
+</div>
 }

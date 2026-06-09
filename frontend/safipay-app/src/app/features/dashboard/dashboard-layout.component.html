@@ -29,7 +29,7 @@
           class="nav-item"
           (click)="closeSidebar()"
         >
-          <span class="nav-icon">{{ item.icon }}</span>
+             <i [class]="item.icon" class="nav-icon" aria-hidden="true"></i>
           <span>{{ item.label }}</span>
         </a>
       }
