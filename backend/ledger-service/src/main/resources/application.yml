@@ -19,7 +19,7 @@ spring:
   #     path: /h2-console
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/safipay_ledger
+    url: jdbc:postgresql://postgres:5432/safipay_ledger
     driver-class-name: org.postgresql.Driver
     username: rethabile
     password: password123

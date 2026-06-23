@@ -7,7 +7,7 @@ spring:
   
   # PostgreSQL Configuration (active)
   datasource:
-    url: jdbc:postgresql://localhost:5432/safipay_user
+    url: jdbc:postgresql://postgres:5432/safipay_user
     driver-class-name: org.postgresql.Driver
     username: rethabile
     password: password123

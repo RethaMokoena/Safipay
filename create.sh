@@ -193,7 +193,7 @@ spring:
   application:
     name: paymentgateway-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/paymentgatewaydb
+    url: jdbc:postgresql://postgres:5432/paymentgatewaydb
     username: user_user
     password: ${DB_PASSWORD:secret}
     driver-class-name: org.postgresql.Driver
