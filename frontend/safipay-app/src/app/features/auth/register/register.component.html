@@ -1,130 +1,787 @@
-<div class="auth-wrapper">
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="hero-grid"></div>
+<div class="auth-page">
 
-  <a class="back-link" routerLink="/">← Back to SafiPay</a>
+  <!-- =========================================================
+       LEFT BRAND PANEL
+  ========================================================== -->
 
-  <div class="auth-card">
-    <div class="card-top-line"></div>
+  <section class="auth-visual">
 
-    <div class="auth-logo">
-      <div class="logo-mark">SP</div>
-      <span class="logo-text">Safi<em>Pay</em></span>
-    </div>
+    <a
+      class="brand"
+      routerLink="/">
 
-    <h1>Create your account</h1>
-    <p class="auth-subtitle">Join 50,000+ South Africans managing money smarter</p>
+      <div class="brand-mark">
+        S
+      </div>
 
-    <!-- Step indicator -->
-    <div class="steps-indicator">
-      <div class="step-dot" [class.active]="step() >= 1" [class.done]="step() > 1">1</div>
-      <div class="step-line" [class.active]="step() > 1"></div>
-      <div class="step-dot" [class.active]="step() >= 2">2</div>
-    </div>
+      <span class="brand-name">
+        Safi<span>Pay</span>
+      </span>
 
-    @if (error()) {
-      <div class="error-banner">⚠️ {{ error() }}</div>
-    }
+    </a>
 
-    <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
 
-      <!-- STEP 1: Personal Info -->
-      @if (step() === 1) {
-        <div class="step-content">
-          <p class="step-label">Step 1 of 2 — Personal details</p>
+    <div class="visual-content">
 
-          <div class="form-row">
-            <div class="form-group">
-              <label>First Name</label>
-              <input type="text" formControlName="firstName" placeholder="Thandi"
-                [class.error]="f['firstName'].invalid && f['firstName'].touched" />
-              @if (f['firstName'].invalid && f['firstName'].touched) {
-                <span class="error-msg">First name required (min 2 chars)</span>
-              }
-            </div>
-            <div class="form-group">
-              <label>Last Name</label>
-              <input type="text" formControlName="lastName" placeholder="Mokoena"
-                [class.error]="f['lastName'].invalid && f['lastName'].touched" />
-              @if (f['lastName'].invalid && f['lastName'].touched) {
-                <span class="error-msg">Last name required</span>
-              }
-            </div>
+      <span class="eyebrow">
+        GET STARTED
+      </span>
+
+      <h2>
+        One account for payments, savings and your everyday money.
+      </h2>
+
+      <p>
+        Create your SafiPay account and get a secure digital wallet
+        ready for transfers, savings and stokvels.
+      </p>
+
+
+      <div class="feature-list">
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-wallet"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Your own digital wallet
+            </strong>
+
+            <span>
+              Your SafiPay wallet is created when your account is ready.
+            </span>
           </div>
 
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" formControlName="email" placeholder="thandi@example.com"
-              autocomplete="email"
-              [class.error]="f['email'].invalid && f['email'].touched" />
-            @if (f['email'].invalid && f['email'].touched) {
-              <span class="error-msg">Enter a valid email address</span>
-            }
-          </div>
-
-          <div class="form-group">
-            <label>Phone Number <span class="optional">(optional)</span></label>
-            <input type="tel" formControlName="phoneNumber" placeholder="+27 71 234 5678" />
-          </div>
-
-          <button type="button" class="btn btn-primary btn-submit" (click)="nextStep()">
-            Continue →
-          </button>
         </div>
+
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-paper-plane"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Send and receive money
+            </strong>
+
+            <span>
+              Transfer funds securely between SafiPay users.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-users"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Save with your community
+            </strong>
+
+            <span>
+              Join and manage stokvel savings from one place.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="visual-footer">
+
+      <span>Secure</span>
+
+      <span class="dot"></span>
+
+      <span>Simple</span>
+
+      <span class="dot"></span>
+
+      <span>Built for South Africa</span>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       REGISTER PANEL
+  ========================================================== -->
+
+  <main class="auth-main">
+
+    <div class="auth-main-inner">
+
+      <a
+        class="back-link"
+        routerLink="/">
+
+        <i
+          class="fas fa-arrow-left"
+          aria-hidden="true">
+        </i>
+
+        Back to SafiPay
+
+      </a>
+
+
+      <!-- Mobile logo -->
+
+      <div class="mobile-brand">
+
+        <div class="brand-mark">
+          S
+        </div>
+
+        <span class="brand-name">
+          Safi<span>Pay</span>
+        </span>
+
+      </div>
+
+
+      <!-- Heading -->
+
+      <div class="auth-heading">
+
+        <span class="eyebrow">
+          CREATE ACCOUNT
+        </span>
+
+        <h1>
+          Start using SafiPay
+        </h1>
+
+        <p>
+          Complete the two steps below to create your account.
+        </p>
+
+      </div>
+
+
+      <!-- =====================================================
+           STEP PROGRESS
+      ====================================================== -->
+
+      <div
+        class="steps"
+        aria-label="Registration progress">
+
+        <div class="step-item">
+
+          <div
+            class="step-circle"
+            [class.active]="step() >= 1"
+            [class.complete]="step() > 1"
+            [attr.aria-current]="step() === 1 ? 'step' : null">
+
+            @if (step() > 1) {
+
+              <i
+                class="fas fa-check"
+                aria-hidden="true">
+              </i>
+
+            } @else {
+
+              1
+
+            }
+
+          </div>
+
+          <div class="step-copy">
+
+            <span>
+              STEP 1
+            </span>
+
+            <strong>
+              Personal details
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="step-connector"
+          [class.complete]="step() > 1">
+        </div>
+
+
+        <div class="step-item">
+
+          <div
+            class="step-circle"
+            [class.active]="step() >= 2"
+            [attr.aria-current]="step() === 2 ? 'step' : null">
+
+            2
+
+          </div>
+
+          <div class="step-copy">
+
+            <span>
+              STEP 2
+            </span>
+
+            <strong>
+              Security
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           ERROR
+      ====================================================== -->
+
+      @if (error()) {
+
+        <div
+          class="error-banner"
+          role="alert">
+
+          <span class="error-icon">
+
+            <i
+              class="fas fa-circle-exclamation"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <strong>
+              We couldn't create your account
+            </strong>
+
+            <span>
+              {{ error() }}
+            </span>
+
+          </div>
+
+        </div>
+
       }
 
-      <!-- STEP 2: Password -->
-      @if (step() === 2) {
-        <div class="step-content">
-          <p class="step-label">Step 2 of 2 — Secure your account</p>
 
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-wrapper">
-              <input [type]="showPassword() ? 'text' : 'password'" formControlName="password"
-                placeholder="Min. 8 characters"
-                [class.error]="f['password'].invalid && f['password'].touched" />
-              <button type="button" class="toggle-pw" (click)="togglePassword()">
-                {{ showPassword() ? '🙈' : '👁' }}
-              </button>
+      <!-- =====================================================
+           FORM
+      ====================================================== -->
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        novalidate>
+
+
+        <!-- ===================================================
+             STEP 1
+        ==================================================== -->
+
+        @if (step() === 1) {
+
+          <div class="step-content">
+
+            <div class="step-heading">
+
+              <h2>
+                Personal details
+              </h2>
+
+              <p>
+                Tell us a little about yourself.
+              </p>
+
             </div>
-            @if (f['password'].invalid && f['password'].touched) {
-              <span class="error-msg">Password must be at least 8 characters</span>
-            }
-          </div>
 
-          <div class="form-group">
-            <label>Confirm Password</label>
-            <input type="password" formControlName="confirmPassword" placeholder="Repeat your password"
-              [class.error]="form.hasError('passwordMismatch') && f['confirmPassword'].touched" />
-            @if (form.hasError('passwordMismatch') && f['confirmPassword'].touched) {
-              <span class="error-msg">Passwords do not match</span>
-            }
-          </div>
 
-          <div class="terms-note">
-            By creating an account you agree to our
-            <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-          </div>
+            <div class="form-row">
 
-          <div class="step2-actions">
-            <button type="button" class="btn btn-ghost" (click)="goBack()">← Back</button>
-            <button type="submit" class="btn btn-primary btn-submit-inline" [disabled]="form.invalid || loading()">
-              @if (loading()) {
-                <span class="spinner"></span> Creating...
-              } @else {
-                Create Account 🎉
+
+              <!-- First name -->
+
+              <div class="form-group">
+
+                <label for="firstName">
+                  First name
+                </label>
+
+                <div
+                  class="input-container"
+                  [class.invalid]="
+                    f['firstName'].invalid &&
+                    f['firstName'].touched
+                  ">
+
+                  <span class="input-icon">
+
+                    <i
+                      class="far fa-user"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <input
+                    id="firstName"
+                    type="text"
+                    formControlName="firstName"
+                    placeholder="Thandi"
+                    autocomplete="given-name">
+
+                </div>
+
+                @if (
+                  f['firstName'].invalid &&
+                  f['firstName'].touched
+                ) {
+
+                  <span class="error-msg">
+                    First name is required and must contain at least 2 characters.
+                  </span>
+
+                }
+
+              </div>
+
+
+              <!-- Last name -->
+
+              <div class="form-group">
+
+                <label for="lastName">
+                  Last name
+                </label>
+
+                <div
+                  class="input-container"
+                  [class.invalid]="
+                    f['lastName'].invalid &&
+                    f['lastName'].touched
+                  ">
+
+                  <span class="input-icon">
+
+                    <i
+                      class="far fa-user"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <input
+                    id="lastName"
+                    type="text"
+                    formControlName="lastName"
+                    placeholder="Mokoena"
+                    autocomplete="family-name">
+
+                </div>
+
+                @if (
+                  f['lastName'].invalid &&
+                  f['lastName'].touched
+                ) {
+
+                  <span class="error-msg">
+                    Last name is required.
+                  </span>
+
+                }
+
+              </div>
+
+            </div>
+
+
+            <!-- Email -->
+
+            <div class="form-group">
+
+              <label for="register-email">
+                Email address
+              </label>
+
+              <div
+                class="input-container"
+                [class.invalid]="
+                  f['email'].invalid &&
+                  f['email'].touched
+                ">
+
+                <span class="input-icon">
+
+                  <i
+                    class="far fa-envelope"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+                <input
+                  id="register-email"
+                  type="email"
+                  formControlName="email"
+                  placeholder="thandi@example.com"
+                  autocomplete="email">
+
+              </div>
+
+              @if (
+                f['email'].invalid &&
+                f['email'].touched
+              ) {
+
+                <span class="error-msg">
+                  Enter a valid email address.
+                </span>
+
               }
+
+            </div>
+
+
+            <!-- Phone -->
+
+            <div class="form-group">
+
+              <label for="phoneNumber">
+
+                Phone number
+
+                <span class="optional">
+                  Optional
+                </span>
+
+              </label>
+
+              <div class="input-container">
+
+                <span class="input-icon">
+
+                  <i
+                    class="fas fa-phone"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+                <input
+                  id="phoneNumber"
+                  type="tel"
+                  formControlName="phoneNumber"
+                  placeholder="+27 71 234 5678"
+                  autocomplete="tel">
+
+              </div>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="submit-btn"
+              (click)="nextStep()">
+
+              Continue
+
+              <i
+                class="fas fa-arrow-right"
+                aria-hidden="true">
+              </i>
+
             </button>
-          </div>
-        </div>
-      }
-    </form>
 
-    <div class="auth-divider">
-      <span>Already have an account?</span>
+          </div>
+
+        }
+
+
+        <!-- ===================================================
+             STEP 2
+        ==================================================== -->
+
+        @if (step() === 2) {
+
+          <div class="step-content">
+
+            <div class="step-heading">
+
+              <h2>
+                Secure your account
+              </h2>
+
+              <p>
+                Choose a password for your SafiPay account.
+              </p>
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="form-group">
+
+              <label for="register-password">
+                Password
+              </label>
+
+              <div
+                class="input-container"
+                [class.invalid]="
+                  f['password'].invalid &&
+                  f['password'].touched
+                ">
+
+                <span class="input-icon">
+
+                  <i
+                    class="fas fa-lock"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+                <input
+                  id="register-password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  placeholder="Minimum 8 characters"
+                  autocomplete="new-password">
+
+                <button
+                  type="button"
+                  class="toggle-password"
+                  [attr.aria-label]="
+                    showPassword()
+                      ? 'Hide password'
+                      : 'Show password'
+                  "
+                  [attr.title]="
+                    showPassword()
+                      ? 'Hide password'
+                      : 'Show password'
+                  "
+                  (click)="togglePassword()">
+
+                  @if (showPassword()) {
+
+                    <i
+                      class="far fa-eye-slash"
+                      aria-hidden="true">
+                    </i>
+
+                  } @else {
+
+                    <i
+                      class="far fa-eye"
+                      aria-hidden="true">
+                    </i>
+
+                  }
+
+                </button>
+
+              </div>
+
+              @if (
+                f['password'].invalid &&
+                f['password'].touched
+              ) {
+
+                <span class="error-msg">
+                  Password must be at least 8 characters.
+                </span>
+
+              }
+
+            </div>
+
+
+            <!-- Confirm password -->
+
+            <div class="form-group">
+
+              <label for="confirmPassword">
+                Confirm password
+              </label>
+
+              <div
+                class="input-container"
+                [class.invalid]="
+                  form.hasError('passwordMismatch') &&
+                  f['confirmPassword'].touched
+                ">
+
+                <span class="input-icon">
+
+                  <i
+                    class="fas fa-lock"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  formControlName="confirmPassword"
+                  placeholder="Repeat your password"
+                  autocomplete="new-password">
+
+              </div>
+
+              @if (
+                form.hasError('passwordMismatch') &&
+                f['confirmPassword'].touched
+              ) {
+
+                <span class="error-msg">
+                  Passwords do not match.
+                </span>
+
+              }
+
+            </div>
+
+
+            <!-- Terms -->
+
+            <div class="terms-note">
+
+              <span class="terms-icon">
+
+                <i
+                  class="fas fa-shield-halved"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <p>
+                By creating an account you agree to our
+                <a href="#">Terms of Service</a>
+                and
+                <a href="#">Privacy Policy</a>.
+              </p>
+
+            </div>
+
+
+            <div class="step-actions">
+
+              <button
+                type="button"
+                class="secondary-btn"
+                (click)="goBack()">
+
+                <i
+                  class="fas fa-arrow-left"
+                  aria-hidden="true">
+                </i>
+
+                Back
+
+              </button>
+
+
+              <button
+                type="submit"
+                class="submit-btn"
+                [disabled]="form.invalid || loading()">
+
+                @if (loading()) {
+
+                  <span class="spinner"></span>
+
+                  Creating account...
+
+                } @else {
+
+                  Create Account
+
+                  <i
+                    class="fas fa-arrow-right"
+                    aria-hidden="true">
+                  </i>
+
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </form>
+
+
+      <!-- =====================================================
+           LOGIN LINK
+      ====================================================== -->
+
+      <div class="login-section">
+
+        <span>
+          Already have a SafiPay account?
+        </span>
+
+        <a routerLink="/auth/login">
+          Sign in
+        </a>
+
+      </div>
+
+
+      <div class="security-note">
+
+        <i
+          class="fas fa-lock"
+          aria-hidden="true">
+        </i>
+
+        Your information is transmitted securely.
+
+      </div>
+
     </div>
-    <a routerLink="/auth/login" class="btn btn-ghost btn-block">Sign In</a>
-  </div>
+
+  </main>
+
 </div>

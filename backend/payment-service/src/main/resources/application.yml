@@ -27,9 +27,9 @@ jwt:
   secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
 
 services:
-  wallet-service-url: http://localhost:8082
-  fraud-service-url: http://localhost:8087
-  ledger-service-url: http://localhost:8085
+  wallet-service-url: ${WALLET_SERVICE_URL:http://localhost:8082}
+  fraud-service-url: ${FRAUD_SERVICE_URL:http://localhost:8087}
+  ledger-service-url: ${LEDGER_SERVICE_URL:http://localhost:8085}
 
 logging:
   level:

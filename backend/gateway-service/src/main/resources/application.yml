@@ -13,6 +13,7 @@ spring:
             allowedOriginPatterns:
               - "http://localhost:4200"
               - "http://localhost:*"
+              - "http://127.0.0.1:4200"  # Added for safety
             allowedMethods:
               - GET
               - POST
@@ -30,7 +31,7 @@ spring:
       routes:
         # ── Public auth routes (no JWT required) ────────────────
         - id: user-service-auth
-          uri: http://localhost:8081
+          uri: http://user-service:8081  # ✅ Using service name
           predicates:
             - Path=/api/auth/**
           filters:
@@ -38,7 +39,7 @@ spring:
 
         # ── Protected routes ─────────────────────────────────────
         - id: user-service-admin
-          uri: http://localhost:8081
+          uri: http://user-service:8081  # ✅ Using service name
           predicates:
             - Path=/api/admin/users/**
           filters:
@@ -46,7 +47,7 @@ spring:
             - AuthFilter
 
         - id: wallet-service
-          uri: http://localhost:8082
+          uri: http://wallet-service:8082  # ✅ Using service name
           predicates:
             - Path=/api/wallets/**
           filters:
@@ -54,7 +55,7 @@ spring:
             - AuthFilter
 
         - id: wallet-service-admin
-          uri: http://localhost:8082
+          uri: http://wallet-service:8082  # ✅ Using service name
           predicates:
             - Path=/api/admin/wallets/**
           filters:
@@ -62,7 +63,7 @@ spring:
             - AuthFilter
 
         - id: payment-service
-          uri: http://localhost:8083
+          uri: http://payment-service:8083  # ✅ Using service name
           predicates:
             - Path=/api/payments/**
           filters:
@@ -70,7 +71,7 @@ spring:
             - AuthFilter
 
         - id: stokvel-service
-          uri: http://localhost:8084
+          uri: http://stokvel-service:8084  # ✅ Using service name
           predicates:
             - Path=/api/stokvels/**
           filters:
@@ -78,7 +79,7 @@ spring:
             - AuthFilter
 
         - id: ledger-service
-          uri: http://localhost:8085
+          uri: http://ledger-service:8085  # ✅ Using service name
           predicates:
             - Path=/api/ledger/**
           filters:
@@ -86,7 +87,7 @@ spring:
             - AuthFilter
 
         - id: merchant-service
-          uri: http://localhost:8086
+          uri: http://merchant-service:8086  # ✅ Using service name
           predicates:
             - Path=/api/merchants/**
           filters:
@@ -94,7 +95,7 @@ spring:
             - AuthFilter
 
         - id: fraud-service
-          uri: http://localhost:8087
+          uri: http://fraud-service:8087  # ✅ Using service name
           predicates:
             - Path=/api/fraud/**
           filters:
@@ -102,13 +103,21 @@ spring:
             - AuthFilter
 
         - id: webhook-service
-          uri: http://localhost:8088
+          uri: http://webhook-service:8088  # ✅ Using service name
           predicates:
             - Path=/api/webhooks/**
           filters:
             - StripPrefix=0
             - AuthFilter
-
+          
+      
+        - id: ai-service
+          uri: http://ai-service:8090
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - StripPrefix=0
+            - AuthFilter
 jwt:
   secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
 

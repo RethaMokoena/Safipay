@@ -1,103 +1,1729 @@
-$bg-base:#080b12;$bg-card:#111827;$bg-el:#161d2e;$cyan:#00e5ff;$cyan-d:rgba(0,229,255,0.12);$cyan-b:rgba(0,229,255,0.18);$cyan-h:rgba(0,229,255,0.45);$teal:#00bcd4;$green:#00e676;$green-d:rgba(0,230,118,0.12);$red:#ff5252;$red-d:rgba(255,82,82,0.12);$yellow:#ffd600;$text-p:#e8edf5;$text-s:#8a97b0;$text-m:#4a556b;$fd:'Space Mono',monospace;$fb:'DM Sans',sans-serif;
+/* ================================================================
+   SAFIPAY MERCHANT PORTAL
+================================================================ */
 
-.page-wrapper{padding:0}
-.page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;h1{font-family:$fd;font-size:1.4rem;color:$text-p;margin-bottom:4px}p{font-size:.875rem;color:$text-s}}
-.merchant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+$primary: #0f766e;
+$primary-dark: #115e59;
+$primary-light: #14b8a6;
+$primary-soft: #ecfdf5;
 
-.merchant-card{background:$bg-card;border:1px solid $cyan-b;border-radius:14px;overflow:hidden;transition:all .25s;display:flex;flex-direction:column;
-  &:hover{border-color:$cyan-h;box-shadow:0 8px 24px rgba(0,229,255,.06)}
-  .card-top-line{height:2px;
-    &.success{background:linear-gradient(90deg,transparent,$green,$teal,transparent)}
-    &.warning{background:linear-gradient(90deg,transparent,$yellow,$teal,transparent)}
-    &.danger{background:linear-gradient(90deg,transparent,$red,transparent)}
-    &.muted{background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent)}
+$blue: #2563eb;
+$blue-soft: #eff6ff;
+
+$purple: #7c3aed;
+$purple-soft: #f5f3ff;
+
+$yellow: #ca8a04;
+$yellow-soft: #fefce8;
+
+$red: #dc2626;
+$red-soft: #fef2f2;
+
+$surface: #ffffff;
+$surface-soft: #fafbfb;
+
+$text-primary: #171a1f;
+$text-secondary: #667085;
+$text-muted: #98a2b3;
+
+$border: #e5e9ec;
+$border-soft: #eef1f3;
+
+
+/* ================================================================
+   PAGE
+================================================================ */
+
+.merchant-page {
+  width: 100%;
+  max-width: 1600px;
+
+  margin: 0 auto;
+
+  color: $text-primary;
+
+  font-family: 'DM Sans', sans-serif;
+}
+
+
+/* ================================================================
+   PAGE HEADER
+================================================================ */
+
+.page-header {
+  margin-bottom: 25px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.header-copy {
+
+  h1 {
+    margin: 5px 0 6px;
+
+    color: $text-primary;
+
+    font-size:
+      clamp(1.8rem, 2.5vw, 2.35rem);
+
+    font-weight: 700;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.045em;
+  }
+
+  p {
+    margin: 0;
+
+    color: $text-secondary;
+
+    font-size: 0.86rem;
   }
 }
 
-.mc-head{display:flex;align-items:center;gap:14px;padding:18px 20px 0}
-.mc-logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,$cyan,$teal);color:$bg-base;font-family:$fd;font-size:1.3rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(0,229,255,.3)}
-.mc-info{flex:1;min-width:0;h3{font-family:$fd;font-size:.95rem;color:$text-p;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}}
-.category-tag{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:$text-m;font-family:$fd}
-.mc-desc{font-size:.82rem;color:$text-s;padding:10px 20px;line-height:1.5}
-.mc-contacts{display:flex;flex-direction:column;gap:4px;padding:0 20px 12px;span{font-size:.75rem;color:$text-m}}
-.mc-footer{padding:14px 20px;border-top:1px solid $cyan-b;display:flex;gap:8px}
+.eyebrow {
+  display: block;
 
-.status-badge{padding:3px 10px;border-radius:50px;font-family:$fd;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;
-  &.success{background:$green-d;border:1px solid rgba(0,230,118,.25);color:$green}
-  &.warning{background:rgba(255,214,0,.1);border:1px solid rgba(255,214,0,.25);color:$yellow}
-  &.danger{background:$red-d;border:1px solid rgba(255,82,82,.25);color:$red}
-  &.muted{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:$text-m}
+  color: $primary;
+
+  font-size: 0.63rem;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
 }
 
-.empty-state{display:flex;flex-direction:column;align-items:center;padding:56px 0;gap:14px;text-align:center;
-  span{font-size:2.5rem}h3{font-family:$fd;font-size:1rem;color:$text-p}p{font-size:.875rem;color:$text-m;max-width:360px;line-height:1.6}
-}
-.empty-state-sm{padding:24px;text-align:center;p{font-size:.85rem;color:$text-m}}
-.card-skeleton{height:180px;border-radius:14px;margin-bottom:18px;background:linear-gradient(90deg,$bg-card 25%,$bg-el 50%,$bg-card 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
-@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 
-// Modal
-.modal-overlay{position:fixed;inset:0;background:rgba(8,11,18,.88);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px;animation:fadeIn .2s ease}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal{background:$bg-card;border:1px solid $cyan-h;border-radius:18px;padding:32px;width:100%;max-width:440px;position:relative;overflow:hidden;animation:slideUp .25s ease;max-height:90vh;overflow-y:auto;&.modal-lg{max-width:580px}.modal-top-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,$cyan,$teal,transparent)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;h3{font-family:$fd;font-size:1.1rem;color:$text-p}}
-.modal-subtitle{font-size:.78rem;color:$text-m;margin-top:4px;display:block}
-.modal-close{background:none;border:none;color:$text-m;font-size:1.3rem;cursor:pointer;padding:2px 6px;border-radius:4px;flex-shrink:0;&:hover{color:$text-p;background:rgba(255,255,255,.05)}}
-.header-btns{display:flex;align-items:center;gap:10px}
+/* ================================================================
+   PRIMARY BUTTON
+================================================================ */
 
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;@media(max-width:500px){grid-template-columns:1fr}}
-.form-group{margin-bottom:18px;label{display:block;font-size:.78rem;font-family:$fd;color:$text-s;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}.opt{text-transform:none;letter-spacing:0;font-family:$fb;color:$text-m}
-  input,select{width:100%;background:$bg-el;border:1px solid $cyan-b;border-radius:8px;padding:12px 16px;color:$text-p;font-family:$fb;font-size:.95rem;outline:none;transition:border-color .2s,box-shadow .2s;&::placeholder{color:$text-m}&:focus{border-color:$cyan-h;box-shadow:0 0 0 3px $cyan-d}option{background:$bg-card}}
-  .error-msg{font-size:.73rem;color:$red;font-family:$fd;display:block;margin-top:4px}
-}
-.register-note{background:$bg-el;border:1px solid $cyan-b;border-radius:8px;padding:12px 16px;font-size:.8rem;color:$text-s;margin-bottom:20px;line-height:1.5;strong{color:$text-p}}
+.primary-btn {
+  min-height: 42px;
 
-// Key reveal
-.key-reveal{background:rgba(255,214,0,.07);border:1px solid rgba(255,214,0,.3);border-radius:10px;padding:14px 16px;margin-bottom:20px;
-  p{font-size:.8rem;color:$yellow;margin-bottom:10px}
-}
-.key-display{display:flex;align-items:center;gap:10px;background:$bg-base;border:1px solid $cyan-b;border-radius:8px;padding:10px 14px;
-  code{flex:1;font-family:$fd;font-size:.72rem;color:$cyan;word-break:break-all;letter-spacing:.04em}
-}
-.copy-btn{background:$cyan-d;border:1px solid $cyan-h;border-radius:6px;color:$cyan;font-family:$fd;font-size:.68rem;padding:6px 12px;cursor:pointer;white-space:nowrap;&:hover{background:$cyan;color:$bg-base}}
+  padding: 0 16px;
 
-// Key list
-.key-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.key-row{display:flex;align-items:center;gap:14px;background:$bg-el;border:1px solid $cyan-b;border-radius:10px;padding:12px 16px;
-  flex-wrap:wrap;
-}
-.key-info{flex:1;min-width:0}
-.key-label{display:block;font-size:.875rem;color:$text-p;margin-bottom:3px}
-.key-prefix{display:block;font-family:$fd;font-size:.72rem;color:$text-m;letter-spacing:.06em}
-.key-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.env-badge{padding:2px 8px;border-radius:50px;font-family:$fd;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;
-  &.live{background:$green-d;border:1px solid rgba(0,230,118,.25);color:$green}
-  &.test{background:$cyan-d;border:1px solid $cyan-b;color:$cyan}
-}
-.expires,.created{font-size:.7rem;color:$text-m}
-.revoke-btn{background:$red-d;border:1px solid rgba(255,82,82,.25);border-radius:6px;color:$red;font-family:$fd;font-size:.65rem;padding:5px 12px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;&:hover{background:$red;color:#fff}}
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-// Payment list
-.payment-list{display:flex;flex-direction:column;gap:8px}
-.pay-row{display:flex;align-items:flex-start;gap:12px;background:$bg-el;border:1px solid $cyan-b;border-radius:10px;padding:14px 16px;transition:border-color .2s;&:hover{border-color:$cyan-h}}
-.pay-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
-.pay-info{flex:1;min-width:0}
-.pay-payer{display:block;font-size:.82rem;color:$text-p;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pay-desc{display:block;font-size:.75rem;color:$text-s;margin-bottom:3px}
-.pay-date{font-size:.7rem;color:$text-m}
-.pay-right{text-align:right;flex-shrink:0}
-.pay-amounts{display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
-.gross{font-family:$fd;font-size:.88rem;color:$text-p;font-weight:700}
-.fee{font-size:.7rem;color:$text-m}
-.net{font-size:.75rem;color:$green;font-family:$fd}
-.refund-btn{display:block;margin-top:6px;background:none;border:1px solid rgba(255,82,82,.25);border-radius:6px;color:$red;font-family:$fd;font-size:.62rem;padding:4px 10px;cursor:pointer;text-transform:uppercase;&:hover{background:$red-d}}
+  gap: 8px;
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:9px;font-family:$fb;font-size:.95rem;font-weight:600;cursor:pointer;transition:all .3s;border:none;
-  &-primary{background:linear-gradient(90deg,#a6e9f0,$cyan);color:$bg-base;box-shadow:0 4px 14px rgba(0,255,255,.25);&:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,255,.4)}&:disabled{opacity:.55;cursor:not-allowed}}
-  &-ghost{background:transparent;color:$text-s;border:1px solid $cyan-b;&:hover{color:$cyan;border-color:$cyan-h;background:$cyan-d}}
-  &-sm{padding:7px 16px;font-size:.82rem;border-radius:7px}
-  &-full{width:100%}
+  border: 1px solid $primary;
+
+  border-radius: 10px;
+
+  background: $primary;
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 0.71rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 14px rgba(15, 118, 110, 0.13);
+
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover {
+    background: $primary-dark;
+
+    border-color: $primary-dark;
+
+    transform: translateY(-1px);
+  }
 }
-.spinner{width:16px;height:16px;border:2px solid rgba(8,11,18,.3);border-top-color:$bg-base;border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+
+
+/* ================================================================
+   MERCHANT GRID
+================================================================ */
+
+.merchant-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(340px, 1fr));
+
+  gap: 17px;
+}
+
+
+/* ================================================================
+   MERCHANT CARD
+================================================================ */
+
+.merchant-card {
+  min-width: 0;
+
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid $border;
+
+  border-radius: 17px;
+
+  background: $surface;
+
+  box-shadow:
+    0 1px 2px rgba(16, 24, 40, 0.02);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    border-color: #d7dfdd;
+
+    box-shadow:
+      0 12px 30px rgba(16, 24, 40, 0.055);
+  }
+}
+
+
+/* ================================================================
+   CARD HEADER
+================================================================ */
+
+.merchant-card-header {
+  padding: 18px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  border-bottom:
+    1px solid $border-soft;
+}
+
+.merchant-identity {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+}
+
+.merchant-logo {
+  width: 43px;
+  height: 43px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      $primary,
+      $primary-light
+    );
+
+  color: white;
+
+  font-size: 1rem;
+  font-weight: 700;
+
+  box-shadow:
+    0 5px 13px rgba(15, 118, 110, 0.15);
+}
+
+.merchant-name {
+  min-width: 0;
+
+  h3 {
+    max-width: 200px;
+
+    margin: 0 0 5px;
+
+    overflow: hidden;
+
+    color: $text-primary;
+
+    font-size: 0.78rem;
+    font-weight: 650;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.category-tag {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: $text-muted;
+
+  font-size: 0.53rem;
+  font-weight: 500;
+
+  i {
+    color: $primary;
+  }
+}
+
+
+/* ================================================================
+   STATUS
+================================================================ */
+
+.status-badge {
+  padding: 5px 8px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border-radius: 999px;
+
+  font-size: 0.52rem;
+  font-weight: 650;
+
+  white-space: nowrap;
+
+  &.success {
+    background: $primary-soft;
+
+    color: $primary;
+
+    .status-dot {
+      background: $primary-light;
+    }
+  }
+
+  &.warning {
+    background: $yellow-soft;
+
+    color: $yellow;
+
+    .status-dot {
+      background: #eab308;
+    }
+  }
+
+  &.danger {
+    background: $red-soft;
+
+    color: $red;
+
+    .status-dot {
+      background: $red;
+    }
+  }
+
+  &.muted {
+    background: #f3f4f6;
+
+    color: $text-muted;
+
+    .status-dot {
+      background: $text-muted;
+    }
+  }
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+}
+
+
+/* ================================================================
+   CARD BODY
+================================================================ */
+
+.merchant-body {
+  padding: 17px 18px;
+
+  flex: 1;
+}
+
+.merchant-description {
+  min-height: 39px;
+
+  margin: 0 0 17px;
+
+  color: $text-secondary;
+
+  font-size: 0.64rem;
+
+  line-height: 1.55;
+}
+
+.muted-description {
+  color: $text-muted;
+}
+
+
+/* ================================================================
+   DETAILS
+================================================================ */
+
+.merchant-details {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.detail-row {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  > div {
+    min-width: 0;
+
+    span {
+      display: block;
+
+      color: $text-muted;
+
+      font-size: 0.48rem;
+    }
+
+    strong {
+      display: block;
+
+      margin-top: 2px;
+
+      overflow: hidden;
+
+      color: $text-primary;
+
+      font-size: 0.59rem;
+      font-weight: 550;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.detail-icon {
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: #f4f8f7;
+
+  color: $primary;
+
+  font-size: 0.55rem;
+}
+
+
+/* ================================================================
+   CARD FOOTER
+================================================================ */
+
+.merchant-card-footer {
+  padding: 11px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 7px;
+
+  border-top:
+    1px solid $border-soft;
+
+  background: #fbfcfc;
+}
+
+.merchant-action {
+  min-width: 0;
+
+  padding: 9px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  border: 1px solid $border-soft;
+
+  border-radius: 10px;
+
+  background: white;
+
+  color: $text-primary;
+
+  font-family: inherit;
+
+  text-align: left;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease;
+
+  &:hover {
+    border-color: #d7e3e0;
+
+    background: #f8fbfa;
+  }
+
+  > div {
+    min-width: 0;
+
+    flex: 1;
+
+    strong {
+      display: block;
+
+      font-size: 0.59rem;
+      font-weight: 650;
+    }
+
+    span {
+      display: block;
+
+      margin-top: 2px;
+
+      overflow: hidden;
+
+      color: $text-muted;
+
+      font-size: 0.47rem;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+}
+
+.merchant-action-icon {
+  width: 31px;
+  height: 31px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 0.58rem;
+
+  &.payments {
+    background: $blue-soft;
+
+    color: $blue;
+  }
+
+  &.orders {
+    background: $purple-soft;
+
+    color: $purple;
+  }
+
+  &.listings {
+    background: $yellow-soft;
+
+    color: $yellow;
+  }
+}
+
+.action-arrow {
+  color: $text-muted;
+
+  font-size: 0.48rem;
+}
+
+
+/* ================================================================
+   EMPTY STATE
+================================================================ */
+
+.empty-state {
+  min-height: 390px;
+
+  padding: 40px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid $border;
+
+  border-radius: 18px;
+
+  background: white;
+
+  text-align: center;
+
+  strong {
+    margin-top: 13px;
+
+    color: $text-primary;
+
+    font-size: 0.82rem;
+    font-weight: 650;
+  }
+
+  p {
+    max-width: 390px;
+
+    margin: 6px 0 17px;
+
+    color: $text-muted;
+
+    font-size: 0.65rem;
+
+    line-height: 1.55;
+  }
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 14px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 1rem;
+}
+
+
+/* ================================================================
+   SKELETON
+================================================================ */
+
+.card-skeleton {
+  height: 300px;
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #f1f3f4 25%,
+      #fafafa 50%,
+      #f1f3f4 75%
+    );
+
+  background-size: 200% 100%;
+
+  animation:
+    shimmer 1.45s infinite;
+}
+
+@keyframes shimmer {
+
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+
+}
+
+
+/* ================================================================
+   MODAL OVERLAY
+================================================================ */
+
+.modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  padding: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(15, 23, 42, 0.4);
+
+  backdrop-filter: blur(3px);
+
+  animation:
+    fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+
+/* ================================================================
+   MODAL
+================================================================ */
+
+.modal {
+  width: 100%;
+  max-width: 445px;
+
+  max-height: 90vh;
+
+  overflow-y: auto;
+
+  padding: 23px;
+
+  border: 1px solid $border;
+
+  border-radius: 18px;
+
+  background: white;
+
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, 0.17);
+
+  animation:
+    modalUp 0.22s ease;
+
+  &.modal-lg {
+    max-width: 650px;
+  }
+}
+
+@keyframes modalUp {
+
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(12px)
+      scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+}
+
+
+/* ================================================================
+   MODAL HEADER
+================================================================ */
+
+.modal-header {
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 16px;
+}
+
+.modal-heading {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  > div {
+    min-width: 0;
+  }
+
+  h3 {
+    margin: 4px 0 0;
+
+    overflow: hidden;
+
+    color: $text-primary;
+
+    font-size: 1rem;
+    font-weight: 650;
+
+    letter-spacing: -0.02em;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.modal-subtitle {
+  display: block;
+
+  margin-top: 3px;
+
+  color: $text-muted;
+
+  font-size: 0.56rem;
+}
+
+.modal-icon {
+  width: 39px;
+  height: 39px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 11px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 0.76rem;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  background: #f7f8f9;
+
+  color: $text-muted;
+
+  cursor: pointer;
+
+  &:hover {
+    background: #f1f2f3;
+
+    color: $text-primary;
+  }
+}
+
+.header-btns {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+
+/* ================================================================
+   FORM
+================================================================ */
+
+.form-row {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 13px;
+}
+
+.form-group {
+  margin-bottom: 17px;
+
+  label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: $text-primary;
+
+    font-size: 0.65rem;
+    font-weight: 600;
+  }
+
+  input,
+  select {
+    width: 100%;
+    height: 43px;
+
+    padding: 0 12px;
+
+    box-sizing: border-box;
+
+    border: 1px solid $border;
+
+    border-radius: 10px;
+
+    outline: 0;
+
+    background: white;
+
+    color: $text-primary;
+
+    font-family: inherit;
+    font-size: 0.72rem;
+
+    transition:
+      border-color 0.18s ease,
+      box-shadow 0.18s ease;
+
+    &::placeholder {
+      color: #a8afb8;
+    }
+
+    &:focus {
+      border-color:
+        rgba(15, 118, 110, 0.42);
+
+      box-shadow:
+        0 0 0 3px
+        rgba(15, 118, 110, 0.06);
+    }
+  }
+
+  select {
+    cursor: pointer;
+  }
+}
+
+.opt {
+  margin-left: 4px;
+
+  color: $text-muted;
+
+  font-weight: 400;
+}
+
+.error-msg {
+  display: block;
+
+  margin-top: 5px;
+
+  color: $red;
+
+  font-size: 0.58rem;
+}
+
+
+/* ================================================================
+   REGISTER NOTE
+================================================================ */
+
+.register-note {
+  margin-bottom: 18px;
+
+  padding: 11px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 9px;
+
+  border-radius: 10px;
+
+  background: #f7faf9;
+
+  color: $primary;
+
+  > i {
+    margin-top: 2px;
+  }
+
+  > div {
+
+    strong {
+      display: block;
+
+      color: $text-primary;
+
+      font-size: 0.62rem;
+      font-weight: 650;
+    }
+
+    span {
+      display: block;
+
+      margin-top: 3px;
+
+      color: $text-muted;
+
+      font-size: 0.57rem;
+
+      line-height: 1.45;
+    }
+  }
+}
+
+
+/* ================================================================
+   SUBMIT
+================================================================ */
+
+.submit-btn {
+  width: 100%;
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: $primary;
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition:
+    background 0.18s ease,
+    transform 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: $primary-dark;
+
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+  }
+}
+
+
+/* ================================================================
+   SMALL PRIMARY
+================================================================ */
+
+.small-primary-btn {
+  min-height: 32px;
+
+  padding: 0 10px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: 1px solid $primary;
+
+  border-radius: 8px;
+
+  background: $primary;
+
+  color: white;
+
+  font-family: inherit;
+  font-size: 0.56rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background: $primary-dark;
+  }
+}
+
+
+/* ================================================================
+   NEW KEY WARNING
+================================================================ */
+
+.key-reveal {
+  margin-bottom: 20px;
+
+  padding: 14px;
+
+  border: 1px solid #f2df9c;
+
+  border-radius: 12px;
+
+  background: #fffcf1;
+}
+
+.key-warning {
+  margin-bottom: 11px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  color: $yellow;
+
+  i {
+    margin-top: 2px;
+  }
+
+  div {
+
+    strong {
+      display: block;
+
+      color: #92700a;
+
+      font-size: 0.63rem;
+      font-weight: 650;
+    }
+
+    span {
+      display: block;
+
+      margin-top: 2px;
+
+      color: #a28735;
+
+      font-size: 0.55rem;
+    }
+  }
+}
+
+.key-display {
+  padding: 8px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  overflow: hidden;
+
+  border: 1px solid #e8e2cb;
+
+  border-radius: 9px;
+
+  background: white;
+
+  code {
+    min-width: 0;
+
+    flex: 1;
+
+    overflow: hidden;
+
+    color: $text-primary;
+
+    font-family: monospace;
+    font-size: 0.61rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.copy-btn {
+  min-height: 31px;
+
+  padding: 0 9px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  flex-shrink: 0;
+
+  border: 1px solid $border;
+
+  border-radius: 7px;
+
+  background: white;
+
+  color: $primary;
+
+  font-family: inherit;
+  font-size: 0.54rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background: $primary-soft;
+  }
+}
+
+
+/* ================================================================
+   API KEY LIST
+================================================================ */
+
+.key-list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.key-row {
+  padding: 11px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(170px, 1fr)
+    auto
+    auto;
+
+  align-items: center;
+
+  gap: 12px;
+
+  border: 1px solid $border-soft;
+
+  border-radius: 11px;
+
+  background: #fbfcfc;
+}
+
+.key-main {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.key-icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 8px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 0.58rem;
+}
+
+.key-info {
+  min-width: 0;
+}
+
+.key-label {
+  display: block;
+
+  overflow: hidden;
+
+  color: $text-primary;
+
+  font-size: 0.62rem;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.key-prefix {
+  display: block;
+
+  margin-top: 3px;
+
+  color: $text-muted;
+
+  font-family: monospace;
+  font-size: 0.55rem;
+}
+
+.key-meta {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.env-badge {
+  padding: 3px 7px;
+
+  border-radius: 999px;
+
+  font-size: 0.49rem;
+  font-weight: 650;
+
+  &.live {
+    background: $primary-soft;
+
+    color: $primary;
+  }
+
+  &.test {
+    background: $blue-soft;
+
+    color: $blue;
+  }
+}
+
+.expires,
+.created {
+  color: $text-muted;
+
+  font-size: 0.49rem;
+}
+
+.revoke-btn {
+  min-height: 30px;
+
+  padding: 0 8px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border: 1px solid #f4d3d3;
+
+  border-radius: 7px;
+
+  background: white;
+
+  color: $red;
+
+  font-family: inherit;
+  font-size: 0.52rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background: $red-soft;
+  }
+}
+
+
+/* ================================================================
+   SMALL EMPTY
+================================================================ */
+
+.empty-state-sm {
+  min-height: 190px;
+
+  padding: 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px dashed $border;
+
+  border-radius: 12px;
+
+  text-align: center;
+
+  strong {
+    margin-top: 9px;
+
+    color: $text-primary;
+
+    font-size: 0.67rem;
+    font-weight: 650;
+  }
+
+  p {
+    max-width: 360px;
+
+    margin: 4px 0 0;
+
+    color: $text-muted;
+
+    font-size: 0.57rem;
+
+    line-height: 1.5;
+  }
+}
+
+.small-empty-icon {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 0.75rem;
+}
+
+
+/* ================================================================
+   MERCHANT PAYMENT TABLE
+================================================================ */
+
+.merchant-payment-table {
+  overflow-x: auto;
+}
+
+.payment-table-header,
+.pay-row {
+  min-width: 560px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(230px, 1.5fr)
+    minmax(120px, 0.75fr)
+    minmax(105px, 0.65fr);
+
+  align-items: center;
+
+  gap: 12px;
+}
+
+.payment-table-header {
+  padding: 9px 11px;
+
+  border-radius: 8px;
+
+  background: #f7f8f9;
+
+  span {
+    color: $text-muted;
+
+    font-size: 0.52rem;
+    font-weight: 600;
+  }
+
+  span:nth-child(2),
+  span:nth-child(3) {
+    text-align: right;
+  }
+}
+
+.payment-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.pay-row {
+  padding: 12px 11px;
+
+  border-bottom:
+    1px solid $border-soft;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.pay-main {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+}
+
+.pay-icon {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  flex-shrink: 0;
+
+  border-radius: 9px;
+
+  background: $primary-soft;
+
+  color: $primary;
+
+  font-size: 0.64rem;
+}
+
+.pay-info {
+  min-width: 0;
+}
+
+.pay-payer {
+  display: block;
+
+  overflow: hidden;
+
+  color: $text-primary;
+
+  font-size: 0.61rem;
+  font-weight: 600;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pay-desc {
+  display: block;
+
+  margin-top: 2px;
+
+  overflow: hidden;
+
+  color: $text-secondary;
+
+  font-size: 0.53rem;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pay-date {
+  display: block;
+
+  margin-top: 2px;
+
+  color: $text-muted;
+
+  font-size: 0.49rem;
+}
+
+
+/* ================================================================
+   PAYMENT AMOUNTS
+================================================================ */
+
+.pay-amounts {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.gross {
+  color: $text-primary;
+
+  font-size: 0.64rem;
+  font-weight: 650;
+}
+
+.fee {
+  color: $text-muted;
+
+  font-size: 0.49rem;
+}
+
+.net {
+  color: $primary;
+
+  font-size: 0.52rem;
+  font-weight: 600;
+}
+
+.pay-status {
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+
+/* ================================================================
+   REFUND
+================================================================ */
+
+.refund-btn {
+  min-height: 26px;
+
+  padding: 0 7px;
+
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+
+  border: 1px solid #f2d4d4;
+
+  border-radius: 6px;
+
+  background: white;
+
+  color: $red;
+
+  font-family: inherit;
+  font-size: 0.49rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  &:hover {
+    background: $red-soft;
+  }
+}
+
+
+/* ================================================================
+   SPINNER
+================================================================ */
+
+.spinner {
+  width: 15px;
+  height: 15px;
+
+  border:
+    2px solid rgba(255,255,255,0.35);
+
+  border-top-color: white;
+
+  border-radius: 50%;
+
+  animation:
+    spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* ================================================================
+   RESPONSIVE
+================================================================ */
+
+@media (max-width: 900px) {
+
+  .merchant-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 720px) {
+
+  .merchant-card-footer {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .page-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .page-header > .primary-btn {
+    width: 100%;
+  }
+
+  .merchant-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .key-row {
+    grid-template-columns: 1fr;
+
+    align-items: flex-start;
+  }
+
+  .key-meta {
+    align-items: flex-start;
+  }
+
+  .revoke-btn {
+    width: fit-content;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .merchant-card-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    padding: 18px;
+  }
+
+  .header-btns {
+    align-items: flex-end;
+
+    flex-direction: column-reverse;
+  }
+
+}

@@ -1,251 +1,1399 @@
-<div class="page-wrapper">
-  <div class="page-header">
-    <div>
-      <h1>Merchant Portal</h1>
-      <p>Manage your business accounts and accept payments</p>
+<div class="merchant-page">
+
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
+
+  <section class="page-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        MERCHANT
+      </span>
+
+      <h1>
+        Merchant Portal
+      </h1>
+
+      <p>
+        Manage your business accounts, API access, customer payments and marketplace orders.
+      </p>
+
     </div>
-    <button class="btn btn-primary" (click)="openRegister()">+ Register Business</button>
-  </div>
+
+
+    <button
+      class="primary-btn"
+      type="button"
+      (click)="openRegister()">
+
+      <i
+        class="fas fa-plus"
+        aria-hidden="true">
+      </i>
+
+      Register Business
+
+    </button>
+
+  </section>
+
+
+  <!-- =========================================================
+       LOADING / EMPTY / MERCHANTS
+  ========================================================== -->
 
   @if (loading()) {
-  @for (i of [1,2]; track i) { <div class="card-skeleton"></div> }
+
+    <div class="merchant-grid">
+
+      @for (i of [1,2]; track i) {
+
+        <div class="card-skeleton"></div>
+
+      }
+
+    </div>
+
   } @else if (merchants().length === 0) {
-  <div class="empty-state">
-    <span>
-      <i class="fas fa-store" aria-hidden="true"></i>
-    </span>
-    <h3>No merchant accounts yet</h3>
-    <p>Register your business to start accepting payments, generate API keys, and track revenue.</p>
-    <button class="btn btn-primary" (click)="openRegister()">Register Your Business</button>
-  </div>
+
+    <section class="empty-state">
+
+      <div class="empty-icon">
+
+        <i
+          class="fas fa-store"
+          aria-hidden="true">
+        </i>
+
+      </div>
+
+      <strong>
+        No merchant accounts yet
+      </strong>
+
+      <p>
+        Register your business to manage API access, track payments and fulfil
+        marketplace orders through SafiPay.
+      </p>
+
+      <button
+        class="primary-btn"
+        type="button"
+        (click)="openRegister()">
+
+        <i
+          class="fas fa-building"
+          aria-hidden="true">
+        </i>
+
+        Register Your Business
+
+      </button>
+
+    </section>
+
   } @else {
-  <div class="merchant-grid">
-    @for (m of merchants(); track m.id) {
-    <div class="merchant-card">
-      <div class="card-top-line" [class]="statusClass(m.status)"></div>
-      <div class="mc-head">
-        <div class="mc-logo">{{ m.businessName.charAt(0) }}</div>
-        <div class="mc-info">
-          <h3>{{ m.businessName }}</h3>
-          <span class="category-tag">{{ categoryLabel(m.category) }}</span>
-        </div>
-        <span class="status-badge" [class]="statusClass(m.status)">{{ m.status | titlecase }}</span>
-      </div>
 
-      @if (m.description) {
-      <p class="mc-desc">{{ m.description }}</p>
-      }
+    <div class="merchant-grid">
 
-      <div class="mc-contacts">
-        @if (m.businessEmail) { <span> <i class="fas fa-envelope" aria-hidden="true"></i> {{ m.businessEmail }}</span> }
-        @if (m.businessPhone) { <span> <i class="fas fa-phone" aria-hidden="true"></i> {{ m.businessPhone }}</span> }
-        @if (m.businessRegistrationNumber) { <span> <i class="fas fa-building" aria-hidden="true"></i> {{
-          m.businessRegistrationNumber }}</span> }
-      </div>
+      @for (m of merchants(); track m.id) {
 
-      <div class="mc-footer">
-        <button class="btn btn-ghost btn-sm" (click)="openKeys(m)">
-          <i class="fas fa-key" aria-hidden="true"></i> API Keys
-        </button>
-        <button class="btn btn-ghost btn-sm" (click)="openPayments(m)">
-          <i class="fas fa-credit-card" aria-hidden="true"></i> Payments
-        </button>
-      </div>
-    </div>
-    }
-  </div>
-  }
-</div>
+        <article class="merchant-card">
 
-<!-- Register Modal -->
-@if (activeModal() === 'register') {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal modal-lg" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <h3>Register Your Business</h3>
-      <button class="modal-close" (click)="closeModal()">×</button>
-    </div>
-    <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Business Name</label>
-          <input type="text" formControlName="businessName" placeholder="Acme Retail (Pty) Ltd" />
-          @if (registerForm.get('businessName')?.invalid && registerForm.get('businessName')?.touched) {
-          <span class="error-msg">Business name required</span>
-          }
-        </div>
-        <div class="form-group">
-          <label>Category</label>
-          <select formControlName="category">
-            @for (c of categories; track c) {
-            <option [value]="c">{{ categoryLabel(c) }}</option>
-            }
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Business Email <span class="opt">(optional)</span></label>
-          <input type="email" formControlName="businessEmail" placeholder="info@yourbusiness.co.za" />
-        </div>
-        <div class="form-group">
-          <label>Business Phone <span class="opt">(optional)</span></label>
-          <input type="tel" formControlName="businessPhone" placeholder="+27 11 123 4567" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Registration Number <span class="opt">(optional)</span></label>
-        <input type="text" formControlName="businessRegistrationNumber" placeholder="2024/123456/07" />
-      </div>
-      <div class="form-group">
-        <label>Description <span class="opt">(optional)</span></label>
-        <input type="text" formControlName="description" placeholder="What does your business do?" />
-      </div>
-      <div class="register-note">
-        ℹ Your account will be reviewed by our team and activated within 1–2 business days.
-      </div>
-      <button type="submit" class="btn btn-primary btn-full" [disabled]="registerForm.invalid || submitting()">
-        @if (submitting()) { <span class="spinner"></span> Submitting... } @else { Submit for Verification }
-      </button>
-    </form>
-  </div>
-</div>
-}
+          <!-- ===================================================
+               MERCHANT HEADER
+          ==================================================== -->
 
-<!-- API Keys Modal -->
-@if (activeModal() === 'keys' && selectedMerchant()) {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal modal-lg" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <div>
-        <h3>API Keys</h3>
-        <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
-      </div>
-      <div class="header-btns">
-        <button class="btn btn-primary btn-sm" (click)="openNewKey()">+ New Key</button>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
-    </div>
+          <div class="merchant-card-header">
 
-    <!-- Newly created key alert -->
-    @if (newlyCreatedKey()) {
-    <div class="key-reveal">
-      <p>⚠ Copy this key now — it will never be shown again.</p>
-      <div class="key-display">
-        <code>{{ newlyCreatedKey() }}</code>
-        <button class="copy-btn" (click)="copyKey(newlyCreatedKey()!)">Copy</button>
-      </div>
-    </div>
-    }
+            <div class="merchant-identity">
 
-    @if (apiKeys().length === 0) {
-    <div class="empty-state-sm">
-      <p>No API keys yet. Create one to start accepting payments programmatically.</p>
-    </div>
-    } @else {
-    <div class="key-list">
-      @for (key of apiKeys(); track key.id) {
-      <div class="key-row">
-        <div class="key-info">
-          <span class="key-label">{{ key.label }}</span>
-          <span class="key-prefix">{{ key.keyPrefix }}••••••••</span>
-        </div>
-        <div class="key-meta">
-          <span class="env-badge" [class]="key.environment.toLowerCase()">{{ key.environment }}</span>
-          @if (key.expiresAt) { <span class="expires">Expires {{ key.expiresAt | date:'dd MMM yy' }}</span> }
-          <span class="created">Created {{ key.createdAt | date:'dd MMM yy' }}</span>
-        </div>
-        <button class="revoke-btn" (click)="revokeKey(key.id)">Revoke</button>
-      </div>
-      }
-    </div>
-    }
-  </div>
-</div>
-}
+              <div class="merchant-logo">
+                {{ m.businessName.charAt(0) }}
+              </div>
 
-<!-- New API Key Modal -->
-@if (activeModal() === 'newKey') {
-<div class="modal-overlay" (click)="activeModal.set('keys')">
-  <div class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <h3>Create API Key</h3>
-      <button class="modal-close" (click)="activeModal.set('keys')">×</button>
-    </div>
-    <form [formGroup]="newKeyForm" (ngSubmit)="submitNewKey()">
-      <div class="form-group">
-        <label>Label</label>
-        <input type="text" formControlName="label" placeholder="e.g. Production, Staging" />
-        @if (newKeyForm.get('label')?.invalid && newKeyForm.get('label')?.touched) {
-        <span class="error-msg">Label is required</span>
-        }
-      </div>
-      <div class="form-group">
-        <label>Environment</label>
-        <select formControlName="environment">
-          <option value="TEST">Test</option>
-          <option value="LIVE">Live</option>
-        </select>
-      </div>
-      <div class="register-note">
-        <i class="fas fa-lock" aria-hidden="true"></i> The full key will be shown <strong>once</strong> after creation.
-        Store it securely.
-      </div>
-      <button type="submit" class="btn btn-primary btn-full" [disabled]="newKeyForm.invalid || submitting()">
-        @if (submitting()) { <span class="spinner"></span> Generating... } @else { Generate API Key }
-      </button>
-    </form>
-  </div>
-</div>
-}
 
-<!-- Payments Modal -->
-@if (activeModal() === 'payments' && selectedMerchant()) {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal modal-lg" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <div>
-        <h3>Payment History</h3>
-        <span class="modal-subtitle">{{ selectedMerchant()!.businessName }}</span>
-      </div>
-      <button class="modal-close" (click)="closeModal()">×</button>
-    </div>
+              <div class="merchant-name">
 
-    @if (payments().length === 0) {
-    <div class="empty-state-sm">
-      <p>No payments received yet.</p>
-    </div>
-    } @else {
-    <div class="payment-list">
-      @for (p of payments(); track p.id) {
-      <div class="pay-row">
-        <div class="pay-icon">💳</div>
-        <div class="pay-info">
-          <span class="pay-payer">{{ p.payerUserId }}</span>
-          @if (p.description) { <span class="pay-desc">{{ p.description }}</span> }
-          <span class="pay-date">{{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
-        </div>
-        <div class="pay-right">
-          <div class="pay-amounts">
-            <span class="gross">R{{ p.amount | number:'1.2-2' }}</span>
-            <span class="fee">Fee: R{{ p.feeAmount | number:'1.2-2' }}</span>
-            <span class="net">Net: R{{ p.netAmount | number:'1.2-2' }}</span>
+                <h3>
+                  {{ m.businessName }}
+                </h3>
+
+                <span class="category-tag">
+
+                  <i
+                    class="fas fa-tag"
+                    aria-hidden="true">
+                  </i>
+
+                  {{ categoryLabel(m.category) }}
+
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <span
+              class="status-badge"
+              [class]="statusClass(m.status)">
+
+              <span class="status-dot"></span>
+
+              {{ m.status | titlecase }}
+
+            </span>
+
           </div>
-          <span class="status-badge"
-            [class]="p.status === 'COMPLETED' ? 'success' : p.status === 'FAILED' ? 'danger' : 'warning'">{{ p.status
-            }}</span>
-          @if (p.status === 'COMPLETED') {
-          <button class="refund-btn" (click)="refundPayment(p.id)">Refund</button>
-          }
-        </div>
-      </div>
+
+
+          <!-- ===================================================
+               DESCRIPTION
+          ==================================================== -->
+
+          <div class="merchant-body">
+
+            @if (m.description) {
+
+              <p class="merchant-description">
+                {{ m.description }}
+              </p>
+
+            } @else {
+
+              <p class="merchant-description muted-description">
+                No business description has been added.
+              </p>
+
+            }
+
+
+            <!-- Contact details -->
+
+            <div class="merchant-details">
+
+              @if (m.businessEmail) {
+
+                <div class="detail-row">
+
+                  <span class="detail-icon">
+
+                    <i
+                      class="far fa-envelope"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <div>
+
+                    <span>
+                      Email
+                    </span>
+
+                    <strong>
+                      {{ m.businessEmail }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              }
+
+
+              @if (m.businessPhone) {
+
+                <div class="detail-row">
+
+                  <span class="detail-icon">
+
+                    <i
+                      class="fas fa-phone"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <div>
+
+                    <span>
+                      Phone
+                    </span>
+
+                    <strong>
+                      {{ m.businessPhone }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              }
+
+
+              @if (m.businessRegistrationNumber) {
+
+                <div class="detail-row">
+
+                  <span class="detail-icon">
+
+                    <i
+                      class="far fa-building"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <div>
+
+                    <span>
+                      Registration
+                    </span>
+
+                    <strong>
+                      {{ m.businessRegistrationNumber }}
+                    </strong>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- ===================================================
+               FOOTER ACTIONS
+          ==================================================== -->
+
+          <div class="merchant-card-footer">
+
+            <button
+              class="merchant-action"
+              type="button"
+              (click)="openKeys(m)">
+
+              <span class="merchant-action-icon">
+
+                <i
+                  class="fas fa-key"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <strong>
+                  API Keys
+                </strong>
+
+                <span>
+                  Manage integrations
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-chevron-right action-arrow"
+                aria-hidden="true">
+              </i>
+
+            </button>
+
+
+            <button
+              class="merchant-action"
+              type="button"
+              (click)="openPayments(m)">
+
+              <span class="merchant-action-icon payments">
+
+                <i
+                  class="far fa-credit-card"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <strong>
+                  Payments
+                </strong>
+
+                <span>
+                  View transactions
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-chevron-right action-arrow"
+                aria-hidden="true">
+              </i>
+
+            </button>
+
+
+            <a
+              class="merchant-action"
+              href="/dashboard/merchant/orders"
+              aria-label="Manage marketplace orders">
+
+              <span class="merchant-action-icon orders">
+
+                <i
+                  class="fas fa-box-open"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <strong>
+                  Orders
+                </strong>
+
+                <span>
+                  Manage marketplace orders
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-chevron-right action-arrow"
+                aria-hidden="true">
+              </i>
+
+            </a>
+
+
+            <a
+              class="merchant-action"
+              [href]="'/dashboard/merchant/listings/' + m.id"
+              aria-label="Manage marketplace listings">
+
+              <span class="merchant-action-icon listings">
+
+                <i
+                  class="fas fa-tags"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <strong>
+                  Listings
+                </strong>
+
+                <span>
+                  Products and services
+                </span>
+
+              </div>
+
+              <i
+                class="fas fa-chevron-right action-arrow"
+                aria-hidden="true">
+              </i>
+
+            </a>
+
+          </div>
+
+        </article>
+
       }
+
     </div>
-    }
-  </div>
+
+  }
+
 </div>
+
+
+<!-- =============================================================
+     REGISTER BUSINESS MODAL
+============================================================= -->
+
+@if (activeModal() === 'register') {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal modal-lg"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="register-business-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-store"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              MERCHANT ACCOUNT
+            </span>
+
+            <h3 id="register-business-title">
+              Register Your Business
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close business registration dialog"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="submitRegister()">
+
+
+        <div class="form-row">
+
+
+          <!-- Business Name -->
+
+          <div class="form-group">
+
+            <label for="business-name">
+              Business Name
+            </label>
+
+            <input
+              id="business-name"
+              type="text"
+              formControlName="businessName"
+              placeholder="Acme Retail (Pty) Ltd">
+
+            @if (
+              registerForm.get('businessName')?.invalid &&
+              registerForm.get('businessName')?.touched
+            ) {
+
+              <span class="error-msg">
+                Business name is required.
+              </span>
+
+            }
+
+          </div>
+
+
+          <!-- Category -->
+
+          <div class="form-group">
+
+            <label for="merchant-category">
+              Category
+            </label>
+
+            <select
+              id="merchant-category"
+              formControlName="category">
+
+              @for (c of categories; track c) {
+
+                <option [value]="c">
+                  {{ categoryLabel(c) }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <div class="form-row">
+
+
+          <!-- Email -->
+
+          <div class="form-group">
+
+            <label for="business-email">
+
+              Business Email
+
+              <span class="opt">
+                Optional
+              </span>
+
+            </label>
+
+            <input
+              id="business-email"
+              type="email"
+              formControlName="businessEmail"
+              placeholder="info@yourbusiness.co.za"
+              autocomplete="email">
+
+          </div>
+
+
+          <!-- Phone -->
+
+          <div class="form-group">
+
+            <label for="business-phone">
+
+              Business Phone
+
+              <span class="opt">
+                Optional
+              </span>
+
+            </label>
+
+            <input
+              id="business-phone"
+              type="tel"
+              formControlName="businessPhone"
+              placeholder="+27 11 123 4567"
+              autocomplete="tel">
+
+          </div>
+
+        </div>
+
+
+        <!-- Registration number -->
+
+        <div class="form-group">
+
+          <label for="business-registration">
+
+            Registration Number
+
+            <span class="opt">
+              Optional
+            </span>
+
+          </label>
+
+          <input
+            id="business-registration"
+            type="text"
+            formControlName="businessRegistrationNumber"
+            placeholder="2024/123456/07">
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="form-group">
+
+          <label for="business-description">
+
+            Description
+
+            <span class="opt">
+              Optional
+            </span>
+
+          </label>
+
+          <input
+            id="business-description"
+            type="text"
+            formControlName="description"
+            placeholder="What does your business do?">
+
+        </div>
+
+
+        <div class="register-note">
+
+          <i
+            class="fas fa-circle-info"
+            aria-hidden="true">
+          </i>
+
+          <div>
+
+            <strong>
+              Verification required
+            </strong>
+
+            <span>
+              Your merchant account will be reviewed before it can
+              accept live payments.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="
+            registerForm.invalid ||
+            submitting()
+          ">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Submitting...
+
+          } @else {
+
+            <i
+              class="fas fa-arrow-right"
+              aria-hidden="true">
+            </i>
+
+            Submit for Verification
+
+          }
+
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =============================================================
+     API KEYS MODAL
+============================================================= -->
+
+@if (
+  activeModal() === 'keys' &&
+  selectedMerchant()
+) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal modal-lg"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="api-keys-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-key"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              DEVELOPER ACCESS
+            </span>
+
+            <h3 id="api-keys-title">
+              API Keys
+            </h3>
+
+            <span class="modal-subtitle">
+              {{ selectedMerchant()!.businessName }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="header-btns">
+
+          <button
+            class="small-primary-btn"
+            type="button"
+            (click)="openNewKey()">
+
+            <i
+              class="fas fa-plus"
+              aria-hidden="true">
+            </i>
+
+            New Key
+
+          </button>
+
+
+          <button
+            class="modal-close"
+            type="button"
+            aria-label="Close API keys dialog"
+            title="Close"
+            (click)="closeModal()">
+
+            <i
+              class="fas fa-xmark"
+              aria-hidden="true">
+            </i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           NEWLY CREATED KEY
+      ====================================================== -->
+
+      @if (newlyCreatedKey()) {
+
+        <div class="key-reveal">
+
+          <div class="key-warning">
+
+            <i
+              class="fas fa-triangle-exclamation"
+              aria-hidden="true">
+            </i>
+
+            <div>
+
+              <strong>
+                Copy this API key now
+              </strong>
+
+              <span>
+                For security, the full key will not be shown again.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="key-display">
+
+            <code>
+              {{ newlyCreatedKey() }}
+            </code>
+
+            <button
+              class="copy-btn"
+              type="button"
+              (click)="copyKey(newlyCreatedKey()!)">
+
+              <i
+                class="far fa-copy"
+                aria-hidden="true">
+              </i>
+
+              Copy
+
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- =====================================================
+           KEY LIST
+      ====================================================== -->
+
+      @if (apiKeys().length === 0) {
+
+        <div class="empty-state-sm">
+
+          <div class="small-empty-icon">
+
+            <i
+              class="fas fa-key"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <strong>
+            No API keys yet
+          </strong>
+
+          <p>
+            Create an API key when you are ready to integrate your
+            merchant account programmatically.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <div class="key-list">
+
+          @for (key of apiKeys(); track key.id) {
+
+            <div class="key-row">
+
+              <div class="key-main">
+
+                <span class="key-icon">
+
+                  <i
+                    class="fas fa-key"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+
+                <div class="key-info">
+
+                  <strong class="key-label">
+                    {{ key.label }}
+                  </strong>
+
+                  <code class="key-prefix">
+                    {{ key.keyPrefix }}••••••••
+                  </code>
+
+                </div>
+
+              </div>
+
+
+              <div class="key-meta">
+
+                <span
+                  class="env-badge"
+                  [class]="key.environment.toLowerCase()">
+
+                  {{ key.environment }}
+
+                </span>
+
+
+                @if (key.expiresAt) {
+
+                  <span class="expires">
+
+                    <i
+                      class="far fa-calendar"
+                      aria-hidden="true">
+                    </i>
+
+                    Expires
+                    {{ key.expiresAt | date:'dd MMM yy' }}
+
+                  </span>
+
+                }
+
+
+                <span class="created">
+
+                  Created
+                  {{ key.createdAt | date:'dd MMM yy' }}
+
+                </span>
+
+              </div>
+
+
+              <button
+                class="revoke-btn"
+                type="button"
+                (click)="revokeKey(key.id)">
+
+                <i
+                  class="fas fa-trash"
+                  aria-hidden="true">
+                </i>
+
+                Revoke
+
+              </button>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =============================================================
+     NEW API KEY MODAL
+============================================================= -->
+
+@if (activeModal() === 'newKey') {
+
+  <div
+    class="modal-overlay"
+    (click)="activeModal.set('keys')">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="new-api-key-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-code"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              DEVELOPER ACCESS
+            </span>
+
+            <h3 id="new-api-key-title">
+              Create API Key
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close create API key dialog"
+          title="Close"
+          (click)="activeModal.set('keys')">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="newKeyForm"
+        (ngSubmit)="submitNewKey()">
+
+
+        <div class="form-group">
+
+          <label for="api-key-label">
+            Label
+          </label>
+
+          <input
+            id="api-key-label"
+            type="text"
+            formControlName="label"
+            placeholder="e.g. Production">
+
+          @if (
+            newKeyForm.get('label')?.invalid &&
+            newKeyForm.get('label')?.touched
+          ) {
+
+            <span class="error-msg">
+              Label is required.
+            </span>
+
+          }
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="api-environment">
+            Environment
+          </label>
+
+          <select
+            id="api-environment"
+            formControlName="environment">
+
+            <option value="TEST">
+              Test
+            </option>
+
+            <option value="LIVE">
+              Live
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="register-note">
+
+          <i
+            class="fas fa-lock"
+            aria-hidden="true">
+          </i>
+
+          <div>
+
+            <strong>
+              Store your key securely
+            </strong>
+
+            <span>
+              The full API key is displayed only once after creation.
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="
+            newKeyForm.invalid ||
+            submitting()
+          ">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Generating...
+
+          } @else {
+
+            <i
+              class="fas fa-key"
+              aria-hidden="true">
+            </i>
+
+            Generate API Key
+
+          }
+
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =============================================================
+     MERCHANT PAYMENTS MODAL
+============================================================= -->
+
+@if (
+  activeModal() === 'payments' &&
+  selectedMerchant()
+) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal modal-lg"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="merchant-payments-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="far fa-credit-card"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              TRANSACTIONS
+            </span>
+
+            <h3 id="merchant-payments-title">
+              Payment History
+            </h3>
+
+            <span class="modal-subtitle">
+              {{ selectedMerchant()!.businessName }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close payment history"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      @if (payments().length === 0) {
+
+        <div class="empty-state-sm">
+
+          <div class="small-empty-icon">
+
+            <i
+              class="far fa-credit-card"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <strong>
+            No payments received
+          </strong>
+
+          <p>
+            Merchant payments will appear here once transactions
+            begin arriving.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <div class="merchant-payment-table">
+
+
+          <div class="payment-table-header">
+
+            <span>
+              Payment
+            </span>
+
+            <span>
+              Amount
+            </span>
+
+            <span>
+              Status
+            </span>
+
+          </div>
+
+
+          <div class="payment-list">
+
+            @for (p of payments(); track p.id) {
+
+              <div class="pay-row">
+
+
+                <!-- Payer -->
+
+                <div class="pay-main">
+
+                  <span class="pay-icon">
+
+                    <i
+                      class="far fa-credit-card"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+
+                  <div class="pay-info">
+
+                    <strong class="pay-payer">
+                      {{ p.payerUserId }}
+                    </strong>
+
+
+                    @if (p.description) {
+
+                      <span class="pay-desc">
+                        {{ p.description }}
+                      </span>
+
+                    }
+
+
+                    <span class="pay-date">
+                      {{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+
+                <!-- Amount -->
+
+                <div class="pay-amounts">
+
+                  <strong class="gross">
+                    R {{ p.amount | number:'1.2-2' }}
+                  </strong>
+
+                  <span class="fee">
+                    Fee:
+                    R {{ p.feeAmount | number:'1.2-2' }}
+                  </span>
+
+                  <span class="net">
+                    Net:
+                    R {{ p.netAmount | number:'1.2-2' }}
+                  </span>
+
+                </div>
+
+
+                <!-- Status and refund -->
+
+                <div class="pay-status">
+
+                  <span
+                    class="status-badge"
+                    [class]="
+                      p.status === 'COMPLETED'
+                        ? 'success'
+                        : p.status === 'FAILED'
+                          ? 'danger'
+                          : 'warning'
+                    ">
+
+                    <span class="status-dot"></span>
+
+                    {{ p.status }}
+
+                  </span>
+
+
+                  @if (p.status === 'COMPLETED') {
+
+                    <button
+                      class="refund-btn"
+                      type="button"
+                      (click)="refundPayment(p.id)">
+
+                      <i
+                        class="fas fa-rotate-left"
+                        aria-hidden="true">
+                      </i>
+
+                      Refund
+
+                    </button>
+
+                  }
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
 }

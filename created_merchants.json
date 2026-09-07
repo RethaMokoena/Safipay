@@ -1,0 +1,83 @@
+[
+    {
+        "id": "fb6b106b-59ae-4782-a95e-ad0ba02ef631",
+        "businessName": "Mzansi Fresh Market",
+        "ownerEmail": "thabo.mokoena@example.com",
+        "ownerUserId": "40ae5c16-5346-413a-baa3-ff02a91e707c",
+        "category": "RETAIL",
+        "status": "ACTIVE",
+        "walletId": "b97149b3-7548-45b1-b018-a4c71a179e3b"
+    },
+    {
+        "id": "0f4c1022-b6f1-4711-9473-ceefd2a5ae76",
+        "businessName": "Ubuntu Kitchen",
+        "ownerEmail": "lerato.khumalo@example.com",
+        "ownerUserId": "8a2ce834-132d-4b01-a372-3a5805eb46ee",
+        "category": "FOOD_BEVERAGE",
+        "status": "ACTIVE",
+        "walletId": "2355ed27-90dc-4f8c-9c85-8332e8d04033"
+    },
+    {
+        "id": "fe1fa776-5edd-42ad-8fe4-57a14f368ba1",
+        "businessName": "Glow Beauty Studio",
+        "ownerEmail": "kabelo.dlamini@example.com",
+        "ownerUserId": "9b2e1ade-0194-4fb1-b0e2-af62b06795bd",
+        "category": "HEALTH_BEAUTY",
+        "status": "ACTIVE",
+        "walletId": "7aefe5d9-79df-4a4b-94ab-071638b4666c"
+    },
+    {
+        "id": "327c244b-48b1-4dbe-8d57-d1a892290ddf",
+        "businessName": "Sisonke Transport",
+        "ownerEmail": "naledi.molefe@example.com",
+        "ownerUserId": "a3090e9f-64f5-47a1-9b51-0e19a3f51a12",
+        "category": "TRANSPORT",
+        "status": "ACTIVE",
+        "walletId": "82561908-5461-433d-9434-55bae4d13900"
+    },
+    {
+        "id": "acad0722-3702-43f6-afc8-2864ec720ec9",
+        "businessName": "Bokamoso Learning Centre",
+        "ownerEmail": "sipho.ndlovu@example.com",
+        "ownerUserId": "a76a6acb-762d-475b-bd96-72e86a4bcb63",
+        "category": "EDUCATION",
+        "status": "ACTIVE",
+        "walletId": "6f6748b2-f849-4fe8-82c2-1f67284629ec"
+    },
+    {
+        "id": "eb1358ac-0562-4d7a-a7c1-fd497c3462d5",
+        "businessName": "Jozi Entertainment Hub",
+        "ownerEmail": "refilwe.masondo@example.com",
+        "ownerUserId": "9cff18f2-021a-4502-8723-6e19e77afd72",
+        "category": "ENTERTAINMENT",
+        "status": "ACTIVE",
+        "walletId": "dcf70cc6-114a-4d80-84ae-3db5e115f07b"
+    },
+    {
+        "id": "9df04e77-e64e-4cc5-9bf7-3f765b84f22f",
+        "businessName": "Khula Tech Services",
+        "ownerEmail": "tumelo.maseko@example.com",
+        "ownerUserId": "7b5dabbc-ca92-426a-96d4-8c79960f508c",
+        "category": "SERVICES",
+        "status": "ACTIVE",
+        "walletId": "e984e34c-cabf-4aff-b5fa-943ae1d5fb46"
+    },
+    {
+        "id": "d0e4c2fb-97c3-40c0-a05d-cef91665b484",
+        "businessName": "Lethabo Utilities",
+        "ownerEmail": "ayanda.zulu@example.com",
+        "ownerUserId": "0061e8e1-e89e-4d38-b4c3-15149bb13638",
+        "category": "UTILITIES",
+        "status": "ACTIVE",
+        "walletId": "f06a419b-2426-49fd-a5af-f146d2472724"
+    },
+    {
+        "id": "4755d65a-aaa9-4158-9942-4ce0d75a0c31",
+        "businessName": "Thrive Local Trading",
+        "ownerEmail": "karabo.nkosi@example.com",
+        "ownerUserId": "2a226d00-948a-4b73-81bb-cf3eeffda237",
+        "category": "OTHER",
+        "status": "ACTIVE",
+        "walletId": "6cbdba5d-028b-4539-ae47-fe078baf44e2"
+    }
+]

@@ -1,0 +1,307 @@
+<section class="merchant-orders-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <p class="eyebrow">
+        MERCHANT DASHBOARD
+      </p>
+
+      <h1>
+        Orders
+      </h1>
+
+      <p>
+        Manage marketplace orders placed
+        with your business.
+      </p>
+
+    </div>
+
+
+    <div
+      class="merchant-selector"
+      *ngIf="merchants().length > 1"
+    >
+
+      <label>
+        Business
+      </label>
+
+      <select
+        [ngModel]="selectedMerchantId()"
+        (ngModelChange)="merchantChanged($event)"
+      >
+
+        <option
+          *ngFor="let merchant of merchants()"
+          [value]="merchant.id"
+        >
+          {{ merchant.businessName }}
+        </option>
+
+      </select>
+
+    </div>
+
+  </header>
+
+
+  <div
+    class="stats"
+    *ngIf="!loading() && merchants().length"
+  >
+
+    <div>
+      <span>Paid</span>
+      <strong>{{ paidCount() }}</strong>
+    </div>
+
+    <div>
+      <span>Processing</span>
+      <strong>{{ processingCount() }}</strong>
+    </div>
+
+    <div>
+      <span>Completed</span>
+      <strong>{{ completedCount() }}</strong>
+    </div>
+
+  </div>
+
+
+  <div
+    class="state-card"
+    *ngIf="loading()"
+  >
+    Loading merchant orders...
+  </div>
+
+
+  <div
+    class="state-card state-card--error"
+    *ngIf="error()"
+  >
+    {{ error() }}
+  </div>
+
+
+  <div
+    class="state-card"
+    *ngIf="
+      !loading() &&
+      !error() &&
+      merchants().length === 0
+    "
+  >
+    You do not have a merchant account yet.
+  </div>
+
+
+  <div
+    class="state-card"
+    *ngIf="
+      !loading() &&
+      !error() &&
+      merchants().length > 0 &&
+      orders().length === 0
+    "
+  >
+    No marketplace orders yet.
+  </div>
+
+
+  <div
+    class="orders-list"
+    *ngIf="
+      !loading() &&
+      orders().length > 0
+    "
+  >
+
+    <article
+      class="order-card"
+      *ngFor="let order of orders()"
+    >
+
+      <header class="order-header">
+
+        <div>
+
+          <span class="order-date">
+            {{
+              order.createdAt
+                | date:'medium'
+            }}
+          </span>
+
+          <h2>
+            Order #{{ shortId(order.orderId) }}
+          </h2>
+
+          <p>
+            {{ itemCount(order) }}
+            {{
+              itemCount(order) === 1
+                ? 'item'
+                : 'items'
+            }}
+          </p>
+
+        </div>
+
+
+        <span
+          class="status"
+          [class.status--paid]="
+            order.status === 'PAID'
+          "
+          [class.status--processing]="
+            order.status === 'PROCESSING'
+          "
+          [class.status--completed]="
+            order.status === 'COMPLETED'
+          "
+        >
+          {{ order.status }}
+        </span>
+
+      </header>
+
+
+      <div class="items">
+
+        <div
+          class="order-item"
+          *ngFor="let item of order.items"
+        >
+
+          <div>
+
+            <strong>
+              {{ item.title }}
+            </strong>
+
+            <span>
+              {{ item.type }}
+            </span>
+
+            <small>
+              {{ item.quantity }}
+              ×
+              {{
+                item.unitPrice
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+            </small>
+
+          </div>
+
+
+          <strong>
+            {{
+              item.subtotal
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="references">
+
+        <div>
+          <span>Payment reference</span>
+          <code>{{ order.paymentId }}</code>
+        </div>
+
+        <div>
+          <span>Checkout reference</span>
+          <code>{{ order.checkoutId }}</code>
+        </div>
+
+      </div>
+
+
+      <footer class="order-footer">
+
+        <div>
+
+          <span>
+            Order total
+          </span>
+
+          <strong>
+            {{
+              order.totalAmount
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+
+        <button
+          *ngIf="order.status === 'PAID'"
+          type="button"
+          class="action-button"
+          [disabled]="
+            updatingOrderId() === order.orderId
+          "
+          (click)="startProcessing(order)"
+        >
+          {{
+            updatingOrderId() === order.orderId
+              ? 'Updating...'
+              : 'Start processing'
+          }}
+        </button>
+
+
+        <button
+          *ngIf="
+            order.status === 'PROCESSING'
+          "
+          type="button"
+          class="action-button"
+          [disabled]="
+            updatingOrderId() === order.orderId
+          "
+          (click)="markCompleted(order)"
+        >
+          {{
+            updatingOrderId() === order.orderId
+              ? 'Updating...'
+              : 'Mark completed'
+          }}
+        </button>
+
+
+        <span
+          class="completed-message"
+          *ngIf="
+            order.status === 'COMPLETED'
+          "
+        >
+          ✓ Order completed
+        </span>
+
+      </footer>
+
+    </article>
+
+  </div>
+
+</section>

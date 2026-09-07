@@ -1,0 +1,492 @@
+$primary: #0f766e;
+$primary-dark: #115e59;
+$primary-soft: #ecfdf5;
+
+$text-primary: #171a1f;
+$text-secondary: #667085;
+$text-muted: #98a2b3;
+
+$border: #e5e9ec;
+$border-soft: #eef1f3;
+
+$surface: #ffffff;
+$background: #f5f7f8;
+
+$success: #0f766e;
+$error: #dc2626;
+
+.receipt-page {
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 0 auto;
+
+  padding: 30px 24px 60px;
+
+  color: $text-primary;
+}
+
+.back-link {
+  display: inline-flex;
+
+  align-items: center;
+
+  margin-bottom: 24px;
+
+  color: $primary;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: $primary-dark;
+}
+
+.state-card {
+  padding: 30px;
+
+  border: 1px solid $border;
+  border-radius: 16px;
+
+  background: $surface;
+
+  color: $text-secondary;
+
+  text-align: center;
+}
+
+.state-card--error {
+  border-color: #fecaca;
+
+  background: #fef2f2;
+
+  color: $error;
+}
+
+.receipt-header {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  padding: 28px;
+
+  margin-bottom: 20px;
+
+  border: 1px solid #d8ebe7;
+  border-radius: 18px;
+
+  background: $primary-soft;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+
+  color: $primary;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.12em;
+}
+
+.receipt-header h1 {
+  margin: 0;
+
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.receipt-header p:not(.eyebrow) {
+  margin: 8px 0 0;
+
+  color: $text-secondary;
+
+  font-size: 14px;
+}
+
+.status-badge {
+  flex-shrink: 0;
+
+  padding: 8px 12px;
+
+  border-radius: 999px;
+
+  background: $primary;
+
+  color: #ffffff;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.05em;
+}
+
+.overall-receipt {
+  padding: 24px;
+
+  margin-bottom: 34px;
+
+  border: 1px solid $border;
+  border-radius: 18px;
+
+  background: $surface;
+}
+
+.receipt-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 13px 0;
+
+  border-bottom: 1px solid $border-soft;
+}
+
+.receipt-row span {
+  color: $text-secondary;
+
+  font-size: 12px;
+}
+
+.receipt-row strong {
+  max-width: 65%;
+
+  color: $text-primary;
+
+  font-size: 12px;
+
+  text-align: right;
+
+  word-break: break-all;
+}
+
+.receipt-total {
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 22px;
+}
+
+.receipt-total span {
+  color: $text-secondary;
+
+  font-size: 13px;
+}
+
+.receipt-total strong {
+  color: $primary;
+
+  font-size: 26px;
+}
+
+.merchant-section-heading {
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 16px;
+}
+
+.merchant-section-heading h2 {
+  margin: 0;
+
+  font-size: 22px;
+}
+
+.merchant-section-heading > span {
+  color: $text-secondary;
+
+  font-size: 12px;
+}
+
+.merchant-receipt {
+  overflow: hidden;
+
+  margin-bottom: 20px;
+
+  border: 1px solid $border;
+  border-radius: 16px;
+
+  background: $surface;
+}
+
+.merchant-receipt-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px 20px;
+
+  border-bottom: 1px solid $border-soft;
+
+  background: #fafbfb;
+}
+
+.merchant-label {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: $primary;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+}
+
+.merchant-receipt-header h3 {
+  margin: 0;
+
+  font-size: 17px;
+}
+
+.order-status {
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #f2f4f7;
+
+  color: $text-secondary;
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.order-status--paid {
+  background: $primary-soft;
+
+  color: $primary;
+}
+
+.items {
+  padding: 4px 20px;
+}
+
+.receipt-item {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 16px 0;
+
+  border-bottom: 1px solid $border-soft;
+}
+
+.receipt-item:last-child {
+  border-bottom: 0;
+}
+
+.item-info {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.item-info strong {
+  font-size: 14px;
+}
+
+.item-info span {
+  color: $primary;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+}
+
+.item-info small {
+  color: $text-secondary;
+
+  font-size: 11px;
+}
+
+.item-total {
+  flex-shrink: 0;
+
+  font-size: 14px;
+}
+
+.payment-reference {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 14px 20px;
+
+  border-top: 1px solid $border-soft;
+
+  background: #fafbfb;
+}
+
+.payment-reference span {
+  color: $text-secondary;
+
+  font-size: 11px;
+}
+
+.payment-reference code {
+  max-width: 65%;
+
+  overflow: hidden;
+
+  color: $text-primary;
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+}
+
+.merchant-total {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding: 18px 20px;
+
+  border-top: 1px solid $border;
+
+  background: $primary-soft;
+}
+
+.merchant-total span {
+  color: $text-secondary;
+
+  font-size: 12px;
+}
+
+.merchant-total strong {
+  color: $primary;
+
+  font-size: 18px;
+}
+
+.receipt-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 28px;
+}
+
+.primary-button {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 18px;
+
+  border: 1px solid $primary;
+  border-radius: 10px;
+
+  background: $primary;
+
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  box-shadow:
+    0 4px 12px rgba(15, 118, 110, 0.18);
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.primary-button:hover {
+  background: $primary-dark;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 6px 16px rgba(15, 118, 110, 0.22);
+}
+
+@media (max-width: 700px) {
+
+  .receipt-page {
+    padding:
+      22px 16px
+      50px;
+  }
+
+  .receipt-header {
+    flex-direction: column;
+  }
+
+  .receipt-total {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .merchant-section-heading {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .payment-reference {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .payment-reference code {
+    max-width: 100%;
+  }
+
+  .receipt-row {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .receipt-row strong {
+    max-width: 100%;
+
+    text-align: left;
+  }
+
+}

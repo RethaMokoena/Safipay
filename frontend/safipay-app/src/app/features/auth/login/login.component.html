@@ -1,92 +1,402 @@
-<div class="auth-wrapper">
-  <!-- Background effects -->
-  <div class="bg-orb orb-1"></div>
-  <div class="bg-orb orb-2"></div>
-  <div class="hero-grid"></div>
+<div class="auth-page">
 
-  <!-- Back to home -->
-  <a class="back-link" routerLink="/">
-    ← Back to SafiPay
-  </a>
+  <!-- =========================================================
+       LEFT BRAND PANEL
+  ========================================================== -->
 
-  <div class="auth-card">
-    <div class="card-top-line"></div>
+  <section class="auth-visual">
 
-    <!-- Logo -->
-    <div class="auth-logo">
-      <div class="logo-mark">SP</div>
-      <span class="logo-text">Safi<em>Pay</em></span>
-    </div>
+    <a
+      class="brand"
+      routerLink="/">
 
-    <h1>Welcome back</h1>
-    <p class="auth-subtitle">Sign in to your SafiPay account</p>
-
-    <!-- Error Banner -->
-    @if (error()) {
-      <div class="error-banner">
-        ⚠️ {{ error() }}
-      </div>
-    }
-
-    <!-- Form -->
-    <form (ngSubmit)="submit()" [formGroup]="form" novalidate>
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="you@example.com"
-          autocomplete="email"
-          [class.error]="emailCtrl.invalid && emailCtrl.touched"
-        />
-        @if (emailCtrl.invalid && emailCtrl.touched) {
-          <span class="error-msg">
-            {{ emailCtrl.hasError('required') ? 'Email is required' : 'Enter a valid email' }}
-          </span>
-        }
+      <div class="brand-mark">
+        S
       </div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="input-wrapper">
-          <input
-            id="password"
-            [type]="showPassword() ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="Min. 8 characters"
-            autocomplete="current-password"
-            [class.error]="passwordCtrl.invalid && passwordCtrl.touched"
-          />
-          <button type="button" class="toggle-pw" (click)="togglePassword()">
-            {{ showPassword() ? '🙈' : '👁' }}
-          </button>
-        </div>
-        @if (passwordCtrl.invalid && passwordCtrl.touched) {
-          <span class="error-msg">Password must be at least 8 characters</span>
-        }
-      </div>
+      <span class="brand-name">
+        Safi<span>Pay</span>
+      </span>
 
-      <button
-        type="submit"
-        class="btn btn-primary btn-submit"
-        [disabled]="form.invalid || loading()"
-      >
-        @if (loading()) {
-          <span class="spinner"></span>
-          Signing in...
-        } @else {
-          Sign In →
-        }
-      </button>
-    </form>
-
-    <div class="auth-divider">
-      <span>Don't have an account?</span>
-    </div>
-
-    <a routerLink="/auth/register" class="btn btn-ghost btn-block">
-      Create a Free Account
     </a>
-  </div>
+
+
+    <div class="visual-content">
+
+      <span class="eyebrow">
+        SAFIPAY
+      </span>
+
+      <h2>
+        Simple, secure payments built for everyday life.
+      </h2>
+
+      <p>
+        Manage your wallet, send money and save together from one secure platform.
+      </p>
+
+
+      <div class="feature-list">
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-shield-halved"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Secure by design
+            </strong>
+
+            <span>
+              Your account and payments are protected.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-bolt"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Fast transfers
+            </strong>
+
+            <span>
+              Send money between SafiPay wallets instantly.
+            </span>
+          </div>
+
+        </div>
+
+
+        <div class="feature-item">
+
+          <span class="feature-icon">
+            <i
+              class="fas fa-users"
+              aria-hidden="true">
+            </i>
+          </span>
+
+          <div>
+            <strong>
+              Save together
+            </strong>
+
+            <span>
+              Manage stokvel savings directly from SafiPay.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="visual-footer">
+      <span>Secure payments</span>
+      <span class="dot"></span>
+      <span>Wallets</span>
+      <span class="dot"></span>
+      <span>Stokvels</span>
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       LOGIN PANEL
+  ========================================================== -->
+
+  <main class="auth-main">
+
+    <div class="auth-main-inner">
+
+      <a
+        class="back-link"
+        routerLink="/">
+
+        <i
+          class="fas fa-arrow-left"
+          aria-hidden="true">
+        </i>
+
+        Back to SafiPay
+
+      </a>
+
+
+      <div class="mobile-brand">
+
+        <div class="brand-mark">
+          S
+        </div>
+
+        <span class="brand-name">
+          Safi<span>Pay</span>
+        </span>
+
+      </div>
+
+
+      <div class="auth-heading">
+
+        <span class="eyebrow">
+          WELCOME BACK
+        </span>
+
+        <h1>
+          Sign in to your account
+        </h1>
+
+        <p>
+          Enter your details below to continue to SafiPay.
+        </p>
+
+      </div>
+
+
+      <!-- =====================================================
+           ERROR MESSAGE
+      ====================================================== -->
+
+      @if (error()) {
+
+        <div
+          class="error-banner"
+          role="alert">
+
+          <span class="error-icon">
+
+            <i
+              class="fas fa-circle-exclamation"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <strong>
+              Unable to sign in
+            </strong>
+
+            <span>
+              {{ error() }}
+            </span>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- =====================================================
+           LOGIN FORM
+      ====================================================== -->
+
+      <form
+        [formGroup]="form"
+        (ngSubmit)="submit()"
+        novalidate>
+
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+          <label for="email">
+            Email address
+          </label>
+
+          <div
+            class="input-container"
+            [class.invalid]="emailCtrl.invalid && emailCtrl.touched">
+
+            <span class="input-icon">
+
+              <i
+                class="far fa-envelope"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="you@example.com"
+              autocomplete="email">
+
+          </div>
+
+
+          @if (emailCtrl.invalid && emailCtrl.touched) {
+
+            <span class="error-msg">
+
+              {{
+                emailCtrl.hasError('required')
+                  ? 'Email is required'
+                  : 'Enter a valid email address'
+              }}
+
+            </span>
+
+          }
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+          <div class="label-row">
+
+            <label for="password">
+              Password
+            </label>
+
+          </div>
+
+
+          <div
+            class="input-container"
+            [class.invalid]="passwordCtrl.invalid && passwordCtrl.touched">
+
+            <span class="input-icon">
+
+              <i
+                class="fas fa-lock"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password">
+
+
+            <button
+              type="button"
+              class="toggle-password"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+              [attr.title]="showPassword() ? 'Hide password' : 'Show password'"
+              (click)="togglePassword()">
+
+              @if (showPassword()) {
+
+                <i
+                  class="far fa-eye-slash"
+                  aria-hidden="true">
+                </i>
+
+              } @else {
+
+                <i
+                  class="far fa-eye"
+                  aria-hidden="true">
+                </i>
+
+              }
+
+            </button>
+
+          </div>
+
+
+          @if (passwordCtrl.invalid && passwordCtrl.touched) {
+
+            <span class="error-msg">
+              Password must be at least 8 characters.
+            </span>
+
+          }
+
+        </div>
+
+
+        <!-- SUBMIT -->
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="form.invalid || loading()">
+
+          @if (loading()) {
+
+            <span class="spinner"></span>
+
+            Signing in...
+
+          } @else {
+
+            Sign In
+
+            <i
+              class="fas fa-arrow-right"
+              aria-hidden="true">
+            </i>
+
+          }
+
+        </button>
+
+      </form>
+
+
+      <!-- =====================================================
+           REGISTER
+      ====================================================== -->
+
+      <div class="register-section">
+
+        <span>
+          Don't have a SafiPay account?
+        </span>
+
+        <a routerLink="/auth/register">
+          Create an account
+        </a>
+
+      </div>
+
+
+      <div class="security-note">
+
+        <i
+          class="fas fa-lock"
+          aria-hidden="true">
+        </i>
+
+        Your connection to SafiPay is secure.
+
+      </div>
+
+    </div>
+
+  </main>
+
 </div>

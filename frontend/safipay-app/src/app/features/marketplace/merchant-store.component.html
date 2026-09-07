@@ -1,0 +1,290 @@
+<section class="store-page">
+
+  <a
+    class="back-link"
+    routerLink="/dashboard/marketplace"
+  >
+    ← Back to marketplace
+  </a>
+
+  <div
+    *ngIf="loading()"
+    class="state-card"
+  >
+    <strong>Loading store...</strong>
+  </div>
+
+  <div
+    *ngIf="error()"
+    class="state-card state-card--error"
+  >
+    <strong>Store unavailable</strong>
+
+    <span>
+      {{ error() }}
+    </span>
+
+    <button
+      type="button"
+      (click)="loadStore()"
+    >
+      Try again
+    </button>
+  </div>
+
+  <ng-container
+    *ngIf="!loading() && !error()"
+  >
+
+    <header
+      *ngIf="merchant() as currentMerchant"
+      class="store-hero"
+    >
+
+      <div class="merchant-logo">
+
+        <img
+          *ngIf="
+            currentMerchant.logoUrl;
+            else logoFallback
+          "
+          [src]="currentMerchant.logoUrl"
+          [attr.alt]="
+            currentMerchant.businessName + ' logo'
+          "
+          [attr.title]="
+            currentMerchant.businessName
+          "
+        />
+
+        <ng-template #logoFallback>
+          <span>
+            {{
+              merchantInitials(
+                currentMerchant.businessName
+              )
+            }}
+          </span>
+        </ng-template>
+
+      </div>
+
+      <div class="store-details">
+
+        <p class="eyebrow">
+          SAFIPAY MERCHANT
+        </p>
+
+        <h1>
+          {{ currentMerchant.businessName }}
+        </h1>
+
+        <p class="store-description">
+          {{
+            currentMerchant.description ||
+            'Browse this merchant’s current SafiPay marketplace listings.'
+          }}
+        </p>
+
+        <div class="store-stats">
+
+          <span>
+            {{ productCount() }}
+            {{
+              productCount() === 1
+                ? 'product'
+                : 'products'
+            }}
+          </span>
+
+          <span>
+            {{ serviceCount() }}
+            {{
+              serviceCount() === 1
+                ? 'service'
+                : 'services'
+            }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <div class="section-heading">
+
+      <div>
+
+        <h2>
+          Products & services
+        </h2>
+
+        <p>
+          {{ listings().length }}
+          {{
+            listings().length === 1
+              ? 'listing'
+              : 'listings'
+          }}
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <div
+      *ngIf="listings().length > 0"
+      class="listing-grid"
+    >
+
+      <article
+        class="listing-card"
+        *ngFor="
+          let listing of listings();
+          trackBy: trackByListingId
+        "
+      >
+
+        <div class="listing-media">
+
+          <img
+            *ngIf="
+              listing.imageUrl;
+              else listingFallback
+            "
+            [src]="listing.imageUrl"
+            [attr.alt]="listing.title"
+            [attr.title]="listing.title"
+          />
+
+          <ng-template #listingFallback>
+
+            <div class="listing-fallback">
+              {{
+                listing.title
+                  .charAt(0)
+                  .toUpperCase()
+              }}
+            </div>
+
+          </ng-template>
+
+
+          <span
+            class="type-badge"
+            [class.type-badge--service]="
+              listing.type === 'SERVICE'
+            "
+          >
+            {{
+              listing.type === 'PRODUCT'
+                ? 'Product'
+                : 'Service'
+            }}
+          </span>
+
+        </div>
+
+
+        <div class="listing-content">
+
+          <span
+            class="availability"
+            [class.availability--out]="
+              !isAvailable(listing)
+            "
+          >
+            {{
+              isAvailable(listing)
+                ? (
+                    listing.type === 'PRODUCT'
+                      ? 'In stock'
+                      : 'Available'
+                  )
+                : 'Unavailable'
+            }}
+          </span>
+
+
+          <h3>
+            {{ listing.title }}
+          </h3>
+
+
+          <p class="description">
+            {{
+              listing.description ||
+              'No description provided.'
+            }}
+          </p>
+
+
+          <div class="listing-footer">
+
+            <div>
+
+              <span class="price">
+                R{{ listing.price | number:'1.2-2' }}
+              </span>
+
+              <span
+                *ngIf="
+                  listing.type === 'PRODUCT' &&
+                  listing.stockQuantity !== null
+                "
+                class="stock"
+              >
+                {{ listing.stockQuantity }} in stock
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="action-button"
+              [disabled]="
+                !isAvailable(listing)
+              "
+              (click)="
+                addToCart(listing)
+              "
+            >
+              {{
+                listing.type === 'PRODUCT'
+                  ? 'Add to cart'
+                  : 'Book'
+              }}
+            </button>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </div>
+
+
+    <div
+      *ngIf="listings().length === 0"
+      class="state-card"
+    >
+
+      <strong>
+        No listings yet
+      </strong>
+
+      <span>
+        This merchant has no active marketplace
+        listings right now.
+      </span>
+
+    </div>
+
+  </ng-container>
+
+</section>

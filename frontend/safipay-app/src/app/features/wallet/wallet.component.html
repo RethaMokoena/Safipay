@@ -1,174 +1,1018 @@
-<div class="page-wrapper">
+<div class="wallet-page">
 
-  <!-- Header -->
-  <div class="page-header">
-    <div>
-      <h1>My Wallet</h1>
-      <p>Manage your balance and transactions</p>
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
+
+  <section class="page-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        WALLET
+      </span>
+
+      <h1>
+        My Wallet
+      </h1>
+
+      <p>
+        Manage your balance, send money and review your transactions.
+      </p>
+
     </div>
+
+
     <div class="header-actions">
-      <button class="btn btn-ghost" (click)="loadWallet()">↻ Refresh</button>
-    </div>
-  </div>
 
-  <!-- Balance Card -->
+      <button
+        class="refresh-btn"
+        type="button"
+        (click)="loadWallet()">
+
+        <i
+          class="fas fa-rotate-right"
+          aria-hidden="true">
+        </i>
+
+        Refresh
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       WALLET SUMMARY
+  ========================================================== -->
+
   @if (loading()) {
-    <div class="skeleton-card"></div>
+
+    <div class="wallet-summary-grid">
+
+      <div class="skeleton-card"></div>
+
+      <div class="skeleton-side"></div>
+
+    </div>
+
   } @else if (wallet()) {
-    <div class="balance-card">
-      <div class="card-top-line"></div>
-      <div class="balance-header">
-        <div>
-          <span class="balance-label">Available Balance</span>
-          <div class="balance-amount">R {{ wallet()!.availableBalance | number:'1.2-2' }}</div>
-          <span class="balance-currency">{{ wallet()!.currency }} · {{ wallet()!.status }}</span>
-        </div>
-        <div class="balance-stats">
-          @if (wallet()!.lockedBalance > 0) {
-            <div class="stat-pill locked">
-              <span>Locked</span>
-              <strong>R {{ wallet()!.lockedBalance | number:'1.2-2' }}</strong>
+
+    <section class="wallet-summary-grid">
+
+      <!-- Main wallet card -->
+
+      <article class="wallet-card">
+
+        <div class="wallet-card-top">
+
+          <div class="wallet-brand">
+
+            <div class="wallet-logo">
+              SP
             </div>
-          }
-          <div class="stat-pill total">
-            <span>Total</span>
-            <strong>R {{ wallet()!.balance | number:'1.2-2' }}</strong>
+
+            <div>
+              <strong>SafiPay</strong>
+              <span>Digital Wallet</span>
+            </div>
+
           </div>
+
+
+          <div class="wallet-status">
+            <span class="status-dot"></span>
+
+            {{ wallet()!.status }}
+          </div>
+
         </div>
+
+
+        <div class="wallet-balance">
+
+          <span>
+            Available balance
+          </span>
+
+          <strong>
+            R {{ wallet()!.availableBalance | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="wallet-card-footer">
+
+          <div>
+
+            <span>
+              Currency
+            </span>
+
+            <strong>
+              {{ wallet()!.currency }}
+            </strong>
+
+          </div>
+
+          <div class="wallet-footer-mark">
+            SAFIPAY
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Balance details -->
+
+      <article class="balance-details-card">
+
+        <div class="card-heading">
+
+          <div>
+
+            <span class="eyebrow">
+              BALANCE
+            </span>
+
+            <h2>
+              Wallet Overview
+            </h2>
+
+          </div>
+
+          <div class="summary-icon">
+
+            <i
+              class="fas fa-wallet"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+        </div>
+
+
+        <div class="balance-breakdown">
+
+          <div class="balance-row">
+
+            <div class="balance-row-left">
+
+              <span class="balance-row-icon available">
+
+                <i
+                  class="fas fa-circle-check"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <span>
+                  Available
+                </span>
+
+                <small>
+                  Ready to spend
+                </small>
+
+              </div>
+
+            </div>
+
+            <strong>
+              R {{ wallet()!.availableBalance | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+          <div class="balance-row">
+
+            <div class="balance-row-left">
+
+              <span class="balance-row-icon total">
+
+                <i
+                  class="fas fa-coins"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <span>
+                  Total balance
+                </span>
+
+                <small>
+                  Wallet total
+                </small>
+
+              </div>
+
+            </div>
+
+            <strong>
+              R {{ wallet()!.balance | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+          <div class="balance-row">
+
+            <div class="balance-row-left">
+
+              <span class="balance-row-icon locked">
+
+                <i
+                  class="fas fa-lock"
+                  aria-hidden="true">
+                </i>
+
+              </span>
+
+              <div>
+
+                <span>
+                  Locked
+                </span>
+
+                <small>
+                  Temporarily unavailable
+                </small>
+
+              </div>
+
+            </div>
+
+            <strong>
+              R {{ wallet()!.lockedBalance | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================================
+         QUICK ACTIONS
+    ======================================================== -->
+
+    <section class="quick-action-section">
+
+      <div class="section-title">
+
+        <div>
+
+          <span class="eyebrow">
+            QUICK ACTIONS
+          </span>
+
+          <h2>
+            What would you like to do?
+          </h2>
+
+        </div>
+
       </div>
 
-      <!-- Quick actions -->
+
       <div class="quick-actions">
-        <button class="action-btn primary" (click)="openModal('topup')">
-          <span class="action-icon">↑</span>
-          <span>Top Up</span>
+
+        <button
+          class="action-card primary-action"
+          type="button"
+          (click)="openModal('topup')">
+
+          <span class="action-icon">
+
+            <i
+              class="fas fa-plus"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <strong>
+              Top Up
+            </strong>
+
+            <span>
+              Add money to your wallet
+            </span>
+
+          </div>
+
+          <i
+            class="fas fa-chevron-right action-arrow"
+            aria-hidden="true">
+          </i>
+
         </button>
-        <button class="action-btn" (click)="openModal('transfer')">
-          <span class="action-icon">→</span>
-          <span>Send Money</span>
+
+
+        <button
+          class="action-card"
+          type="button"
+          (click)="openModal('transfer')">
+
+          <span class="action-icon">
+
+            <i
+              class="fas fa-paper-plane"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <strong>
+              Send Money
+            </strong>
+
+            <span>
+              Transfer funds instantly
+            </span>
+
+          </div>
+
+          <i
+            class="fas fa-chevron-right action-arrow"
+            aria-hidden="true">
+          </i>
+
         </button>
-        <button class="action-btn" routerLink="/payments">
-          <span class="action-icon">⏱</span>
-          <span>History</span>
-        </button>
+
+
+        <a
+          class="action-card"
+          routerLink="/dashboard/payments">
+
+          <span class="action-icon">
+
+            <i
+              class="fas fa-clock-rotate-left"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <strong>
+              Payment History
+            </strong>
+
+            <span>
+              View previous payments
+            </span>
+
+          </div>
+
+          <i
+            class="fas fa-chevron-right action-arrow"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
       </div>
-    </div>
+
+    </section>
+
   }
 
-  <!-- Transaction History -->
-  <div class="section">
-    <div class="section-header">
-      <h2>Transactions</h2>
-      <div class="pagination">
-        <button class="page-btn" [disabled]="page() === 0" (click)="prevPage()">←</button>
-        <span>Page {{ page() + 1 }}</span>
-        <button class="page-btn" [disabled]="transactions().length < 20" (click)="nextPage()">→</button>
+
+  <!-- =========================================================
+       TRANSACTIONS
+  ========================================================== -->
+
+  <section class="transactions-panel">
+
+    <div class="transactions-header">
+
+      <div>
+
+        <span class="eyebrow">
+          ACTIVITY
+        </span>
+
+        <h2>
+          Transactions
+        </h2>
+
+        <p>
+          Your recent wallet activity.
+        </p>
+
       </div>
+
+
+      <div class="pagination">
+
+        <button
+          class="page-btn"
+          type="button"
+          aria-label="Previous transactions page"
+          title="Previous page"
+          [disabled]="page() === 0"
+          (click)="prevPage()">
+
+          <i
+            class="fas fa-chevron-left"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+        <span>
+          Page {{ page() + 1 }}
+        </span>
+
+        <button
+          class="page-btn"
+          type="button"
+          aria-label="Next transactions page"
+          title="Next page"
+          [disabled]="transactions().length < 20"
+          (click)="nextPage()">
+
+          <i
+            class="fas fa-chevron-right"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
     </div>
+
 
     @if (txLoading()) {
-      @for (i of [1,2,3,4,5]; track i) {
-        <div class="tx-skeleton"></div>
-      }
-    } @else if (transactions().length === 0) {
-      <div class="empty-state">
-        <span>💳</span>
-        <p>No transactions yet. Top up your wallet to get started.</p>
-      </div>
-    } @else {
-      <div class="tx-list">
-        @for (tx of transactions(); track tx.id) {
-          <div class="tx-item">
-            <div class="tx-icon" [class]="txColor(tx)">{{ txIcon(tx) }}</div>
-            <div class="tx-info">
-              <span class="tx-desc">{{ tx.description ?? (tx.type === 'CREDIT' ? 'Money received' : 'Money sent') }}</span>
-              <span class="tx-date">{{ tx.createdAt | date:'dd MMM yyyy, HH:mm' }}</span>
-            </div>
-            <div class="tx-right">
-              <span class="tx-amount" [class]="txColor(tx)">
-                {{ tx.type === 'CREDIT' ? '+' : '-' }}R{{ tx.amount | number:'1.2-2' }}
-              </span>
-              <span class="tx-balance">Bal: R{{ tx.balanceAfter | number:'1.2-2' }}</span>
-            </div>
-          </div>
+
+      <div class="transaction-loading">
+
+        @for (i of [1,2,3,4,5]; track i) {
+
+          <div class="tx-skeleton"></div>
+
         }
+
       </div>
+
+    } @else if (transactions().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i
+            class="fas fa-receipt"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+        <strong>
+          No transactions yet
+        </strong>
+
+        <p>
+          Top up your wallet or send money to begin building your transaction history.
+        </p>
+
+        <button
+          type="button"
+          (click)="openModal('topup')">
+
+          Top up wallet
+
+        </button>
+
+      </div>
+
+    } @else {
+
+      <div class="transaction-table-wrapper">
+
+        <div class="transaction-table-header">
+
+          <span>
+            Transaction
+          </span>
+
+          <span>
+            Date
+          </span>
+
+          <span>
+            Balance
+          </span>
+
+          <span>
+            Amount
+          </span>
+
+        </div>
+
+
+        <div class="tx-list">
+
+          @for (tx of transactions(); track tx.id) {
+
+            <div class="tx-item">
+
+              <!-- Description -->
+
+              <div class="tx-main">
+
+                <div
+                  class="tx-icon"
+                  [class]="txColor(tx)">
+
+                  @if (tx.type === 'CREDIT') {
+
+                    <i
+                      class="fas fa-arrow-down"
+                      aria-hidden="true">
+                    </i>
+
+                  } @else {
+
+                    <i
+                      class="fas fa-arrow-up"
+                      aria-hidden="true">
+                    </i>
+
+                  }
+
+                </div>
+
+
+                <div class="tx-info">
+
+                  <span class="tx-desc">
+
+                    {{
+                      tx.description ??
+                      (
+                        tx.type === 'CREDIT'
+                          ? 'Money received'
+                          : 'Money sent'
+                      )
+                    }}
+
+                  </span>
+
+                  <span class="tx-reference">
+
+                    {{ tx.type }}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <!-- Date -->
+
+              <div class="tx-date">
+
+                {{ tx.createdAt | date:'dd MMM yyyy' }}
+
+                <small>
+                  {{ tx.createdAt | date:'HH:mm' }}
+                </small>
+
+              </div>
+
+
+              <!-- Balance -->
+
+              <div class="tx-balance">
+
+                R {{ tx.balanceAfter | number:'1.2-2' }}
+
+              </div>
+
+
+              <!-- Amount -->
+
+              <div
+                class="tx-amount"
+                [class]="txColor(tx)">
+
+                {{ tx.type === 'CREDIT' ? '+' : '-' }}
+                R {{ tx.amount | number:'1.2-2' }}
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      </div>
+
     }
-  </div>
+
+  </section>
+
 </div>
 
-<!-- Top-Up Modal -->
+
+<!-- =============================================================
+     TOP UP MODAL
+============================================================= -->
+
 @if (activeModal() === 'topup') {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="topup-title"
+      (click)="$event.stopPropagation()">
+
+
       <div class="modal-header">
-        <h3>Top Up Wallet</h3>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
-      <form [formGroup]="topUpForm" (ngSubmit)="submitTopUp()">
-        <div class="form-group">
-          <label>Amount (ZAR)</label>
-          <div class="amount-input-wrapper">
-            <span class="currency-prefix">R</span>
-            <input type="number" formControlName="amount" placeholder="0.00" min="1" step="0.01" />
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-plus"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              WALLET
+            </span>
+
+            <h3 id="topup-title">
+              Top Up Wallet
+            </h3>
+
           </div>
-          @if (topUpForm.get('amount')?.invalid && topUpForm.get('amount')?.touched) {
-            <span class="error-msg">Enter a valid amount (min R1)</span>
-          }
+
         </div>
-        <!-- FIX 2: use setTopUpAmount(amt) helper instead of inline patchValue to satisfy
-             strict type checking (control is number | null, amt is number) -->
-        <div class="quick-amounts">
-          @for (amt of [100, 250, 500, 1000]; track amt) {
-            <button type="button" class="quick-amt" (click)="setTopUpAmount(amt)">R{{ amt }}</button>
-          }
-        </div>
-        <button type="submit" class="btn btn-primary btn-full" [disabled]="topUpForm.invalid || submitting()">
-          @if (submitting()) { <span class="spinner"></span> Processing... }
-          @else { Top Up Wallet }
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close top up dialog"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
         </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="topUpForm"
+        (ngSubmit)="submitTopUp()">
+
+        <div class="form-group">
+
+          <label for="topup-amount">
+            Amount
+          </label>
+
+          <div class="amount-input-wrapper">
+
+            <span class="currency-prefix">
+              R
+            </span>
+
+            <input
+              id="topup-amount"
+              type="number"
+              formControlName="amount"
+              placeholder="0.00"
+              min="1"
+              step="0.01">
+
+          </div>
+
+          @if (
+            topUpForm.get('amount')?.invalid &&
+            topUpForm.get('amount')?.touched
+          ) {
+
+            <span class="error-msg">
+              Enter a valid amount of at least R1.
+            </span>
+
+          }
+
+        </div>
+
+
+        <div class="quick-amounts">
+
+          @for (
+            amt of [100, 250, 500, 1000];
+            track amt
+          ) {
+
+            <button
+              type="button"
+              class="quick-amt"
+              (click)="setTopUpAmount(amt)">
+
+              R{{ amt }}
+
+            </button>
+
+          }
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="topUpForm.invalid || submitting()">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Processing...
+
+          } @else {
+
+            <i
+              class="fas fa-plus"
+              aria-hidden="true">
+            </i>
+
+            Top Up Wallet
+
+          }
+
+        </button>
+
       </form>
+
     </div>
+
   </div>
+
 }
 
-<!-- Transfer Modal -->
+<!-- =============================================================
+     TRANSFER MODAL
+============================================================= -->
+
 @if (activeModal() === 'transfer') {
-  <div class="modal-overlay" (click)="closeModal()">
-    <div class="modal" (click)="$event.stopPropagation()">
-      <div class="modal-top-line"></div>
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="transfer-title"
+      (click)="$event.stopPropagation()">
+
+
       <div class="modal-header">
-        <h3>Send Money</h3>
-        <button class="modal-close" (click)="closeModal()">×</button>
-      </div>
-      <form [formGroup]="transferForm" (ngSubmit)="submitTransfer()">
-        <div class="form-group">
-          <label>Recipient User ID</label>
-          <input type="text" formControlName="recipientUserId" placeholder="Enter recipient ID" />
-          @if (transferForm.get('recipientUserId')?.invalid && transferForm.get('recipientUserId')?.touched) {
-            <span class="error-msg">Recipient is required</span>
-          }
-        </div>
-        <div class="form-group">
-          <label>Amount (ZAR)</label>
-          <div class="amount-input-wrapper">
-            <span class="currency-prefix">R</span>
-            <input type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01" />
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-paper-plane"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              TRANSFER
+            </span>
+
+            <h3 id="transfer-title">
+              Send Money
+            </h3>
+
           </div>
+
         </div>
-        <div class="form-group">
-          <label>Description <span class="optional">(optional)</span></label>
-          <input type="text" formControlName="description" placeholder="What's it for?" />
-        </div>
-        @if (wallet()) {
-          <p class="balance-hint">Available: R{{ wallet()!.availableBalance | number:'1.2-2' }}</p>
-        }
-        <button type="submit" class="btn btn-primary btn-full" [disabled]="transferForm.invalid || submitting()">
-          @if (submitting()) { <span class="spinner"></span> Sending... }
-          @else { Send Money →  }
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close send money dialog"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
         </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="transferForm"
+        (ngSubmit)="submitTransfer()">
+
+
+        <!-- Recipient Email -->
+
+        <div class="form-group">
+
+          <label for="recipient-email">
+            Recipient Email
+          </label>
+
+          <input
+            id="recipient-email"
+            type="email"
+            formControlName="recipientEmail"
+            placeholder="recipient@example.com"
+            autocomplete="email">
+
+          @if (
+            transferForm.get('recipientEmail')?.invalid &&
+            transferForm.get('recipientEmail')?.touched
+          ) {
+
+            <span class="error-msg">
+
+              @if (
+                transferForm.get('recipientEmail')?.hasError('required')
+              ) {
+                Recipient email is required.
+              } @else if (
+                transferForm.get('recipientEmail')?.hasError('email')
+              ) {
+                Enter a valid email address.
+              }
+
+            </span>
+
+          }
+
+        </div>
+
+
+        <!-- Amount -->
+
+        <div class="form-group">
+
+          <label for="transfer-amount">
+            Amount
+          </label>
+
+          <div class="amount-input-wrapper">
+
+            <span class="currency-prefix">
+              R
+            </span>
+
+            <input
+              id="transfer-amount"
+              type="number"
+              formControlName="amount"
+              placeholder="0.00"
+              min="0.01"
+              step="0.01">
+
+          </div>
+
+          @if (
+            transferForm.get('amount')?.invalid &&
+            transferForm.get('amount')?.touched
+          ) {
+
+            <span class="error-msg">
+              Enter a valid amount.
+            </span>
+
+          }
+
+        </div>
+
+
+        <!-- Description -->
+
+        <div class="form-group">
+
+          <label for="transfer-description">
+
+            Description
+
+            <span class="optional">
+              Optional
+            </span>
+
+          </label>
+
+          <input
+            id="transfer-description"
+            type="text"
+            formControlName="description"
+            placeholder="What's it for?">
+
+        </div>
+
+
+        <!-- Available Balance -->
+
+        @if (wallet()) {
+
+          <div class="available-hint">
+
+            <span>
+              Available balance
+            </span>
+
+            <strong>
+              R {{ wallet()!.availableBalance | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+        }
+
+
+        <!-- Submit -->
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="transferForm.invalid || submitting()">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Sending...
+
+          } @else {
+
+            <i
+              class="fas fa-paper-plane"
+              aria-hidden="true">
+            </i>
+
+            Send Money
+
+          }
+
+        </button>
+
       </form>
+
     </div>
+
   </div>
+
 }

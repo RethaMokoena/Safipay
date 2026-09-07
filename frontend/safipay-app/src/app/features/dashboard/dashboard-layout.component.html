@@ -1,63 +1,315 @@
 <div class="app-shell">
 
-  <!-- Mobile overlay -->
+
   @if (sidebarOpen()) {
-    <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+
+    <div
+      class="sidebar-overlay"
+      (click)="closeSidebar()">
+    </div>
+
   }
 
-  <!-- Sidebar -->
-  <aside class="sidebar" [class.open]="sidebarOpen()">
-    <div class="sidebar-logo">
-      <div class="logo-mark">SP</div>
-      <span class="logo-text">Safi<em>Pay</em></span>
+
+  <!-- =========================================================
+       SIDEBAR
+  ========================================================== -->
+
+  <aside
+    class="sidebar"
+    [class.open]="sidebarOpen()">
+
+
+    <div class="sidebar-brand">
+
+      <a
+        routerLink="/dashboard"
+        class="brand-link"
+        (click)="closeSidebar()">
+
+        <div class="brand-mark">
+          <span>S</span>
+        </div>
+
+        <span class="brand-name">
+          Safi<span>Pay</span>
+        </span>
+
+      </a>
+
+
+      <button
+        class="sidebar-collapse"
+        type="button"
+        aria-label="Close sidebar"
+        (click)="closeSidebar()">
+
+        <i class="fas fa-chevron-left"></i>
+
+      </button>
+
     </div>
 
-    <div class="user-card">
-      <div class="user-avatar">{{ authService.currentUser()?.firstName?.charAt(0) }}{{ authService.currentUser()?.lastName?.charAt(0) }}</div>
-      <div class="user-info">
-        <span class="user-name">{{ authService.currentUser()?.fullName }}</span>
-        <span class="user-email">{{ authService.currentUser()?.email }}</span>
-      </div>
-    </div>
 
     <nav class="sidebar-nav">
-      @for (item of navItems; track item.path) {
-        <a
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: item.path === '/dashboard' }"
-          class="nav-item"
-          (click)="closeSidebar()"
-        >
-             <i [class]="item.icon" class="nav-icon" aria-hidden="true"></i>
-          <span>{{ item.label }}</span>
-        </a>
+
+      @for (
+        section of navSections;
+        track section.label
+      ) {
+
+        <div class="nav-section-group">
+
+          <div class="nav-section-label">
+            {{ section.label }}
+          </div>
+
+
+          <div class="nav-section-items">
+
+            @for (
+              item of section.items;
+              track item.path
+            ) {
+
+              <a
+                [routerLink]="item.path"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{
+                  exact: item.exact ?? false
+                }"
+                class="nav-item"
+                (click)="closeSidebar()">
+
+                <span class="nav-icon-wrapper">
+
+                  <i
+                    [class]="item.icon"
+                    class="nav-icon"
+                    aria-hidden="true">
+                  </i>
+
+                </span>
+
+
+                <span class="nav-label">
+                  {{ item.label }}
+                </span>
+
+
+                <i
+                  class="fas fa-chevron-right nav-arrow">
+                </i>
+
+              </a>
+
+            }
+
+          </div>
+
+        </div>
+
       }
+
     </nav>
 
-    <button class="logout-btn" (click)="logout()">
-      <span>⇠</span> Sign Out
-    </button>
+
+    <div class="sidebar-bottom">
+
+
+      <a
+        routerLink="/dashboard/ai"
+        class="security-card"
+        (click)="closeSidebar()">
+
+        <div class="security-icon">
+          <i class="fas fa-sparkles"></i>
+        </div>
+
+        <div class="security-copy">
+
+          <strong>
+            Need help?
+          </strong>
+
+          <span>
+            Ask Safi about payments,
+            shopping or stokvels.
+          </span>
+
+        </div>
+
+      </a>
+
+
+      <div class="sidebar-user">
+
+        <div class="sidebar-avatar">
+
+          {{
+            authService
+              .currentUser()
+              ?.firstName
+              ?.charAt(0)
+          }}
+
+          {{
+            authService
+              .currentUser()
+              ?.lastName
+              ?.charAt(0)
+          }}
+
+        </div>
+
+
+        <div class="sidebar-user-info">
+
+          <strong>
+            {{
+              authService
+                .currentUser()
+                ?.fullName
+            }}
+          </strong>
+
+          <span>
+            {{
+              authService
+                .currentUser()
+                ?.email
+            }}
+          </span>
+
+        </div>
+
+
+        <button
+          class="logout-icon"
+          type="button"
+          aria-label="Sign out"
+          title="Sign out"
+          (click)="logout()">
+
+          <i class="fas fa-sign-out-alt"></i>
+
+        </button>
+
+      </div>
+
+    </div>
+
   </aside>
 
-  <!-- Main area -->
+
+  <!-- =========================================================
+       MAIN AREA
+  ========================================================== -->
+
   <div class="main-area">
-    <!-- Topbar -->
+
+
     <header class="topbar">
-      <button class="hamburger" (click)="toggleSidebar()" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="topbar-right">
-        <span class="greeting">{{ authService.currentUser()?.firstName }}</span>
+
+
+      <div class="topbar-left">
+
+        <button
+          class="hamburger"
+          type="button"
+          aria-label="Open menu"
+          (click)="toggleSidebar()">
+
+          <i class="fas fa-bars"></i>
+
+        </button>
+
+
+        <div class="page-title">
+
+          <span>
+            Dashboard
+          </span>
+
+        </div>
+
       </div>
+
+
+      <a
+        routerLink="/dashboard/ai"
+        class="topbar-search"
+        aria-label="Open Ask Safi">
+
+        <i class="fas fa-sparkles"></i>
+
+        <span class="topbar-search-copy">
+          Ask Safi about payments, products or stokvels
+        </span>
+
+        <span class="search-shortcut">
+          AI
+        </span>
+
+      </a>
+
+
+      <div class="topbar-right">
+
+
+        <div class="topbar-profile">
+
+          <div class="topbar-avatar">
+
+            {{
+              authService
+                .currentUser()
+                ?.firstName
+                ?.charAt(0)
+            }}
+
+            {{
+              authService
+                .currentUser()
+                ?.lastName
+                ?.charAt(0)
+            }}
+
+          </div>
+
+
+          <div class="topbar-user-details">
+
+            <strong>
+              {{
+                authService
+                  .currentUser()
+                  ?.fullName
+              }}
+            </strong>
+
+            <span>
+              SafiPay Account
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </header>
 
-    <!-- Content -->
+
     <main class="content">
+
       <router-outlet />
+
     </main>
+
   </div>
 
-  <!-- Toasts -->
+
   <app-toast />
+
 </div>

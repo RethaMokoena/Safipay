@@ -1,408 +1,1360 @@
 <app-navbar />
 
-<!-- ======================================================
+<!-- =============================================================
      HERO
-====================================================== -->
-<section class="hero" id="home">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="hero-grid"></div>
+============================================================= -->
 
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      Now live in South Africa
+<section
+  class="hero"
+  id="home">
+
+  <div class="hero-decoration decoration-one"></div>
+  <div class="hero-decoration decoration-two"></div>
+
+  <div class="hero-container">
+
+    <!-- =========================================================
+         HERO COPY
+    ========================================================== -->
+
+    <div class="hero-content">
+
+      <div class="hero-badge">
+
+        <span class="badge-icon">
+          <i
+            class="fas fa-wallet"
+            aria-hidden="true">
+          </i>
+        </span>
+
+        Built for everyday money management
+
+      </div>
+
+
+      <h1>
+        Your money.
+        <span>One simple place.</span>
+      </h1>
+
+
+      <div class="hero-description">
+
+        <h2>
+          {{ typingText() }}
+
+          <span
+            class="typing-cursor"
+            [class.hidden]="typingDone()">
+            |
+          </span>
+        </h2>
+
+        <p>
+          SafiPay brings your digital wallet, payments and stokvel
+          management together in one secure experience.
+        </p>
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <a
+          routerLink="/auth/register"
+          class="primary-btn">
+
+          Create an Account
+
+          <i
+            class="fas fa-arrow-right"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
+
+        <button
+          type="button"
+          class="secondary-btn"
+          (click)="scrollTo('how-it-works')">
+
+          See How It Works
+
+          <i
+            class="fas fa-chevron-down"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <!-- Product capabilities -->
+
+      <div class="hero-trust">
+
+        <div>
+
+          <i
+            class="fas fa-shield-halved"
+            aria-hidden="true">
+          </i>
+
+          <span>
+            Secure wallet
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <i
+            class="fas fa-bolt"
+            aria-hidden="true">
+          </i>
+
+          <span>
+            Fast transfers
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <i
+            class="fas fa-users"
+            aria-hidden="true">
+          </i>
+
+          <span>
+            Stokvel tools
+          </span>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <h1>
-      The smartest way to<br>
-      <span class="gradient-text">manage your money</span>
-    </h1>
 
-    <div class="typing-wrapper">
+    <!-- =========================================================
+         HERO PRODUCT PREVIEW
+    ========================================================== -->
+
+    <div class="hero-visual">
+
+      <div class="preview-window">
+
+        <div class="preview-header">
+
+          <div class="preview-brand">
+
+            <div class="preview-logo">
+              S
+            </div>
+
+            <span>
+              SafiPay
+            </span>
+
+          </div>
+
+
+          <div class="preview-status">
+
+            <span></span>
+
+            Demo wallet
+
+          </div>
+
+        </div>
+
+
+        <!-- Wallet -->
+
+        <div class="demo-wallet">
+
+          <div class="demo-wallet-top">
+
+            <div>
+
+              <span>
+                Available balance
+              </span>
+
+              <strong>
+                R 12,450.00
+              </strong>
+
+            </div>
+
+
+            <div class="wallet-symbol">
+
+              <i
+                class="fas fa-wallet"
+                aria-hidden="true">
+              </i>
+
+            </div>
+
+          </div>
+
+
+          <div class="wallet-meta">
+
+            <span>
+              ZAR
+            </span>
+
+            <span>
+              ACTIVE
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Quick actions -->
+
+        <div class="preview-actions">
+
+          <div>
+
+            <span>
+
+              <i
+                class="fas fa-arrow-up"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <small>
+              Send
+            </small>
+
+          </div>
+
+
+          <div>
+
+            <span>
+
+              <i
+                class="fas fa-plus"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <small>
+              Top Up
+            </small>
+
+          </div>
+
+
+          <div>
+
+            <span>
+
+              <i
+                class="fas fa-users"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <small>
+              Stokvel
+            </small>
+
+          </div>
+
+
+          <div>
+
+            <span>
+
+              <i
+                class="fas fa-receipt"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <small>
+              History
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- Recent activity -->
+
+        <div class="preview-activity">
+
+          <div class="preview-section-heading">
+
+            <div>
+
+              <span>
+                RECENT ACTIVITY
+              </span>
+
+              <strong>
+                Transactions
+              </strong>
+
+            </div>
+
+            <span class="view-text">
+              View all
+            </span>
+
+          </div>
+
+
+          <div class="demo-transaction">
+
+            <span class="transaction-icon incoming">
+
+              <i
+                class="fas fa-arrow-down"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <div>
+
+              <strong>
+                Money received
+              </strong>
+
+              <span>
+                Today · 14:32
+              </span>
+
+            </div>
+
+            <strong class="positive">
+              +R850.00
+            </strong>
+
+          </div>
+
+
+          <div class="demo-transaction">
+
+            <span class="transaction-icon outgoing">
+
+              <i
+                class="fas fa-arrow-up"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <div>
+
+              <strong>
+                Money sent
+              </strong>
+
+              <span>
+                Yesterday · 18:12
+              </span>
+
+            </div>
+
+            <strong>
+              -R320.00
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =============================================================
+     PRODUCT INTRO
+============================================================= -->
+
+<section class="intro-section">
+
+  <div class="container">
+
+    <div class="section-heading centered reveal">
+
+      <span class="section-eyebrow">
+        ONE PLATFORM
+      </span>
+
       <h2>
-        <span class="typing-highlight">{{ typingText() }}</span><span class="cursor"
-          [class.hidden]="typingDone()">|</span>
+        Your everyday money tools,
+        working together.
       </h2>
-      <p>SafiPay is your digital wallet, instant payments platform, and stokvel manager — all in one app.</p>
+
+      <p>
+        SafiPay combines the tools you need to manage money without
+        making the experience complicated.
+      </p>
+
     </div>
 
-    <div class="cta-buttons">
-      <a routerLink="/auth/register" class="btn btn-primary btn-large">
-        Start for Free →
-      </a>
-      <a (click)="scrollTo('how-it-works')" class="btn btn-ghost btn-large" style="cursor:pointer">
-        See How It Works
-      </a>
+
+    <div class="intro-grid">
+
+
+      <!-- Wallet -->
+
+      <article
+        class="intro-card reveal"
+        style="--delay: 0ms">
+
+        <span class="intro-icon">
+
+          <i
+            class="fas fa-wallet"
+            aria-hidden="true">
+          </i>
+
+        </span>
+
+        <h3>
+          Digital Wallet
+        </h3>
+
+        <p>
+          Keep track of your available balance, top up your wallet
+          and review your transaction activity.
+        </p>
+
+        <a routerLink="/auth/register">
+
+          Create your wallet
+
+          <i
+            class="fas fa-arrow-right"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
+      </article>
+
+
+      <!-- Payments -->
+
+      <article
+        class="intro-card reveal"
+        style="--delay: 80ms">
+
+        <span class="intro-icon blue">
+
+          <i
+            class="fas fa-paper-plane"
+            aria-hidden="true">
+          </i>
+
+        </span>
+
+        <h3>
+          Payments
+        </h3>
+
+        <p>
+          Send and receive money through a clean payment experience
+          with transaction history built in.
+        </p>
+
+        <a routerLink="/auth/register">
+
+          Start sending
+
+          <i
+            class="fas fa-arrow-right"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
+      </article>
+
+
+      <!-- Stokvel -->
+
+      <article
+        class="intro-card reveal"
+        style="--delay: 160ms">
+
+        <span class="intro-icon purple">
+
+          <i
+            class="fas fa-users"
+            aria-hidden="true">
+          </i>
+
+        </span>
+
+        <h3>
+          Stokvels
+        </h3>
+
+        <p>
+          Bring your group savings activity into one place and keep
+          better visibility over your shared pool.
+        </p>
+
+        <a routerLink="/auth/register">
+
+          Explore stokvels
+
+          <i
+            class="fas fa-arrow-right"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
+      </article>
+
     </div>
 
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-number">50K+</span>
-        <span class="stat-label">Users</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-number">R240M+</span>
-        <span class="stat-label">Transferred</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat">
-        <span class="stat-number">4.9★</span>
-        <span class="stat-label">App Rating</span>
-      </div>
-    </div>
-
-    <div class="friction-removers">
-      <span>✓ No monthly fees</span>
-      <span>✓ No bank account needed</span>
-      <span>✓ Setup in 2 minutes</span>
-    </div>
   </div>
 
-  <!-- Wallet Card Visual -->
-  <div class="hero-visual">
-    <div class="wallet-card">
-      <div class="wc-top-line"></div>
-      <div class="wc-header">
-        <span class="wc-label">SafiPay Wallet</span>
-        <span class="wc-live"><span class="live-dot"></span>LIVE</span>
-      </div>
-      <div class="wc-balance">
-        R 12,450.00
-        <span class="wc-saved">+R240 this week</span>
-      </div>
-      <div class="wc-row">
-        <div class="wc-item">
-          <span class="wc-item-label">Income</span>
-          <span class="wc-item-value green">+R8,200</span>
-        </div>
-        <div class="wc-item">
-          <span class="wc-item-label">Expenses</span>
-          <span class="wc-item-value red">-R3,960</span>
-        </div>
-      </div>
-      <div class="wc-savings-label">Monthly savings goal — 62%</div>
-      <div class="wc-bar">
-        <div class="wc-fill" style="width:62%"></div>
-      </div>
-      <div class="wc-insight">
-        💡 You're spending 18% less on food this month. On track to hit your goal!
-      </div>
-      <div class="wc-services">
-        <span class="service-pill active">Wallet</span>
-        <span class="service-pill active">Stokvel</span>
-        <span class="service-pill">Payments</span>
-        <span class="service-pill">Savings</span>
-      </div>
-    </div>
-  </div>
 </section>
 
-<!-- ======================================================
-     PAIN POINTS
-====================================================== -->
-<section class="pain-points" id="pain-points">
-  <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">The Problem</span>
-      <h2>Money management is broken for most South Africans</h2>
-      <p>Traditional banking is too slow, too expensive, and too complicated.</p>
-    </div>
 
-    <div class="pain-grid">
-      <div class="pain-card reveal" style="--delay:0ms">
-        <i class="fas fa-dollar-sign"></i>
-        <h3>High Transfer Fees</h3>
-        <p>Banks charge R10–R30 per transfer. That adds up to hundreds of rands a month just to move your own money.</p>
-      </div>
-      <div class="pain-card reveal" style="--delay:100ms">
-        <i class="fas fa-hourglass-half pain-icon"></i>
-        <h3>Slow Payments</h3>
-        <p>Bank transfers take 1–3 days. In an emergency, that delay can cost you dearly.</p>
-      </div>
-      <div class="pain-card reveal" style="--delay:200ms">
-        <i class="fas fa-tasks pain-icon"></i>
-        <h3>Stokvel Admin Hell</h3>
-        <p>WhatsApp reminders, spreadsheets, trust issues — running a stokvel is a full-time job without the right
-          tools.</p>
-      </div>
-    </div>
-
-    <div class="solution-teaser reveal">
-      <div class="solution-arrow">↓</div>
-      <p>SafiPay solves all of this — for free.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================================================
+<!-- =============================================================
      FEATURES
-====================================================== -->
-<section class="features-section" id="features">
+============================================================= -->
+
+<section
+  class="features-section"
+  id="features">
+
   <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">Features</span>
-      <h2>Everything you need in one wallet</h2>
-      <p>Powerful tools that make your money work harder.</p>
+
+    <div class="section-heading reveal">
+
+      <div>
+
+        <span class="section-eyebrow">
+          FEATURES
+        </span>
+
+        <h2>
+          Everything you need to stay in control.
+        </h2>
+
+      </div>
+
+      <p>
+        A focused set of tools for payments, savings and managing
+        your SafiPay account.
+      </p>
+
     </div>
+
+
     <div class="features-grid">
-      @for (f of features; track f.title; let i = $index) {
-      <div class="feature-card reveal" [style]="'--delay:' + (i * 60) + 'ms'">
-        <div class="card-glow"></div>
-        <i [class]="f.icon" class="feature-icon" aria-hidden="true"></i>
-        <h3>{{ f.title }}</h3>
-        <p>{{ f.desc }}</p>
-        <span class="feature-benefit">{{ f.benefit }}</span>
-      </div>
+
+      @for (
+        f of features;
+        track f.title;
+        let i = $index
+      ) {
+
+        <article
+          class="feature-card reveal"
+          [style]="'--delay:' + (i * 60) + 'ms'">
+
+          <span class="feature-number">
+            0{{ i + 1 }}
+          </span>
+
+
+          <span class="feature-icon-wrapper">
+
+            <i
+              [class]="f.icon"
+              class="feature-icon"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+
+          <h3>
+            {{ f.title }}
+          </h3>
+
+          <p>
+            {{ f.desc }}
+          </p>
+
+          <span class="feature-benefit">
+            {{ f.benefit }}
+          </span>
+
+        </article>
+
       }
+
     </div>
+
   </div>
+
 </section>
 
-<!-- ======================================================
-     DIFFERENTIATORS
-====================================================== -->
-<section class="differentiators" id="compare">
+
+<!-- =============================================================
+     WHY SAFIPAY
+============================================================= -->
+
+<section
+  class="why-section"
+  id="compare">
+
   <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">Why SafiPay</span>
-      <h2>See how we compare</h2>
+
+    <div class="why-grid">
+
+      <div class="why-copy reveal">
+
+        <span class="section-eyebrow">
+          WHY SAFIPAY
+        </span>
+
+        <h2>
+          Less switching.
+          More visibility.
+        </h2>
+
+        <p>
+          Instead of separating payments, wallet activity and group
+          savings across different tools, SafiPay brings the experience
+          together.
+        </p>
+
+
+        <div class="why-items">
+
+
+          <div class="why-item">
+
+            <span>
+
+              <i
+                class="fas fa-check"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <div>
+
+              <strong>
+                One account
+              </strong>
+
+              <p>
+                Access your wallet, payments and savings tools
+                from the same SafiPay account.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="why-item">
+
+            <span>
+
+              <i
+                class="fas fa-check"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <div>
+
+              <strong>
+                Clear transaction history
+              </strong>
+
+              <p>
+                Keep a structured view of money moving in and out.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="why-item">
+
+            <span>
+
+              <i
+                class="fas fa-check"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+            <div>
+
+              <strong>
+                Built around local saving habits
+              </strong>
+
+              <p>
+                Stokvel functionality sits alongside your digital wallet
+                and payment activity.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Visual comparison -->
+
+      <div class="comparison-card reveal">
+
+        <div class="comparison-heading">
+
+          <span>
+            SAFIPAY EXPERIENCE
+          </span>
+
+          <h3>
+            Money management in one view
+          </h3>
+
+        </div>
+
+
+        <div class="comparison-item">
+
+          <div class="comparison-icon">
+
+            <i
+              class="fas fa-wallet"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <div>
+
+            <span>
+              Wallet
+            </span>
+
+            <strong>
+              Balance and top ups
+            </strong>
+
+          </div>
+
+          <i
+            class="fas fa-check-circle comparison-check"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+
+        <div class="comparison-item">
+
+          <div class="comparison-icon">
+
+            <i
+              class="fas fa-paper-plane"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <div>
+
+            <span>
+              Payments
+            </span>
+
+            <strong>
+              Send and receive money
+            </strong>
+
+          </div>
+
+          <i
+            class="fas fa-check-circle comparison-check"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+
+        <div class="comparison-item">
+
+          <div class="comparison-icon">
+
+            <i
+              class="fas fa-users"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <div>
+
+            <span>
+              Stokvel
+            </span>
+
+            <strong>
+              Group savings management
+            </strong>
+
+          </div>
+
+          <i
+            class="fas fa-check-circle comparison-check"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+
+        <div class="comparison-item">
+
+          <div class="comparison-icon">
+
+            <i
+              class="fas fa-receipt"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <div>
+
+            <span>
+              Activity
+            </span>
+
+            <strong>
+              Transaction history
+            </strong>
+
+          </div>
+
+          <i
+            class="fas fa-check-circle comparison-check"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="comparison-table reveal">
-      <div class="comparison-row header-row">
-        <div class="col">Feature</div>
-        <div class="col safipay-col">SafiPay ✓</div>
-        <div class="col">Traditional Bank</div>
-      </div>
-      <div class="comparison-row">
-        <div class="col">Instant transfers</div>
-        <div class="col win">✓ Always instant</div>
-        <div class="col loss">1–3 business days</div>
-      </div>
-      <div class="comparison-row">
-        <div class="col">Transfer fees</div>
-        <div class="col win">✓ Free between users</div>
-        <div class="col loss">R10–R30 per transfer</div>
-      </div>
-      <div class="comparison-row">
-        <div class="col">Stokvel management</div>
-        <div class="col win">✓ Built-in automation</div>
-        <div class="col loss">Not available</div>
-      </div>
-      <div class="comparison-row">
-        <div class="col">Account setup</div>
-        <div class="col win">✓ 2 minutes, no branch</div>
-        <div class="col loss">Days + paperwork</div>
-      </div>
-      <div class="comparison-row">
-        <div class="col">Monthly fees</div>
-        <div class="col win">✓ None</div>
-        <div class="col loss">R60–R200/month</div>
-      </div>
-    </div>
   </div>
+
 </section>
 
-<!-- ======================================================
+
+<!-- =============================================================
      HOW IT WORKS
-====================================================== -->
-<section class="how-it-works" id="how-it-works">
+============================================================= -->
+
+<section
+  class="how-section"
+  id="how-it-works">
+
   <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">How It Works</span>
-      <h2>Up and running in minutes</h2>
-      <p>Three simple steps to take control of your money.</p>
+
+    <div class="section-heading centered reveal">
+
+      <span class="section-eyebrow">
+        HOW IT WORKS
+      </span>
+
+      <h2>
+        Start with SafiPay in a few simple steps.
+      </h2>
+
+      <p>
+        Create your account, access your wallet and start using
+        the tools available to you.
+      </p>
+
     </div>
 
-    <div class="steps-container">
-      @for (step of steps; track step.n; let last = $last) {
-      <div class="step reveal" [style]="'--delay:' + ((step.n - 1) * 100) + 'ms'">
-        <div class="step-number">{{ step.n }}</div>
-        <i [class]="step.icon" class="step-icon" aria-hidden="true"></i>
-        <h3>{{ step.title }}</h3>
-        <p>{{ step.desc }}</p>
-        <span class="step-time">⏱ {{ step.time }}</span>
-      </div>
-      @if (!last) {
-      <div class="step-arrow">→</div>
-      }
-      }
-    </div>
 
-    <div class="cta-mini reveal">
-      <a routerLink="/auth/register" class="btn btn-primary btn-large">
-        Create Your Free Account
-      </a>
-      <p class="friction-text">No credit card • No bank account required • Cancel anytime</p>
-    </div>
-  </div>
-</section>
+    <div class="steps-grid">
 
-<!-- ======================================================
-     TESTIMONIALS
-====================================================== -->
-<section class="testimonials" id="testimonials">
-  <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">Testimonials</span>
-      <h2>Loved by thousands of South Africans</h2>
-    </div>
+      @for (
+        item of steps;
+        track item.n;
+        let i = $index
+      ) {
 
-    <div class="testimonials-grid">
-      @for (t of testimonials; track t.name) {
-      <div class="testimonial-card reveal" [class.featured]="t.featured">
-        <div class="testimonial-stars">{{ t.stars }}</div>
-        <div class="testimonial-quote-mark">"</div>
-        <p>{{ t.quote }}</p>
-        <div class="testimonial-user">
-          <div class="user-avatar">{{ t.avatar }}</div>
-          <div>
-            <h4>{{ t.name }}</h4>
-            <span>{{ t.role }}</span>
+        <article
+          class="process-step reveal"
+          [style]="'--delay:' + (i * 100) + 'ms'">
+
+          <div class="process-number">
+            {{ item.n }}
           </div>
-        </div>
-      </div>
+
+
+          <span class="process-icon">
+
+            <i
+              [class]="item.icon"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+
+          <h3>
+            {{ item.title }}
+          </h3>
+
+          <p>
+            {{ item.desc }}
+          </p>
+
+          <span class="process-time">
+            {{ item.time }}
+          </span>
+
+        </article>
+
       }
+
     </div>
 
-    <div class="media-mentions reveal">
-      <span class="media-label">As seen in</span>
-      <div class="media-logos">
-        <span>Business Day</span>
-        <span>TechCentral</span>
-        <span>Fin24</span>
-        <span>MyBroadband</span>
-      </div>
+
+    <div class="how-cta reveal">
+
+      <a
+        routerLink="/auth/register"
+        class="primary-btn">
+
+        Create Your Account
+
+        <i
+          class="fas fa-arrow-right"
+          aria-hidden="true">
+        </i>
+
+      </a>
+
     </div>
+
   </div>
+
 </section>
 
-<!-- ======================================================
+
+<!-- =============================================================
+     SECURITY
+============================================================= -->
+
+<section class="security-section">
+
+  <div class="container">
+
+    <div class="security-card reveal">
+
+      <div class="security-visual">
+
+        <div class="shield-wrapper">
+
+          <i
+            class="fas fa-shield-halved"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+      </div>
+
+
+      <div class="security-copy">
+
+        <span class="section-eyebrow">
+          SECURITY
+        </span>
+
+        <h2>
+          Designed with account security in mind.
+        </h2>
+
+        <p>
+          SafiPay uses authenticated access and secure application
+          practices to protect your account experience.
+        </p>
+
+
+        <div class="security-features">
+
+          <span>
+
+            <i
+              class="fas fa-check"
+              aria-hidden="true">
+            </i>
+
+            Secure authentication
+
+          </span>
+
+
+          <span>
+
+            <i
+              class="fas fa-check"
+              aria-hidden="true">
+            </i>
+
+            Protected account access
+
+          </span>
+
+
+          <span>
+
+            <i
+              class="fas fa-check"
+              aria-hidden="true">
+            </i>
+
+            Transaction visibility
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =============================================================
      FAQ
-====================================================== -->
-<section class="faq-section" id="faq">
-  <div class="container">
-    <div class="section-header reveal">
-      <span class="section-badge">FAQ</span>
-      <h2>Got questions? We've got answers.</h2>
+============================================================= -->
+
+<section
+  class="faq-section"
+  id="faq">
+
+  <div class="container faq-container">
+
+    <div class="section-heading centered reveal">
+
+      <span class="section-eyebrow">
+        FAQ
+      </span>
+
+      <h2>
+        Questions about SafiPay?
+      </h2>
+
+      <p>
+        Here are answers to some common questions.
+      </p>
+
     </div>
 
-    <div class="faq-grid">
-      @for (faq of faqs; track faq.q; let i = $index) {
-      <div class="faq-item reveal" [class.active]="activeFaq() === i" [style]="'--delay:' + (i * 50) + 'ms'">
-        <div class="faq-question" (click)="toggleFaq(i)">
-          {{ faq.q }}
-          <span class="faq-toggle">{{ activeFaq() === i ? '−' : '+' }}</span>
-        </div>
-        @if (activeFaq() === i) {
-        <div class="faq-answer">{{ faq.a }}</div>
-        }
-      </div>
+
+    <div class="faq-list">
+
+      @for (
+        faq of faqs;
+        track faq.q;
+        let i = $index
+      ) {
+
+        <article
+          class="faq-item reveal"
+          [class.active]="activeFaq() === i"
+          [style]="'--delay:' + (i * 50) + 'ms'">
+
+
+          <button
+            type="button"
+            class="faq-question"
+            [attr.aria-expanded]="activeFaq() === i"
+            (click)="toggleFaq(i)">
+
+            <span>
+              {{ faq.q }}
+            </span>
+
+            <span
+              class="faq-toggle"
+              aria-hidden="true">
+
+              {{ activeFaq() === i ? '−' : '+' }}
+
+            </span>
+
+          </button>
+
+
+          @if (activeFaq() === i) {
+
+            <div class="faq-answer">
+              {{ faq.a }}
+            </div>
+
+          }
+
+        </article>
+
       }
+
     </div>
 
-    <p class="faq-cta reveal">
-      Still have questions? <a routerLink="/auth/register">Contact our support team →</a>
-    </p>
   </div>
+
 </section>
 
-<!-- ======================================================
+
+<!-- =============================================================
      FINAL CTA
-====================================================== -->
-<section class="final-cta">
-  <div class="container">
-    <div class="cta-card reveal">
-      <div class="cta-top-line"></div>
-      <h2>Ready to take control of your money?<br>Join SafiPay for free today.</h2>
+============================================================= -->
 
-      <div class="cta-bullets">
-        <div class="bullet">
-          <i class="fas fa-rocket bullet-icon" aria-hidden="true"></i>
-          <div>
-            <strong>Instant Setup</strong>
-            <p>Be sending money in under 2 minutes</p>
-          </div>
-        </div>
-        <div class="bullet">
-          <i class="fas fa-shield-alt bullet-icon" aria-hidden="true"></i>
-          <div>
-            <strong>Bank-Grade Security</strong>
-            <p>Your money is always protected</p>
-          </div>
-        </div>
-        <div class="bullet">
-          <i class="fas fa-coins bullet-icon" aria-hidden="true"></i>
-          <div>
-            <strong>Zero Fees</strong>
-            <p>Free transfers between SafiPay users</p>
-          </div>
-        </div>
+<section class="final-cta">
+
+  <div class="container">
+
+    <div class="final-cta-card reveal">
+
+      <div class="cta-copy">
+
+        <span class="cta-eyebrow">
+          GET STARTED
+        </span>
+
+        <h2>
+          Ready to bring your money into one place?
+        </h2>
+
+        <p>
+          Create a SafiPay account and start exploring your wallet,
+          payments and savings tools.
+        </p>
+
       </div>
 
-      <a routerLink="/auth/register" class="btn btn-primary btn-large">
-        Get Started — It's Free
-      </a>
-      <p class="guarantee">🛡 30-day money-back guarantee · No questions asked</p>
+
+      <div class="cta-actions">
+
+        <a
+          routerLink="/auth/register"
+          class="cta-primary">
+
+          Create Account
+
+          <i
+            class="fas fa-arrow-right"
+            aria-hidden="true">
+          </i>
+
+        </a>
+
+
+        <a
+          routerLink="/auth/login"
+          class="cta-secondary">
+
+          Sign In
+
+        </a>
+
+      </div>
+
     </div>
+
   </div>
+
 </section>
 
-<!-- ======================================================
+
+<!-- =============================================================
      FOOTER
-====================================================== -->
+============================================================= -->
+
 <footer class="site-footer">
+
   <div class="container">
+
     <div class="footer-grid">
-      <div class="footer-col brand-col">
+
+
+      <!-- Brand -->
+
+      <div class="footer-brand">
+
         <div class="footer-logo">
-          <div class="logo-mark">SP</div>
-          <span class="logo-text">Safi<em>Pay</em></span>
+
+          <div class="logo-mark">
+            S
+          </div>
+
+          <span>
+            Safi<span>Pay</span>
+          </span>
+
         </div>
-        <p>The smartest digital wallet and savings platform for South Africans. Send, save, and grow your money.</p>
-        <div class="social-links">
-          <a href="#" aria-label="Twitter">𝕏</a>
-          <a href="#" aria-label="Instagram">📸</a>
-          <a href="#" aria-label="LinkedIn">in</a>
-          <a href="#" aria-label="Facebook">f</a>
-        </div>
+
+        <p>
+          A digital wallet, payments and stokvel platform built
+          around simple money management.
+        </p>
+
       </div>
 
-      <div class="footer-col">
-        <h4>Product</h4>
-        <a href="#">Features</a>
-        <a href="#">Stokvel</a>
-        <a href="#">Pricing</a>
-        <a href="#">Security</a>
+
+      <!-- Product -->
+
+      <div class="footer-column">
+
+        <h4>
+          Product
+        </h4>
+
+        <button
+          type="button"
+          (click)="scrollTo('features')">
+          Features
+        </button>
+
+        <button
+          type="button"
+          (click)="scrollTo('how-it-works')">
+          How it works
+        </button>
+
+        <button
+          type="button"
+          (click)="scrollTo('faq')">
+          FAQ
+        </button>
+
       </div>
 
-      <div class="footer-col">
-        <h4>Company</h4>
-        <a href="#">About</a>
-        <a href="#">Blog</a>
-        <a href="#">Careers</a>
-        <a href="#">Press</a>
+
+      <!-- Account -->
+
+      <div class="footer-column">
+
+        <h4>
+          Account
+        </h4>
+
+        <a routerLink="/auth/register">
+          Create account
+        </a>
+
+        <a routerLink="/auth/login">
+          Sign in
+        </a>
+
       </div>
 
-      <div class="footer-col">
-        <h4>Support</h4>
-        <a href="#">Help Centre</a>
-        <a href="#">Contact</a>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+
+      <!-- Platform -->
+
+      <div class="footer-column">
+
+        <h4>
+          SafiPay
+        </h4>
+
+        <span>
+          Digital Wallet
+        </span>
+
+        <span>
+          Payments
+        </span>
+
+        <span>
+          Stokvels
+        </span>
+
       </div>
+
     </div>
+
 
     <div class="footer-bottom">
-      <p>© 2025 SafiPay (Pty) Ltd · Registered Financial Services Provider · FSP 12345</p>
-      <div class="badges">
-        <span>🔒 256-bit SSL</span>
-        <span>✓ POPIA Compliant</span>
-        <span>🏦 SAPA Member</span>
+
+      <p>
+        © 2026 SafiPay. All rights reserved.
+      </p>
+
+      <div>
+
+        <span>
+
+          <i
+            class="fas fa-lock"
+            aria-hidden="true">
+          </i>
+
+          Secure experience
+
+        </span>
+
+        <span>
+          Built in South Africa
+        </span>
+
       </div>
+
     </div>
+
   </div>
+
 </footer>

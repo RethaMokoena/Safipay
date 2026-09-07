@@ -1,0 +1,378 @@
+<section class="receipt-page">
+
+  <div class="receipt-navigation">
+
+    <a
+      routerLink="/dashboard/orders"
+      class="back-link"
+    >
+      ← Back to orders
+    </a>
+
+    <a
+      routerLink="/dashboard/marketplace"
+      class="back-link"
+    >
+      Marketplace
+    </a>
+
+  </div>
+
+
+  <div
+    *ngIf="loading()"
+    class="state-card"
+  >
+    Loading receipt...
+  </div>
+
+
+  <div
+    *ngIf="error()"
+    class="state-card state-card--error"
+  >
+    {{ error() }}
+  </div>
+
+
+  <ng-container
+    *ngIf="
+      !loading() &&
+      !error() &&
+      checkout() as receipt
+    "
+  >
+
+    <header class="receipt-header">
+
+      <div>
+
+        <p class="eyebrow">
+          SAFIPAY RECEIPT
+        </p>
+
+        <h1>
+          Payment successful
+        </h1>
+
+        <p>
+          Your marketplace checkout
+          has been completed.
+        </p>
+
+      </div>
+
+
+      <span
+        class="status-badge"
+      >
+        {{ receipt.status }}
+      </span>
+
+    </header>
+
+
+    <section class="overall-receipt">
+
+      <div class="overall-receipt-heading">
+
+        <div>
+
+          <p class="eyebrow">
+            OVERALL RECEIPT
+          </p>
+
+          <h2>
+            Order summary
+          </h2>
+
+        </div>
+
+
+        <button
+          type="button"
+          class="download-button"
+          (click)="downloadOverall()"
+        >
+          <i class="fas fa-file-pdf"></i>
+
+          Download overall PDF
+        </button>
+
+      </div>
+
+
+      <div class="receipt-row">
+
+        <span>
+          Checkout ID
+        </span>
+
+        <strong>
+          {{ receipt.checkoutId }}
+        </strong>
+
+      </div>
+
+
+      <div class="receipt-row">
+
+        <span>
+          Date
+        </span>
+
+        <strong>
+          {{
+            receipt.createdAt
+              | date:'medium'
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="receipt-row">
+
+        <span>
+          Merchants
+        </span>
+
+        <strong>
+          {{
+            receipt.merchantOrders.length
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="receipt-row">
+
+        <span>
+          Status
+        </span>
+
+        <strong>
+          {{ receipt.status }}
+        </strong>
+
+      </div>
+
+
+      <div class="receipt-total">
+
+        <span>
+          Overall total
+        </span>
+
+        <strong>
+          {{
+            receipt.grandTotal
+              | currency:
+                  'ZAR':
+                  'symbol-narrow':
+                  '1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+    </section>
+
+
+    <div class="merchant-heading">
+
+      <div>
+
+        <p class="eyebrow">
+          ORDER BREAKDOWN
+        </p>
+
+        <h2 class="merchant-title">
+          Merchant receipts
+        </h2>
+
+      </div>
+
+
+      <span class="merchant-count">
+        {{ receipt.merchantOrders.length }}
+        {{
+          receipt.merchantOrders.length === 1
+            ? 'merchant'
+            : 'merchants'
+        }}
+      </span>
+
+    </div>
+
+
+    <section
+      class="merchant-receipt"
+      *ngFor="
+        let order of receipt.merchantOrders
+      "
+    >
+
+      <header class="merchant-receipt-header">
+
+        <div>
+
+          <span class="merchant-label">
+            MERCHANT
+          </span>
+
+          <h3>
+            {{ order.merchantName }}
+          </h3>
+
+        </div>
+
+
+        <div class="merchant-header-actions">
+
+          <span
+            class="merchant-status"
+            [class.merchant-status--paid]="
+              order.status === 'PAID'
+            "
+          >
+            {{ order.status }}
+          </span>
+
+
+          <button
+            type="button"
+            class="download-button download-button--small"
+            (click)="downloadMerchant(order)"
+          >
+            <i class="fas fa-file-pdf"></i>
+
+            Download PDF
+          </button>
+
+        </div>
+
+      </header>
+
+
+      <div
+        class="receipt-item"
+        *ngFor="
+          let item of order.items
+        "
+      >
+
+        <div class="receipt-item-details">
+
+          <strong>
+            {{ item.title }}
+          </strong>
+
+
+          <span class="item-type">
+            {{
+              item.type === 'PRODUCT'
+                ? 'Product'
+                : 'Service'
+            }}
+          </span>
+
+
+          <span>
+            {{ item.quantity }}
+            ×
+            {{
+              item.unitPrice
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </span>
+
+        </div>
+
+
+        <strong class="item-subtotal">
+          {{
+            item.subtotal
+              | currency:
+                  'ZAR':
+                  'symbol-narrow':
+                  '1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+
+      <div class="payment-reference">
+
+        <span>
+          Order reference
+        </span>
+
+        <code>
+          {{ order.orderId }}
+        </code>
+
+      </div>
+
+
+      <div class="payment-reference">
+
+        <span>
+          Payment reference
+        </span>
+
+        <code>
+          {{ order.paymentId || 'N/A' }}
+        </code>
+
+      </div>
+
+
+      <footer class="merchant-total">
+
+        <span>
+          Merchant total
+        </span>
+
+        <strong>
+          {{
+            order.totalAmount
+              | currency:
+                  'ZAR':
+                  'symbol-narrow':
+                  '1.2-2'
+          }}
+        </strong>
+
+      </footer>
+
+    </section>
+
+
+    <div class="receipt-actions">
+
+      <a
+        routerLink="/dashboard/orders"
+        class="secondary-button"
+      >
+        View all orders
+      </a>
+
+
+      <a
+        routerLink="/dashboard/marketplace"
+        class="primary-button"
+      >
+        Continue shopping
+      </a>
+
+    </div>
+
+  </ng-container>
+
+</section>

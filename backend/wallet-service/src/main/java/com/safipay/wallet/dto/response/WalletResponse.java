@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class WalletResponse {
     private String id;
     private String userId;
+    private String userEmail;
     private BigDecimal balance;
     private BigDecimal lockedBalance;
     private BigDecimal availableBalance;

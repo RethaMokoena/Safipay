@@ -13,7 +13,8 @@ export interface Payment {
 }
 
 export interface SendMoneyRequest {
-  recipientUserId: string;
+  // recipientUserId: string;
+  recipientEmail: string;
   amount: number;
   description?: string;
   referenceNote?: string;

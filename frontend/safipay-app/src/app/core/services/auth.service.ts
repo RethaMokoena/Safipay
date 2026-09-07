@@ -37,13 +37,20 @@ export class AuthService {
     );
   }
 
-  logout() {
-    this._token.set(null);
-    this._currentUser.set(null);
-    localStorage.removeItem('safipay_token');
-    localStorage.removeItem('safipay_user');
-    this.router.navigate(['/']);
-  }
+ logout(): void {
+  // Clear Angular auth state
+  this._token.set(null);
+  this._currentUser.set(null);
+
+  // Clear all persisted browser state
+  localStorage.clear();
+  sessionStorage.clear();
+
+  // Prevent going "back" into authenticated pages
+  this.router.navigate(['/login'], {
+    replaceUrl: true
+  });
+}
 
   getMe() {
     return this.http.get<ApiResponse<User>>(`${this.apiUrl}/me`).pipe(

@@ -1,0 +1,282 @@
+[
+  {
+    "firstName": "Thabo",
+    "lastName": "Mokoena",
+    "email": "thabo.mokoena@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234501"
+  },
+  {
+    "firstName": "Lerato",
+    "lastName": "Khumalo",
+    "email": "lerato.khumalo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234502"
+  },
+  {
+    "firstName": "Kabelo",
+    "lastName": "Dlamini",
+    "email": "kabelo.dlamini@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234503"
+  },
+  {
+    "firstName": "Naledi",
+    "lastName": "Molefe",
+    "email": "naledi.molefe@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234504"
+  },
+  {
+    "firstName": "Sipho",
+    "lastName": "Ndlovu",
+    "email": "sipho.ndlovu@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234505"
+  },
+  {
+    "firstName": "Refilwe",
+    "lastName": "Masondo",
+    "email": "refilwe.masondo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234506"
+  },
+  {
+    "firstName": "Tumelo",
+    "lastName": "Maseko",
+    "email": "tumelo.maseko@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234507"
+  },
+  {
+    "firstName": "Ayanda",
+    "lastName": "Zulu",
+    "email": "ayanda.zulu@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234508"
+  },
+  {
+    "firstName": "Karabo",
+    "lastName": "Nkosi",
+    "email": "karabo.nkosi@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234509"
+  },
+  {
+    "firstName": "Boitumelo",
+    "lastName": "Moagi",
+    "email": "boitumelo.moagi@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234510"
+  },
+  {
+    "firstName": "Nkosazana",
+    "lastName": "Mabena",
+    "email": "nkosazana.mabena@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234511"
+  },
+  {
+    "firstName": "Tshepo",
+    "lastName": "Mahlangu",
+    "email": "tshepo.mahlangu@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234512"
+  },
+  {
+    "firstName": "Precious",
+    "lastName": "Mthembu",
+    "email": "precious.mthembu@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234513"
+  },
+  {
+    "firstName": "Sibusiso",
+    "lastName": "Cele",
+    "email": "sibusiso.cele@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234514"
+  },
+  {
+    "firstName": "Zanele",
+    "lastName": "Mkhize",
+    "email": "zanele.mkhize@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234515"
+  },
+  {
+    "firstName": "Mpho",
+    "lastName": "Mokoena",
+    "email": "mpho.mokoena@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234516"
+  },
+  {
+    "firstName": "Lesedi",
+    "lastName": "Molefe",
+    "email": "lesedi.molefe@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234517"
+  },
+  {
+    "firstName": "Bongani",
+    "lastName": "Khumalo",
+    "email": "bongani.khumalo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234518"
+  },
+  {
+    "firstName": "Nandi",
+    "lastName": "Dube",
+    "email": "nandi.dube@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234519"
+  },
+  {
+    "firstName": "Kagiso",
+    "lastName": "Modise",
+    "email": "kagiso.modise@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234520"
+  },
+  {
+    "firstName": "Palesa",
+    "lastName": "Motaung",
+    "email": "palesa.motaung@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234521"
+  },
+  {
+    "firstName": "Siyabonga",
+    "lastName": "Ngcobo",
+    "email": "siyabonga.ngcobo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234522"
+  },
+  {
+    "firstName": "Nthabiseng",
+    "lastName": "Mofokeng",
+    "email": "nthabiseng.mofokeng@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234523"
+  },
+  {
+    "firstName": "Lungelo",
+    "lastName": "Gumede",
+    "email": "lungelo.gumede@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234524"
+  },
+  {
+    "firstName": "Khanyisa",
+    "lastName": "Mhlongo",
+    "email": "khanyisa.mhlongo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234525"
+  },
+  {
+    "firstName": "Oarabile",
+    "lastName": "Mogale",
+    "email": "oarabile.mogale@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234526"
+  },
+  {
+    "firstName": "Nhlanhla",
+    "lastName": "Buthelezi",
+    "email": "nhlanhla.buthelezi@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234527"
+  },
+  {
+    "firstName": "Dimakatso",
+    "lastName": "Radebe",
+    "email": "dimakatso.radebe@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234528"
+  },
+  {
+    "firstName": "Themba",
+    "lastName": "Mthethwa",
+    "email": "themba.mthethwa@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234529"
+  },
+  {
+    "firstName": "Amogelang",
+    "lastName": "Moleko",
+    "email": "amogelang.moleko@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234530"
+  },
+  {
+    "firstName": "Lethabo",
+    "lastName": "Selepe",
+    "email": "lethabo.selepe@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234531"
+  },
+  {
+    "firstName": "Thandeka",
+    "lastName": "Zwane",
+    "email": "thandeka.zwane@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234532"
+  },
+  {
+    "firstName": "Katlego",
+    "lastName": "Mabaso",
+    "email": "katlego.mabaso@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234533"
+  },
+  {
+    "firstName": "Nomvula",
+    "lastName": "Sithole",
+    "email": "nomvula.sithole@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234534"
+  },
+  {
+    "firstName": "Musa",
+    "lastName": "Nxumalo",
+    "email": "musa.nxumalo@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234535"
+  },
+  {
+    "firstName": "Dineo",
+    "lastName": "Moeketsi",
+    "email": "dineo.moeketsi@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234536"
+  },
+  {
+    "firstName": "Vuyo",
+    "lastName": "Maseko",
+    "email": "vuyo.maseko@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234537"
+  },
+  {
+    "firstName": "Kgothatso",
+    "lastName": "Mokoena",
+    "email": "kgothatso.mokoena@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234538"
+  },
+  {
+    "firstName": "Zinhle",
+    "lastName": "Ndlovu",
+    "email": "zinhle.ndlovu@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234539"
+  },
+  {
+    "firstName": "Tebogo",
+    "lastName": "Ramaphosa",
+    "email": "tebogo.ramaphosa@example.com",
+    "password": "password123",
+    "phoneNumber": "+27821234540"
+  }
+]

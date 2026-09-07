@@ -7,14 +7,24 @@ import org.hibernate.annotations.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity @Table(name = "wallets")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Entity
+@Table(name = "wallets")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Wallet {
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false, unique = true)
     private String userId;
+
+    @Column(name = "user_email")
+    private String userEmail;
 
     @Column(nullable = false, precision = 19, scale = 2)
     @Builder.Default
@@ -24,7 +34,8 @@ public class Wallet {
     @Builder.Default
     private BigDecimal lockedBalance = BigDecimal.ZERO;
 
-    @Enumerated(EnumType.STRING) @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     @Builder.Default
     private WalletStatus status = WalletStatus.ACTIVE;
 
@@ -32,9 +43,16 @@ public class Wallet {
     @Builder.Default
     private String currency = "ZAR";
 
-    @CreationTimestamp private LocalDateTime createdAt;
-    @UpdateTimestamp private LocalDateTime updatedAt;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
-    public BigDecimal getAvailableBalance() { return balance.subtract(lockedBalance); }
-    public enum WalletStatus { ACTIVE, FROZEN, CLOSED }
+    public BigDecimal getAvailableBalance() {
+        return balance.subtract(lockedBalance);
+    }
+
+    public enum WalletStatus {
+        ACTIVE, FROZEN, CLOSED
+    }
 }

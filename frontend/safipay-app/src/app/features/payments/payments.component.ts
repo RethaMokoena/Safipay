@@ -29,13 +29,12 @@ export class PaymentsComponent implements OnInit {
   // FIX 1: explicitly typed so @for loop infers 'ALL' | 'SENT' | 'RECEIVED', not string
   filters: ('ALL' | 'SENT' | 'RECEIVED')[] = ['ALL', 'SENT', 'RECEIVED'];
 
-  sendForm = this.fb.group({
-    recipientUserId: ['', Validators.required],
-    amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
-    description: [''],
-    referenceNote: [''],
-  });
-
+ sendForm = this.fb.group({
+  recipientEmail: ['', [Validators.required, Validators.email]],
+  amount: [null as number | null, [Validators.required, Validators.min(0.01)]],
+  description: [''],
+  referenceNote: [''],
+});
   ngOnInit() { this.loadPayments(); }
 
   loadPayments() {
@@ -56,31 +55,61 @@ export class PaymentsComponent implements OnInit {
 
   openSend() { this.showSendModal.set(true); this.sendForm.reset(); }
   closeSend() { this.showSendModal.set(false); }
+submitSend() {
+  if (this.sendForm.invalid || this.submitting()) return;
 
-  submitSend() {
-    if (this.sendForm.invalid || this.submitting()) return;
-    this.submitting.set(true);
-    // FIX 2: extract amount separately as number to avoid 'never' narrowing after the ! assertion
-    const { recipientUserId, description, referenceNote } = this.sendForm.value;
-    const amount = this.sendForm.value.amount as number;
-    this.paymentService.sendMoney({
-      recipientUserId: recipientUserId!,
-      amount,
-      description: description ?? undefined,
-      referenceNote: referenceNote ?? undefined,
-    }).subscribe({
-      next: () => {
-        this.toast.success(`R${amount.toFixed(2)} sent successfully`);
-        this.closeSend();
-        this.loadPayments();
-        this.submitting.set(false);
-      },
-      error: (e) => {
-        this.toast.error(e.error?.message ?? 'Payment failed');
-        this.submitting.set(false);
-      },
-    });
-  }
+  this.submitting.set(true);
+
+  const {
+    recipientEmail,
+    description,
+    referenceNote
+  } = this.sendForm.value;
+
+  const amount = this.sendForm.value.amount as number;
+
+  this.paymentService.sendMoney({
+    recipientEmail: recipientEmail!,
+    amount,
+    description: description ?? undefined,
+    referenceNote: referenceNote ?? undefined,
+  }).subscribe({
+    next: () => {
+      this.toast.success(`R${amount.toFixed(2)} sent successfully`);
+      this.closeSend();
+      this.loadPayments();
+      this.submitting.set(false);
+    },
+    error: (e) => {
+      this.toast.error(e.error?.message ?? 'Payment failed');
+      this.submitting.set(false);
+    },
+  });
+}
+  // submitSend() {
+  //   if (this.sendForm.invalid || this.submitting()) return;
+  //   this.submitting.set(true);
+  //   // FIX 2: extract amount separately as number to avoid 'never' narrowing after the ! assertion
+  //   const { recipientUserId, description, referenceNote } = this.sendForm.value;
+  //   const amount = this.sendForm.value.amount as number;
+  //   this.paymentService.sendMoney({
+  //     recipientUserId: recipientUserId!,
+  //     amount,
+  //     description: description ?? undefined,
+  //     referenceNote: referenceNote ?? undefined,
+  //   }).subscribe({
+  //     next: () => {
+  //       this.toast.success(`R${amount.toFixed(2)} sent successfully`);
+  //       this.closeSend();
+  //       this.loadPayments();
+  //       this.submitting.set(false);
+  //     },
+  //     error: (e) => {
+  //       this.toast.error(e.error?.message ?? 'Payment failed');
+  //       this.submitting.set(false);
+  //     },
+  //   });
+  // }
 
   isSent(p: Payment): boolean {
     return p.senderUserId === this.authService.currentUser()?.id;

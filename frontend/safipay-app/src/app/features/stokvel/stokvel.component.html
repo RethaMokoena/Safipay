@@ -1,256 +1,1423 @@
-<div class="page-wrapper">
-  <div class="page-header">
-    <div>
-      <h1>Stokvels</h1>
-      <p>Manage your rotating savings groups</p>
+<div class="stokvel-page">
+
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
+
+  <section class="page-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        STOKVELS
+      </span>
+
+      <h1>
+        Stokvels
+      </h1>
+
+      <p>
+        Create, join and manage your savings groups from one place.
+      </p>
+
     </div>
-    <button class="btn btn-primary" (click)="openCreate()">+ Create Stokvel</button>
-  </div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <button class="tab" [class.active]="activeTab() === 'mine'" (click)="activeTab.set('mine')">My Stokvels</button>
-    <button class="tab" [class.active]="activeTab() === 'browse'" (click)="activeTab.set('browse')">Browse All</button>
-  </div>
 
-  <!-- My Stokvels -->
+    <button
+      class="primary-btn"
+      type="button"
+      (click)="openCreate()">
+
+      <i
+        class="fas fa-plus"
+        aria-hidden="true">
+      </i>
+
+      Create Stokvel
+
+    </button>
+
+  </section>
+
+
+  <!-- =========================================================
+       TABS
+  ========================================================== -->
+
+  <section class="stokvel-toolbar">
+
+    <div
+      class="tabs"
+      role="tablist"
+      aria-label="Stokvel sections">
+
+      <button
+        class="tab"
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'mine'"
+        [class.active]="activeTab() === 'mine'"
+        (click)="activeTab.set('mine')">
+
+        <i
+          class="far fa-user"
+          aria-hidden="true">
+        </i>
+
+        My Stokvels
+
+        <span class="tab-count">
+          {{ myStokvels().length }}
+        </span>
+
+      </button>
+
+
+      <button
+        class="tab"
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'browse'"
+        [class.active]="activeTab() === 'browse'"
+        (click)="activeTab.set('browse')">
+
+        <i
+          class="fas fa-compass"
+          aria-hidden="true">
+        </i>
+
+        Browse All
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       MY STOKVELS
+  ========================================================== -->
+
   @if (activeTab() === 'mine') {
-  @if (loading()) {
-  @for (i of [1,2,3]; track i) { <div class="card-skeleton"></div> }
-  } @else if (myStokvels().length === 0) {
-  <div class="empty-state">
-    <span>
-      <i class="fas fa-handshake" aria-hidden="true"></i>
-    </span>
-    <p>You haven't joined any stokvels yet.</p>
-    <button class="btn btn-primary" (click)="activeTab.set('browse')">Browse Stokvels</button>
-  </div>
-  } @else {
-  <div class="stokvel-grid">
-    @for (s of myStokvels(); track s.id) {
-    <div class="stokvel-card" (click)="openDetail(s)">
-      <div class="card-top-line"></div>
-      <div class="card-head">
-        <div>
-          <h3>{{ s.name }}</h3>
-          <span class="type-badge" [class]="s.type.toLowerCase()">{{ s.type }}</span>
-        </div>
-        <span class="status-badge" [class]="statusClass(s.status)">{{ s.status }}</span>
-      </div>
-      <div class="card-body">
-        <div class="stat-row">
-          <div class="stat">
-            <span>Pool Balance</span>
-            <strong>R{{ s.totalPoolBalance | number:'1.2-2' }}</strong>
-          </div>
-          <div class="stat">
-            <span>Members</span>
-            <strong>{{ s.currentMemberCount }}/{{ s.maxMembers }}</strong>
-          </div>
-          <div class="stat">
-            <span>Contribution</span>
-            <strong>R{{ s.contributionAmount | number:'1.2-2' }}</strong>
-          </div>
-        </div>
-        <div class="member-bar">
-          <div class="member-fill" [style.width.%]="(s.currentMemberCount / s.maxMembers) * 100"></div>
-        </div>
-        <p class="freq-label">{{ frequencyLabel(s.contributionFrequency) }} contributions</p>
-      </div>
-      <div class="card-footer" (click)="$event.stopPropagation()">
-        @if (s.status === 'ACTIVE') {
-        <button class="btn btn-primary btn-sm" (click)="openContribute(s)">Contribute</button>
+
+    @if (loading()) {
+
+      <div class="stokvel-grid">
+
+        @for (i of [1,2,3]; track i) {
+
+          <div class="card-skeleton"></div>
+
         }
-        @if (isAdmin(s) && s.status === 'FORMING') {
-        <button class="btn btn-ghost btn-sm" (click)="activateStokvel(s.id)">Activate</button>
-        }
-        @if (isAdmin(s) && s.status === 'ACTIVE' && s.type === 'ROSCA') {
-        <button class="btn btn-ghost btn-sm" (click)="triggerPayout(s.id)">Trigger Payout</button>
-        }
+
       </div>
-    </div>
+
+    } @else if (myStokvels().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i
+            class="fas fa-users"
+            aria-hidden="true">
+          </i>
+
+        </div>
+
+        <strong>
+          You haven't joined a stokvel yet
+        </strong>
+
+        <p>
+          Browse available savings groups or create one for your community.
+        </p>
+
+        <div class="empty-actions">
+
+          <button
+            class="primary-btn"
+            type="button"
+            (click)="activeTab.set('browse')">
+
+            <i
+              class="fas fa-compass"
+              aria-hidden="true">
+            </i>
+
+            Browse Stokvels
+
+          </button>
+
+
+          <button
+            class="secondary-btn"
+            type="button"
+            (click)="openCreate()">
+
+            Create Stokvel
+
+          </button>
+
+        </div>
+
+      </div>
+
+    } @else {
+
+      <div class="stokvel-grid">
+
+        @for (s of myStokvels(); track s.id) {
+
+          <article
+            class="stokvel-card"
+            role="button"
+            tabindex="0"
+            [attr.aria-label]="'Open ' + s.name + ' details'"
+            (click)="openDetail(s)"
+            (keydown.enter)="openDetail(s)"
+            (keydown.space)="openDetail(s); $event.preventDefault()">
+
+
+            <!-- Card Header -->
+
+            <div class="card-head">
+
+              <div class="stokvel-identity">
+
+                <div class="stokvel-avatar">
+
+                  <i
+                    class="fas fa-users"
+                    aria-hidden="true">
+                  </i>
+
+                </div>
+
+                <div>
+
+                  <h3>
+                    {{ s.name }}
+                  </h3>
+
+                  <span
+                    class="type-badge"
+                    [class]="s.type.toLowerCase()">
+
+                    {{ s.type }}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <span
+                class="status-badge"
+                [class]="statusClass(s.status)">
+
+                <span class="status-dot"></span>
+
+                {{ s.status }}
+
+              </span>
+
+            </div>
+
+
+            <!-- Balance -->
+
+            <div class="pool-section">
+
+              <span>
+                Total Pool Balance
+              </span>
+
+              <strong>
+                R {{ s.totalPoolBalance | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <!-- Stats -->
+
+            <div class="stat-grid">
+
+              <div class="stat">
+
+                <span>
+                  Members
+                </span>
+
+                <strong>
+                  {{ s.currentMemberCount }}/{{ s.maxMembers }}
+                </strong>
+
+              </div>
+
+
+              <div class="stat">
+
+                <span>
+                  Contribution
+                </span>
+
+                <strong>
+                  R {{ s.contributionAmount | number:'1.2-2' }}
+                </strong>
+
+              </div>
+
+
+              <div class="stat">
+
+                <span>
+                  Frequency
+                </span>
+
+                <strong>
+                  {{ frequencyLabel(s.contributionFrequency) }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- Membership progress -->
+
+            <div class="member-progress">
+
+              <div class="progress-copy">
+
+                <span>
+                  Membership
+                </span>
+
+                <span>
+                  {{ s.currentMemberCount }} of {{ s.maxMembers }}
+                </span>
+
+              </div>
+
+              <div class="member-bar">
+
+                <div
+                  class="member-fill"
+                  [style.width.%]="
+                    (s.currentMemberCount / s.maxMembers) * 100
+                  ">
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Footer -->
+
+            <div
+              class="card-footer"
+              (click)="$event.stopPropagation()">
+
+              <div class="card-footer-info">
+
+                <i
+                  class="far fa-calendar"
+                  aria-hidden="true">
+                </i>
+
+                {{ frequencyLabel(s.contributionFrequency) }}
+                contributions
+
+              </div>
+
+
+              <div class="card-actions">
+
+                @if (s.status === 'ACTIVE') {
+
+                  <button
+                    class="small-primary-btn"
+                    type="button"
+                    (click)="openContribute(s)">
+
+                    <i
+                      class="fas fa-plus"
+                      aria-hidden="true">
+                    </i>
+
+                    Contribute
+
+                  </button>
+
+                }
+
+
+                @if (
+                  isAdmin(s) &&
+                  s.status === 'FORMING'
+                ) {
+
+                  <button
+                    class="small-secondary-btn"
+                    type="button"
+                    (click)="activateStokvel(s.id)">
+
+                    Activate
+
+                  </button>
+
+                }
+
+
+                @if (
+                  isAdmin(s) &&
+                  s.status === 'ACTIVE' &&
+                  s.type === 'ROSCA'
+                ) {
+
+                  <button
+                    class="small-secondary-btn"
+                    type="button"
+                    (click)="triggerPayout(s.id)">
+
+                    Trigger Payout
+
+                  </button>
+
+                }
+
+              </div>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
     }
-  </div>
-  }
+
   }
 
-  <!-- Browse All -->
+
+  <!-- =========================================================
+       BROWSE STOKVELS
+  ========================================================== -->
+
   @if (activeTab() === 'browse') {
-  <div class="stokvel-grid">
-    @for (s of allStokvels(); track s.id) {
-    <div class="stokvel-card">
-      <div class="card-top-line"></div>
-      <div class="card-head">
-        <div>
-          <h3>{{ s.name }}</h3>
-          <span class="type-badge" [class]="s.type.toLowerCase()">{{ s.type }}</span>
+
+    @if (allStokvels().length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">
+
+          <i
+            class="fas fa-compass"
+            aria-hidden="true">
+          </i>
+
         </div>
-        <span class="status-badge" [class]="statusClass(s.status)">{{ s.status }}</span>
+
+        <strong>
+          No stokvels available
+        </strong>
+
+        <p>
+          There are currently no savings groups available to join.
+        </p>
+
+        <button
+          class="primary-btn"
+          type="button"
+          (click)="openCreate()">
+
+          Create a Stokvel
+
+        </button>
+
       </div>
-      <div class="card-body">
-        <p class="card-desc">{{ s.description || 'No description provided.' }}</p>
-        <div class="stat-row">
-          <div class="stat"><span>Contribution</span><strong>R{{ s.contributionAmount | number:'1.2-2' }}</strong></div>
-          <div class="stat"><span>Frequency</span><strong>{{ frequencyLabel(s.contributionFrequency) }}</strong></div>
-          <div class="stat"><span>Spots</span><strong>{{ s.maxMembers - s.currentMemberCount }} left</strong></div>
-        </div>
-      </div>
-      <div class="card-footer">
-        @if (!isMember(s) && s.status === 'FORMING') {
-        <button class="btn btn-primary btn-sm" (click)="joinStokvel(s.id)">Join</button>
-        } @else if (isMember(s)) {
-        <span class="member-tag">✓ Member</span>
-        } @else {
-        <span class="closed-tag">{{ s.status }}</span>
+
+    } @else {
+
+      <div class="stokvel-grid">
+
+        @for (s of allStokvels(); track s.id) {
+
+          <article class="stokvel-card browse-card">
+
+
+            <!-- Card Header -->
+
+            <div class="card-head">
+
+              <div class="stokvel-identity">
+
+                <div class="stokvel-avatar">
+
+                  <i
+                    class="fas fa-users"
+                    aria-hidden="true">
+                  </i>
+
+                </div>
+
+                <div>
+
+                  <h3>
+                    {{ s.name }}
+                  </h3>
+
+                  <span
+                    class="type-badge"
+                    [class]="s.type.toLowerCase()">
+
+                    {{ s.type }}
+
+                  </span>
+
+                </div>
+
+              </div>
+
+
+              <span
+                class="status-badge"
+                [class]="statusClass(s.status)">
+
+                <span class="status-dot"></span>
+
+                {{ s.status }}
+
+              </span>
+
+            </div>
+
+
+            <!-- Description -->
+
+            <div class="browse-description">
+
+              <p>
+                {{
+                  s.description ||
+                  'No description has been provided for this stokvel.'
+                }}
+              </p>
+
+            </div>
+
+
+            <!-- Browse stats -->
+
+            <div class="stat-grid browse-stats">
+
+              <div class="stat">
+
+                <span>
+                  Contribution
+                </span>
+
+                <strong>
+                  R {{ s.contributionAmount | number:'1.2-2' }}
+                </strong>
+
+              </div>
+
+
+              <div class="stat">
+
+                <span>
+                  Frequency
+                </span>
+
+                <strong>
+                  {{ frequencyLabel(s.contributionFrequency) }}
+                </strong>
+
+              </div>
+
+
+              <div class="stat">
+
+                <span>
+                  Open Spots
+                </span>
+
+                <strong>
+                  {{ s.maxMembers - s.currentMemberCount }}
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <!-- Membership -->
+
+            <div class="member-progress">
+
+              <div class="progress-copy">
+
+                <span>
+                  Members
+                </span>
+
+                <span>
+                  {{ s.currentMemberCount }}/{{ s.maxMembers }}
+                </span>
+
+              </div>
+
+              <div class="member-bar">
+
+                <div
+                  class="member-fill"
+                  [style.width.%]="
+                    (s.currentMemberCount / s.maxMembers) * 100
+                  ">
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- Browse footer -->
+
+            <div class="card-footer browse-footer">
+
+              @if (
+                !isMember(s) &&
+                s.status === 'FORMING'
+              ) {
+
+                <button
+                  class="small-primary-btn join-btn"
+                  type="button"
+                  (click)="joinStokvel(s.id)">
+
+                  <i
+                    class="fas fa-user-plus"
+                    aria-hidden="true">
+                  </i>
+
+                  Join Stokvel
+
+                </button>
+
+              } @else if (isMember(s)) {
+
+                <span class="member-tag">
+
+                  <i
+                    class="fas fa-circle-check"
+                    aria-hidden="true">
+                  </i>
+
+                  You are a member
+
+                </span>
+
+              } @else {
+
+                <span class="closed-tag">
+
+                  <i
+                    class="fas fa-lock"
+                    aria-hidden="true">
+                  </i>
+
+                  {{ s.status }}
+
+                </span>
+
+              }
+
+            </div>
+
+          </article>
+
         }
+
       </div>
-    </div>
+
     }
-  </div>
+
   }
+
 </div>
 
-<!-- Create Modal -->
+
+<!-- =============================================================
+     CREATE STOKVEL MODAL
+============================================================= -->
+
 @if (activeModal() === 'create') {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal modal-lg" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <h3>Create a Stokvel</h3>
-      <button class="modal-close" (click)="closeModal()">×</button>
-    </div>
-    <form [formGroup]="createForm" (ngSubmit)="submitCreate()">
-      <div class="form-row">
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal modal-lg"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-stokvel-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-users"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              NEW SAVINGS GROUP
+            </span>
+
+            <h3 id="create-stokvel-title">
+              Create a Stokvel
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close create stokvel dialog"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <form
+        [formGroup]="createForm"
+        (ngSubmit)="submitCreate()">
+
+        <div class="form-row">
+
+
+          <!-- Name -->
+
+          <div class="form-group">
+
+            <label for="stokvel-name">
+              Name
+            </label>
+
+            <input
+              id="stokvel-name"
+              type="text"
+              formControlName="name"
+              placeholder="e.g. Soweto Savers">
+
+            @if (
+              createForm.get('name')?.invalid &&
+              createForm.get('name')?.touched
+            ) {
+
+              <span class="error-msg">
+                Name is required and must contain at least 3 characters.
+              </span>
+
+            }
+
+          </div>
+
+
+          <!-- Type -->
+
+          <div class="form-group">
+
+            <label for="stokvel-type">
+              Type
+            </label>
+
+            <select
+              id="stokvel-type"
+              formControlName="type">
+
+              <option value="ROSCA">
+                ROSCA — Rotating payout
+              </option>
+
+              <option value="POOL">
+                POOL — Shared fund
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- Description -->
+
         <div class="form-group">
-          <label>Name</label>
-          <input type="text" formControlName="name" placeholder="e.g. Soweto Savers" />
-          @if (createForm.get('name')?.invalid && createForm.get('name')?.touched) {
-          <span class="error-msg">Name required (min 3 chars)</span>
+
+          <label for="stokvel-description">
+
+            Description
+
+            <span class="opt">
+              Optional
+            </span>
+
+          </label>
+
+          <input
+            id="stokvel-description"
+            type="text"
+            formControlName="description"
+            placeholder="What's this stokvel for?">
+
+        </div>
+
+
+        <div class="form-row three-columns">
+
+
+          <!-- Contribution -->
+
+          <div class="form-group">
+
+            <label for="contribution-amount">
+              Contribution
+            </label>
+
+            <div class="amount-input">
+
+              <span>
+                R
+              </span>
+
+              <input
+                id="contribution-amount"
+                type="number"
+                formControlName="contributionAmount"
+                placeholder="500"
+                min="1">
+
+            </div>
+
+          </div>
+
+
+          <!-- Frequency -->
+
+          <div class="form-group">
+
+            <label for="contribution-frequency">
+              Frequency
+            </label>
+
+            <select
+              id="contribution-frequency"
+              formControlName="contributionFrequency">
+
+              <option value="WEEKLY">
+                Weekly
+              </option>
+
+              <option value="BIWEEKLY">
+                Bi-weekly
+              </option>
+
+              <option value="MONTHLY">
+                Monthly
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- Members -->
+
+          <div class="form-group">
+
+            <label for="max-members">
+              Max Members
+            </label>
+
+            <input
+              id="max-members"
+              type="number"
+              formControlName="maxMembers"
+              placeholder="10"
+              min="2"
+              max="100">
+
+          </div>
+
+        </div>
+
+
+        <div class="form-info">
+
+          <i
+            class="fas fa-circle-info"
+            aria-hidden="true">
+          </i>
+
+          You can manage your stokvel after it has been created.
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="
+            createForm.invalid ||
+            submitting()
+          ">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Creating...
+
+          } @else {
+
+            <i
+              class="fas fa-plus"
+              aria-hidden="true">
+            </i>
+
+            Create Stokvel
+
           }
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select formControlName="type">
-            <option value="ROSCA">ROSCA – Rotating payout</option>
-            <option value="POOL">POOL – Shared fund</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Description <span class="opt">(optional)</span></label>
-        <input type="text" formControlName="description" placeholder="What's this stokvel for?" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Contribution Amount (R)</label>
-          <input type="number" formControlName="contributionAmount" placeholder="500" min="1" />
-        </div>
-        <div class="form-group">
-          <label>Frequency</label>
-          <select formControlName="contributionFrequency">
-            <option value="WEEKLY">Weekly</option>
-            <option value="BIWEEKLY">Bi-weekly</option>
-            <option value="MONTHLY">Monthly</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Max Members</label>
-          <input type="number" formControlName="maxMembers" placeholder="10" min="2" max="100" />
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary btn-full" [disabled]="createForm.invalid || submitting()">
-        @if (submitting()) { <span class="spinner"></span> Creating... } @else { Create Stokvel 🤝 }
-      </button>
-    </form>
+
+        </button>
+
+      </form>
+
+    </div>
+
   </div>
-</div>
+
 }
 
-<!-- Contribute Modal -->
-@if (activeModal() === 'contribute' && selectedStokvel()) {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <h3>Make Contribution</h3>
-      <button class="modal-close" (click)="closeModal()">×</button>
-    </div>
-    <div class="contribute-info">
-      <div class="contrib-amount">R{{ selectedStokvel()!.contributionAmount | number:'1.2-2' }}</div>
-      <p>Required contribution for <strong>{{ selectedStokvel()!.name }}</strong></p>
-      <p class="contrib-note">{{ frequencyLabel(selectedStokvel()!.contributionFrequency) }} · {{
-        selectedStokvel()!.type }}</p>
-    </div>
-    <form [formGroup]="contributeForm" (ngSubmit)="submitContribute()">
-      <div class="form-group">
-        <label>Transaction Reference</label>
-        <input type="text" formControlName="transactionId" placeholder="TX-..." />
-        <span class="field-hint">Auto-generated. Change if you have an existing payment reference.</span>
+
+<!-- =============================================================
+     CONTRIBUTE MODAL
+============================================================= -->
+
+@if (
+  activeModal() === 'contribute' &&
+  selectedStokvel()
+) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contribute-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-coins"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              CONTRIBUTION
+            </span>
+
+            <h3 id="contribute-title">
+              Make Contribution
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close contribution dialog"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
       </div>
-      <button type="submit" class="btn btn-primary btn-full" [disabled]="submitting()">
-        @if (submitting()) { <span class="spinner"></span> Recording... }
-        @else { Confirm Contribution }
-      </button>
-    </form>
+
+
+      <div class="contribute-info">
+
+        <span>
+          Required contribution
+        </span>
+
+        <strong>
+          R {{
+            selectedStokvel()!.contributionAmount
+              | number:'1.2-2'
+          }}
+        </strong>
+
+        <p>
+          {{ selectedStokvel()!.name }}
+        </p>
+
+        <div>
+
+          <span>
+            {{ frequencyLabel(
+              selectedStokvel()!.contributionFrequency
+            ) }}
+          </span>
+
+          <span class="info-dot"></span>
+
+          <span>
+            {{ selectedStokvel()!.type }}
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <form
+        [formGroup]="contributeForm"
+        (ngSubmit)="submitContribute()">
+
+        <div class="form-group">
+
+          <label for="transaction-reference">
+            Transaction Reference
+          </label>
+
+          <input
+            id="transaction-reference"
+            type="text"
+            formControlName="transactionId"
+            placeholder="TX-...">
+
+          <span class="field-hint">
+            Auto-generated. Change it if you already have a payment reference.
+          </span>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="submitting()">
+
+          @if (submitting()) {
+
+            <span class="spinner"></span>
+
+            Recording...
+
+          } @else {
+
+            <i
+              class="fas fa-circle-check"
+              aria-hidden="true">
+            </i>
+
+            Confirm Contribution
+
+          }
+
+        </button>
+
+      </form>
+
+    </div>
+
   </div>
-</div>
+
 }
 
-<!-- Detail Modal -->
-@if (activeModal() === 'detail' && selectedStokvel()) {
-<div class="modal-overlay" (click)="closeModal()">
-  <div class="modal modal-lg" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
-    <div class="modal-header">
-      <h3>{{ selectedStokvel()!.name }}</h3>
-      <button class="modal-close" (click)="closeModal()">×</button>
-    </div>
-    <div class="detail-grid">
-      <div class="detail-stat"><span>Type</span><strong>{{ selectedStokvel()!.type }}</strong></div>
-      <div class="detail-stat"><span>Status</span><strong>{{ selectedStokvel()!.status }}</strong></div>
-      <div class="detail-stat"><span>Pool Balance</span><strong>R{{ selectedStokvel()!.totalPoolBalance | number:'1.2-2'
-          }}</strong></div>
-      <div class="detail-stat"><span>Members</span><strong>{{ selectedStokvel()!.currentMemberCount }}/{{
-          selectedStokvel()!.maxMembers }}</strong></div>
+
+<!-- =============================================================
+     DETAIL MODAL
+============================================================= -->
+
+@if (
+  activeModal() === 'detail' &&
+  selectedStokvel()
+) {
+
+  <div
+    class="modal-overlay"
+    (click)="closeModal()">
+
+    <div
+      class="modal modal-lg"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="stokvel-detail-title"
+      (click)="$event.stopPropagation()">
+
+
+      <div class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-icon">
+
+            <i
+              class="fas fa-users"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
+          <div>
+
+            <span class="eyebrow">
+              STOKVEL DETAILS
+            </span>
+
+            <h3 id="stokvel-detail-title">
+              {{ selectedStokvel()!.name }}
+            </h3>
+
+          </div>
+
+        </div>
+
+
+        <button
+          class="modal-close"
+          type="button"
+          aria-label="Close stokvel details"
+          title="Close"
+          (click)="closeModal()">
+
+          <i
+            class="fas fa-xmark"
+            aria-hidden="true">
+          </i>
+
+        </button>
+
+      </div>
+
+
+      <!-- Detail summary -->
+
+      <div class="detail-grid">
+
+        <div class="detail-stat">
+
+          <span>
+            Type
+          </span>
+
+          <strong>
+            {{ selectedStokvel()!.type }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-stat">
+
+          <span>
+            Status
+          </span>
+
+          <strong>
+            {{ selectedStokvel()!.status }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-stat highlight">
+
+          <span>
+            Pool Balance
+          </span>
+
+          <strong>
+            R {{
+              selectedStokvel()!.totalPoolBalance
+                | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+
+        <div class="detail-stat">
+
+          <span>
+            Members
+          </span>
+
+          <strong>
+
+            {{ selectedStokvel()!.currentMemberCount }}
+
+            /
+
+            {{ selectedStokvel()!.maxMembers }}
+
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- Members -->
+
+      <section class="detail-section">
+
+        <div class="detail-section-heading">
+
+          <h4>
+            Members
+          </h4>
+
+          <span>
+            {{ selectedStokvel()!.members.length }}
+          </span>
+
+        </div>
+
+
+        <div class="member-list">
+
+          @for (
+            m of selectedStokvel()!.members;
+            track m.id
+          ) {
+
+            <div class="member-row">
+
+              <div class="member-avatar">
+
+                <i
+                  class="far fa-user"
+                  aria-hidden="true">
+                </i>
+
+              </div>
+
+              <div class="member-info">
+
+                <strong>
+                  {{ m.userId }}
+                </strong>
+
+                <span>
+                  Payout position #{{ m.payoutOrder + 1 }}
+                </span>
+
+              </div>
+
+              @if (m.hasReceivedPayout) {
+
+                <span class="payout-done">
+
+                  <i
+                    class="fas fa-check"
+                    aria-hidden="true">
+                  </i>
+
+                  Paid
+
+                </span>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+
+      <!-- Contributions -->
+
+      @if (contributions().length > 0) {
+
+        <section class="detail-section">
+
+          <div class="detail-section-heading">
+
+            <h4>
+              Recent Contributions
+            </h4>
+
+            <span>
+              Latest 5
+            </span>
+
+          </div>
+
+
+          <div class="mini-list">
+
+            @for (
+              c of contributions().slice(0, 5);
+              track c.id
+            ) {
+
+              <div class="mini-row">
+
+                <div class="mini-user">
+
+                  <span class="mini-icon incoming">
+
+                    <i
+                      class="fas fa-arrow-down"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <span>
+                    {{ c.userId }}
+                  </span>
+
+                </div>
+
+                <strong class="amount-green">
+                  +R {{ c.amount | number:'1.2-2' }}
+                </strong>
+
+                <span class="date-sm">
+                  {{ c.contributedAt | date:'dd MMM' }}
+                </span>
+
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- Payouts -->
+
+      @if (payouts().length > 0) {
+
+        <section class="detail-section">
+
+          <div class="detail-section-heading">
+
+            <h4>
+              Payouts
+            </h4>
+
+            <span>
+              {{ payouts().length }}
+            </span>
+
+          </div>
+
+
+          <div class="mini-list">
+
+            @for (p of payouts(); track p.id) {
+
+              <div class="mini-row">
+
+                <div class="mini-user">
+
+                  <span class="mini-icon outgoing">
+
+                    <i
+                      class="fas fa-arrow-up"
+                      aria-hidden="true">
+                    </i>
+
+                  </span>
+
+                  <span>
+                    {{ p.recipientUserId }}
+                  </span>
+
+                </div>
+
+                <strong class="amount-green">
+                  R {{ p.amount | number:'1.2-2' }}
+                </strong>
+
+                <span class="date-sm">
+                  {{ p.processedAt | date:'dd MMM' }}
+                </span>
+
+              </div>
+
+            }
+
+          </div>
+
+        </section>
+
+      }
+
     </div>
 
-    <h4 class="section-mini-title">Members</h4>
-    <div class="member-list">
-      @for (m of selectedStokvel()!.members; track m.id) {
-      <div class="member-row">
-        <span class="member-avatar">👤</span>
-        <span class="member-id">{{ m.userId }}</span>
-        <span class="member-order">#{{ m.payoutOrder + 1 }}</span>
-        @if (m.hasReceivedPayout) { <span class="payout-done">Paid ✓</span> }
-      </div>
-      }
-    </div>
-
-    @if (contributions().length > 0) {
-    <h4 class="section-mini-title">Recent Contributions</h4>
-    <div class="mini-list">
-      @for (c of contributions().slice(0, 5); track c.id) {
-      <div class="mini-row">
-        <span>{{ c.userId }}</span>
-        <span class="amount-green">+R{{ c.amount | number:'1.2-2' }}</span>
-        <span class="date-sm">{{ c.contributedAt | date:'dd MMM' }}</span>
-      </div>
-      }
-    </div>
-    }
-
-    @if (payouts().length > 0) {
-    <h4 class="section-mini-title">Payouts</h4>
-    <div class="mini-list">
-      @for (p of payouts(); track p.id) {
-      <div class="mini-row">
-        <span>{{ p.recipientUserId }}</span>
-        <span class="amount-green">R{{ p.amount | number:'1.2-2' }}</span>
-        <span class="date-sm">{{ p.processedAt | date:'dd MMM' }}</span>
-      </div>
-      }
-    </div>
-    }
   </div>
-</div>
+
 }

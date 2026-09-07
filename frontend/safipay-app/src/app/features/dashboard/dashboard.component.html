@@ -1,110 +1,906 @@
-<div class="overview">
+<div class="dashboard-page">
 
-  <!-- Welcome -->
-  <div class="welcome-row">
-    <div>
-      <h1>Good day, {{ authService.currentUser()?.firstName }} 👋</h1>
-      <p>Here's your financial overview</p>
-    </div>
-  </div>
 
-  <!-- Wallet summary card -->
-  @if (walletLoading()) {
-  <div class="shimmer-card"></div>
-  } @else if (wallet()) {
-  <div class="balance-strip">
-    <div class="bs-top-line"></div>
-    <div class="bs-left">
-      <span class="bs-label">Available Balance</span>
-      <span class="bs-amount">R {{ wallet()!.availableBalance | number:'1.2-2' }}</span>
-      <span class="bs-currency">{{ wallet()!.currency }}</span>
+  <!-- =========================================================
+       HEADER
+  ========================================================== -->
+
+  <section class="dashboard-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        SAFIPAY OVERVIEW
+      </span>
+
+      <h1>
+        Welcome back,
+        {{ authService.currentUser()?.firstName }}
+      </h1>
+
+      <p>
+        Your money, marketplace orders and savings in one place.
+      </p>
+
     </div>
-    <div class="bs-actions">
-      <a routerLink="/dashboard/wallet" class="bs-btn primary">
-        <i class="fas fa-wallet" aria-hidden="true"></i> Wallet
+
+
+    <div class="header-actions">
+
+      <a
+        routerLink="/dashboard/marketplace"
+        class="secondary-btn">
+
+        <i
+          class="fas fa-store"
+          aria-hidden="true">
+        </i>
+
+        Browse Marketplace
+
       </a>
-      <a routerLink="/dashboard/payments" class="bs-btn">
-        <i class="fas fa-paper-plane" aria-hidden="true"></i> Send
-      </a>
-      <a routerLink="/dashboard/stokvel" class="bs-btn">
-        <i class="fas fa-handshake" aria-hidden="true"></i> Stokvels
-      </a>
-      <a routerLink="/dashboard/merchant" class="bs-btn">
-        <i class="fas fa-store" aria-hidden="true"></i> Merchant
-      </a>
-    </div>
-  </div>
-  }
 
-  <!-- Stats row -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <span class="stat-icon">
-  <i class="fas fa-paper-plane" aria-hidden="true"></i>
-</span>
-      <div class="stat-body">
-        <span class="stat-label">Payments sent</span>
-        <span class="stat-val">{{ recentPayments().length }}</span>
-      </div>
-    </div>
-    <div class="stat-card">
-    <span class="stat-icon">
-  <i class="fas fa-handshake" aria-hidden="true"></i>
-</span>
-      <div class="stat-body">
-        <span class="stat-label">Stokvels</span>
-        <span class="stat-val">{{ myStokvels().length }}</span>
-      </div>
-    </div>
-    <div class="stat-card">
-    <span class="stat-icon">
-  <i class="fas fa-coins" aria-hidden="true"></i>
-</span>
-      <div class="stat-body">
-        <span class="stat-label">Total pool</span>
-        <span class="stat-val">R{{ totalPoolBalance() | number:'1.0-0' }}</span>
-      </div>
-    </div>
-  </div>
 
-  <!-- Recent payments -->
-  <div class="section-card">
-    <div class="sc-header">
-      <h3>Recent Payments</h3>
-      <a routerLink="/dashboard/payments">View all →</a>
-    </div>
-    @if (recentPayments().length === 0) {
-    <div class="sc-empty">No payments yet. <a routerLink="/dashboard/payments">Send money →</a></div>
-    } @else {
-    @for (p of recentPayments(); track p.id) {
-    <div class="mini-tx">
-      <span class="mini-icon" [class.credit]="!isSent(p)" [class.debit]="isSent(p)">{{ isSent(p) ? '↑' : '↓' }}</span>
-      <span class="mini-desc">{{ isSent(p) ? 'To: ' + p.recipientUserId : 'From: ' + p.senderUserId }}</span>
-      <span class="mini-amount" [class.credit]="!isSent(p)" [class.debit]="isSent(p)">{{ isSent(p) ? '-' : '+' }}R{{
-        p.amount | number:'1.2-2' }}</span>
-    </div>
-    }
-    }
-  </div>
+      <a
+        routerLink="/dashboard/payments"
+        class="primary-btn">
 
-  <!-- Stokvels -->
-  <div class="section-card">
-    <div class="sc-header">
-      <h3>My Stokvels</h3>
-      <a routerLink="/dashboard/stokvel">View all →</a>
+        <i
+          class="fas fa-paper-plane"
+          aria-hidden="true">
+        </i>
+
+        Send Money
+
+      </a>
+
     </div>
-    @if (myStokvels().length === 0) {
-    <div class="sc-empty">Not in any stokvels. <a routerLink="/dashboard/stokvel">Browse →</a></div>
-    } @else {
-    @for (s of myStokvels().slice(0,3); track s.id) {
-    <div class="mini-stokvel">
-      <div class="ms-left">
-        <span class="ms-name">{{ s.name }}</span>
-        <span class="ms-type">{{ s.type }} · {{ s.status }}</span>
+
+  </section>
+
+
+  <!-- =========================================================
+       SUMMARY
+  ========================================================== -->
+
+  <section class="stats-grid">
+
+
+    <a
+      routerLink="/dashboard/wallet"
+      class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-icon wallet">
+          <i class="fas fa-wallet"></i>
+        </span>
+
+        <span class="stat-arrow">
+          <i class="fas fa-arrow-up-right-from-square"></i>
+        </span>
+
       </div>
-      <span class="ms-balance">R{{ s.totalPoolBalance | number:'1.2-2' }}</span>
+
+
+      <span class="stat-label">
+        Available Balance
+      </span>
+
+
+      @if (walletLoading()) {
+
+        <span class="stat-skeleton"></span>
+
+      } @else {
+
+        <strong class="stat-value">
+          R {{
+            wallet()?.availableBalance ?? 0
+              | number:'1.2-2'
+          }}
+        </strong>
+
+      }
+
+
+      <span class="stat-meta">
+        {{ wallet()?.currency || 'ZAR' }}
+        · Primary wallet
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/dashboard/payments"
+      class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-icon payments">
+          <i class="fas fa-paper-plane"></i>
+        </span>
+
+        <span class="stat-arrow">
+          <i class="fas fa-arrow-up-right-from-square"></i>
+        </span>
+
+      </div>
+
+
+      <span class="stat-label">
+        Recent Payments
+      </span>
+
+      <strong class="stat-value">
+        {{ recentPayments().length }}
+      </strong>
+
+      <span class="stat-meta">
+        Latest wallet transactions
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/dashboard/orders"
+      class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-icon orders">
+          <i class="fas fa-box"></i>
+        </span>
+
+        <span class="stat-arrow">
+          <i class="fas fa-arrow-up-right-from-square"></i>
+        </span>
+
+      </div>
+
+
+      <span class="stat-label">
+        Marketplace Orders
+      </span>
+
+
+      @if (ordersLoading()) {
+
+        <span class="stat-skeleton"></span>
+
+      } @else {
+
+        <strong class="stat-value">
+          {{ orderCount() }}
+        </strong>
+
+      }
+
+
+      <span
+        class="stat-meta"
+        [class.attention]="
+          failedOrderCount() > 0
+        ">
+
+        @if (failedOrderCount() > 0) {
+
+          {{ failedOrderCount() }}
+          payment
+          {{
+            failedOrderCount() === 1
+              ? 'needs'
+              : 'payments need'
+          }}
+          attention
+
+        } @else {
+
+          Track purchases and fulfilment
+
+        }
+
+      </span>
+
+    </a>
+
+
+    <a
+      routerLink="/dashboard/stokvel"
+      class="stat-card">
+
+      <div class="stat-top">
+
+        <span class="stat-icon stokvel">
+          <i class="fas fa-handshake"></i>
+        </span>
+
+        <span class="stat-arrow">
+          <i class="fas fa-arrow-up-right-from-square"></i>
+        </span>
+
+      </div>
+
+
+      <span class="stat-label">
+        My Stokvels
+      </span>
+
+      <strong class="stat-value">
+        {{ myStokvels().length }}
+      </strong>
+
+      <span class="stat-meta">
+        R {{
+          totalPoolBalance()
+            | number:'1.2-2'
+        }}
+        across group pools
+      </span>
+
+    </a>
+
+  </section>
+
+
+  <!-- =========================================================
+       QUICK ACTIONS
+  ========================================================== -->
+
+  <section class="quick-actions-panel">
+
+    <div class="section-heading">
+
+      <div>
+
+        <span class="section-eyebrow">
+          QUICK ACTIONS
+        </span>
+
+        <h2>
+          What would you like to do?
+        </h2>
+
+      </div>
+
     </div>
-    }
-    }
-  </div>
+
+
+    <div class="quick-actions-grid">
+
+      <a
+        routerLink="/dashboard/payments"
+        class="quick-action">
+
+        <span class="quick-icon send">
+          <i class="fas fa-arrow-up"></i>
+        </span>
+
+        <div>
+          <strong>Send money</strong>
+          <span>Transfer to another SafiPay user</span>
+        </div>
+
+        <i class="fas fa-chevron-right"></i>
+
+      </a>
+
+
+      <a
+        routerLink="/dashboard/wallet"
+        class="quick-action">
+
+        <span class="quick-icon topup">
+          <i class="fas fa-plus"></i>
+        </span>
+
+        <div>
+          <strong>Top up</strong>
+          <span>Add funds to your wallet</span>
+        </div>
+
+        <i class="fas fa-chevron-right"></i>
+
+      </a>
+
+
+      <a
+        routerLink="/dashboard/marketplace"
+        class="quick-action">
+
+        <span class="quick-icon shop">
+          <i class="fas fa-bag-shopping"></i>
+        </span>
+
+        <div>
+          <strong>Marketplace</strong>
+          <span>Browse products and services</span>
+        </div>
+
+        <i class="fas fa-chevron-right"></i>
+
+      </a>
+
+
+      <a
+        routerLink="/dashboard/ai"
+        class="quick-action">
+
+        <span class="quick-icon ai">
+          <i class="fas fa-sparkles"></i>
+        </span>
+
+        <div>
+          <strong>Ask Safi</strong>
+          <span>Get help across SafiPay</span>
+        </div>
+
+        <i class="fas fa-chevron-right"></i>
+
+      </a>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================================================
+       ORDERS + ASK SAFI
+  ========================================================== -->
+
+  <section class="feature-grid">
+
+
+    <!-- RECENT ORDERS -->
+
+    <article class="panel orders-panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            MARKETPLACE
+          </span>
+
+          <h2>
+            Recent Orders
+          </h2>
+
+        </div>
+
+
+        <a
+          routerLink="/dashboard/orders"
+          class="view-link">
+
+          View all
+
+          <i class="fas fa-arrow-right"></i>
+
+        </a>
+
+      </div>
+
+
+      @if (ordersLoading()) {
+
+        <div class="orders-loading">
+
+          <span></span>
+          <span></span>
+          <span></span>
+
+        </div>
+
+      } @else if (
+        latestMerchantOrders().length === 0
+      ) {
+
+        <div class="empty-state compact">
+
+          <span class="empty-icon">
+            <i class="fas fa-bag-shopping"></i>
+          </span>
+
+          <strong>
+            No marketplace orders yet
+          </strong>
+
+          <p>
+            Products and services you buy through SafiPay
+            will appear here.
+          </p>
+
+          <a routerLink="/dashboard/marketplace">
+            Browse marketplace
+          </a>
+
+        </div>
+
+      } @else {
+
+        <div class="order-list">
+
+          @for (
+            order of latestMerchantOrders();
+            track order.merchant.orderId
+          ) {
+
+            <a
+              [routerLink]="[
+                '/dashboard/receipt',
+                order.checkoutId
+              ]"
+              class="order-row">
+
+              <span class="order-icon">
+                <i
+                  class="fas"
+                  [class.fa-box]="
+                    order.merchant.status !==
+                    'REFUNDED'
+                  "
+                  [class.fa-rotate-left]="
+                    order.merchant.status ===
+                    'REFUNDED'
+                  ">
+                </i>
+              </span>
+
+
+              <div class="order-copy">
+
+                <strong>
+                  {{ order.merchant.merchantName }}
+                </strong>
+
+                <span>
+                  {{
+                    order.merchant.items.length
+                  }}
+                  {{
+                    order.merchant.items.length === 1
+                      ? 'item'
+                      : 'items'
+                  }}
+                  ·
+                  {{
+                    order.checkoutCreatedAt
+                      | date:'dd MMM yyyy'
+                  }}
+                </span>
+
+              </div>
+
+
+              <div class="order-right">
+
+                <strong>
+                  R {{
+                    order.merchant.totalAmount
+                      | number:'1.2-2'
+                  }}
+                </strong>
+
+                <span
+                  class="status-badge"
+                  [ngClass]="
+                    orderStatusClass(
+                      order.merchant.status
+                    )
+                  ">
+
+                  {{
+                    orderStatusLabel(
+                      order.merchant.status
+                    )
+                  }}
+
+                </span>
+
+              </div>
+
+            </a>
+
+          }
+
+        </div>
+
+      }
+
+    </article>
+
+
+    <!-- ASK SAFI -->
+
+    <article class="ai-panel">
+
+      <div class="ai-glow"></div>
+
+      <span class="ai-badge">
+        <i class="fas fa-sparkles"></i>
+        AI ASSISTANT
+      </span>
+
+
+      <div class="ai-mark">
+        <i class="fas fa-robot"></i>
+      </div>
+
+
+      <h2>
+        Ask Safi
+      </h2>
+
+      <p>
+        Find marketplace options, understand SafiPay features
+        and explore available stokvels with your AI assistant.
+      </p>
+
+
+      <div class="prompt-chips">
+
+        <span>
+          Find food under R100
+        </span>
+
+        <span>
+          Show me available services
+        </span>
+
+        <span>
+          Help me explore stokvels
+        </span>
+
+      </div>
+
+
+      <a
+        routerLink="/dashboard/ai"
+        class="ai-button">
+
+        Open Ask Safi
+
+        <i class="fas fa-arrow-right"></i>
+
+      </a>
+
+    </article>
+
+  </section>
+
+
+  <!-- =========================================================
+       PAYMENTS + STOKVELS
+  ========================================================== -->
+
+  <section class="lower-grid">
+
+
+    <!-- RECENT PAYMENTS -->
+
+    <article class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            WALLET ACTIVITY
+          </span>
+
+          <h2>
+            Recent Payments
+          </h2>
+
+        </div>
+
+
+        <a
+          routerLink="/dashboard/payments"
+          class="view-link">
+
+          View all
+
+          <i class="fas fa-arrow-right"></i>
+
+        </a>
+
+      </div>
+
+
+      @if (
+        recentPayments().length === 0
+      ) {
+
+        <div class="empty-state compact">
+
+          <span class="empty-icon">
+            <i class="fas fa-receipt"></i>
+          </span>
+
+          <strong>
+            No payments yet
+          </strong>
+
+          <p>
+            Transfers you send or receive will appear here.
+          </p>
+
+          <a routerLink="/dashboard/payments">
+            Send money
+          </a>
+
+        </div>
+
+      } @else {
+
+        <div class="transaction-list">
+
+          @for (
+            payment of recentPayments();
+            track payment.id
+          ) {
+
+            <div class="transaction-row">
+
+              <span
+                class="transaction-icon"
+                [class.incoming]="
+                  !isSent(payment)
+                "
+                [class.outgoing]="
+                  isSent(payment)
+                ">
+
+                <i
+                  class="fas"
+                  [class.fa-arrow-down]="
+                    !isSent(payment)
+                  "
+                  [class.fa-arrow-up]="
+                    isSent(payment)
+                  ">
+                </i>
+
+              </span>
+
+
+              <div class="transaction-copy">
+
+                <strong>
+                  {{
+                    isSent(payment)
+                      ? 'Money sent'
+                      : 'Money received'
+                  }}
+                </strong>
+
+                <span>
+                  {{
+                    isSent(payment)
+                      ? 'To ' +
+                        payment.recipientUserId
+                      : 'From ' +
+                        payment.senderUserId
+                  }}
+                </span>
+
+              </div>
+
+
+              <strong
+                class="transaction-amount"
+                [class.credit]="
+                  !isSent(payment)
+                ">
+
+                {{
+                  isSent(payment)
+                    ? '-'
+                    : '+'
+                }}
+
+                R {{
+                  payment.amount
+                    | number:'1.2-2'
+                }}
+
+              </strong>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </article>
+
+
+    <!-- STOKVELS -->
+
+    <article class="panel">
+
+      <div class="panel-header">
+
+        <div>
+
+          <span class="section-eyebrow">
+            SAVINGS
+          </span>
+
+          <h2>
+            My Stokvels
+          </h2>
+
+        </div>
+
+
+        <a
+          routerLink="/dashboard/stokvel"
+          class="view-link">
+
+          View all
+
+          <i class="fas fa-arrow-right"></i>
+
+        </a>
+
+      </div>
+
+
+      <div class="pool-summary">
+
+        <span class="pool-icon">
+          <i class="fas fa-coins"></i>
+        </span>
+
+        <div>
+
+          <span>
+            Combined group pools
+          </span>
+
+          <strong>
+            R {{
+              totalPoolBalance()
+                | number:'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      @if (
+        myStokvels().length === 0
+      ) {
+
+        <div class="empty-state small">
+
+          <strong>
+            No stokvels yet
+          </strong>
+
+          <p>
+            Join or create a savings group with SafiPay.
+          </p>
+
+          <a routerLink="/dashboard/stokvel">
+            Browse stokvels
+          </a>
+
+        </div>
+
+      } @else {
+
+        <div class="stokvel-list">
+
+          @for (
+            stokvel of
+              myStokvels().slice(0, 3);
+            track stokvel.id
+          ) {
+
+            <div class="stokvel-row">
+
+              <span class="stokvel-icon">
+                <i class="fas fa-users"></i>
+              </span>
+
+
+              <div class="stokvel-copy">
+
+                <strong>
+                  {{ stokvel.name }}
+                </strong>
+
+                <span>
+                  {{ stokvel.type }}
+                  ·
+                  {{ stokvel.status }}
+                </span>
+
+              </div>
+
+
+              <strong class="stokvel-amount">
+                R {{
+                  stokvel.totalPoolBalance
+                    | number:'1.2-2'
+                }}
+              </strong>
+
+            </div>
+
+          }
+
+        </div>
+
+      }
+
+    </article>
+
+  </section>
+
+
+  <!-- =========================================================
+       BUSINESS TOOLS
+  ========================================================== -->
+
+  <section class="merchant-strip">
+
+    <div class="merchant-strip-icon">
+      <i class="fas fa-store"></i>
+    </div>
+
+
+    <div class="merchant-strip-copy">
+
+      <span class="section-eyebrow">
+        MERCHANT TOOLS
+      </span>
+
+      <h2>
+        Sell and manage your business with SafiPay
+      </h2>
+
+      <p>
+        Manage listings, incoming marketplace orders,
+        payments and merchant settings.
+      </p>
+
+    </div>
+
+
+    <div class="merchant-strip-actions">
+
+      <a
+        routerLink="/dashboard/merchant"
+        class="merchant-link secondary">
+
+        Merchant Portal
+
+      </a>
+
+      <a
+        routerLink="/dashboard/merchant/orders"
+        class="merchant-link primary">
+
+        Manage Orders
+
+        <i class="fas fa-arrow-right"></i>
+
+      </a>
+
+    </div>
+
+  </section>
+
 </div>

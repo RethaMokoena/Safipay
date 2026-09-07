@@ -1,99 +1,531 @@
-<div class="page-wrapper">
-  <div class="page-header">
-    <div>
-      <h1>Payments</h1>
-      <p>Send money and view your payment history</p>
-    </div>
-    <button class="btn btn-primary" (click)="openSend()">+ Send Money</button>
-  </div>
+<div class="payments-page">
 
-  <!-- Filter tabs -->
-  <!-- FIX 1: use the typed `filters` array from the component instead of an inline string literal
-       array — this lets Angular infer f as 'ALL' | 'SENT' | 'RECEIVED' for activeFilter.set(f) -->
-  <div class="filter-tabs">
-    @for (f of filters; track f) {
-    <button class="filter-tab" [class.active]="activeFilter() === f" (click)="activeFilter.set(f)">
-      {{ f }}
+  <!-- =========================================================
+       PAGE HEADER
+  ========================================================== -->
+
+  <section class="page-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        PAYMENTS
+      </span>
+
+      <h1>
+        Payments
+      </h1>
+
+      <p>
+        Send money securely and keep track of your payment activity.
+      </p>
+
+    </div>
+
+    <button class="primary-btn" type="button" (click)="openSend()">
+
+      <i class="fas fa-paper-plane" aria-hidden="true">
+      </i>
+
+      Send Money
+
     </button>
-    }
-  </div>
 
-  <!-- Payment list -->
-  @if (loading()) {
-  @for (i of [1,2,3,4,5]; track i) { <div class="row-skeleton"></div> }
-  } @else if (filteredPayments.length === 0) {
-  <div class="empty-state">
-    <span>
-      <i class="fas fa-money-bill-wave" aria-hidden="true"></i>
-    </span>
-    <p>No payments found. Send money to get started.</p>
-    <button class="btn btn-primary" (click)="openSend()">Send Money</button>
-  </div>
-  } @else {
-  <div class="payment-list">
-    @for (p of filteredPayments; track p.id) {
-    <div class="payment-row">
-      <div class="pay-icon" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
-        {{ isSent(p) ? '↑' : '↓' }}
+  </section>
+
+
+  <!-- =========================================================
+       SUMMARY CARDS
+  ========================================================== -->
+
+  <section class="summary-grid">
+
+    <article class="summary-card">
+
+      <div class="summary-icon green">
+
+        <i class="fas fa-money-bill-transfer" aria-hidden="true">
+        </i>
+
       </div>
-      <div class="pay-info">
-        <span class="pay-who">{{ isSent(p) ? 'To: ' + p.recipientUserId : 'From: ' + p.senderUserId }}</span>
-        @if (p.description) { <span class="pay-desc">{{ p.description }}</span> }
-        <span class="pay-date">{{ p.createdAt | date:'dd MMM yyyy · HH:mm' }}</span>
-      </div>
-      <div class="pay-right">
-        <span class="pay-amount" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
-          {{ isSent(p) ? '-' : '+' }}R{{ p.amount | number:'1.2-2' }}
+
+      <div>
+
+        <span>
+          Total Payments
         </span>
-        <span class="status-badge" [class]="statusClass(p.status)">{{ p.status }}</span>
+
+        <strong>
+          {{ payments().length }}
+        </strong>
+
       </div>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-icon blue">
+
+        <i class="fas fa-arrow-up" aria-hidden="true">
+        </i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Sent
+        </span>
+
+        <strong>
+          {{ payments().length }}
+        </strong>
+
+      </div>
+
+    </article>
+
+
+    <article class="summary-card">
+
+      <div class="summary-icon purple">
+
+        <i class="fas fa-arrow-down" aria-hidden="true">
+        </i>
+
+      </div>
+
+      <div>
+
+        <span>
+          Received
+        </span>
+
+        <strong>
+          {{ payments().length }}
+        </strong>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <!-- =========================================================
+       PAYMENTS PANEL
+  ========================================================== -->
+
+  <section class="payments-panel">
+
+    <div class="panel-header">
+
+      <div>
+
+        <span class="eyebrow">
+          ACTIVITY
+        </span>
+
+        <h2>
+          Payment History
+        </h2>
+
+        <p>
+          View all money sent and received through SafiPay.
+        </p>
+
+      </div>
+
+
+      <div class="filter-tabs" role="group" aria-label="Payment filters">
+
+        @for (f of filters; track f) {
+
+        <button class="filter-tab" type="button" [class.active]="activeFilter() === f" (click)="activeFilter.set(f)">
+
+          {{ f }}
+
+        </button>
+
+        }
+
+      </div>
+
     </div>
+
+
+    @if (loading()) {
+
+    <div class="payment-loading">
+
+      @for (i of [1,2,3,4,5]; track i) {
+
+      <div class="row-skeleton"></div>
+
+      }
+
+    </div>
+
+    } @else if (filteredPayments.length === 0) {
+
+    <div class="empty-state">
+
+      <div class="empty-icon">
+
+        <i class="fas fa-money-bill-wave" aria-hidden="true">
+        </i>
+
+      </div>
+
+      <strong>
+        No payments found
+      </strong>
+
+      <p>
+        Payments matching this filter will appear here.
+      </p>
+
+      <button class="empty-action" type="button" (click)="openSend()">
+
+        <i class="fas fa-paper-plane" aria-hidden="true">
+        </i>
+
+        Send Money
+
+      </button>
+
+    </div>
+
+    } @else {
+
+    <div class="payment-table-wrapper">
+
+      <div class="payment-table-header">
+
+        <span>
+          Payment
+        </span>
+
+        <span>
+          Date
+        </span>
+
+        <span>
+          Status
+        </span>
+
+        <span>
+          Amount
+        </span>
+
+      </div>
+
+
+      <div class="payment-list">
+
+        @for (p of filteredPayments; track p.id) {
+
+        <div class="payment-row">
+
+
+          <!-- Payment information -->
+
+          <div class="payment-main">
+
+            <div class="pay-icon" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
+
+              @if (isSent(p)) {
+
+              <i class="fas fa-arrow-up" aria-hidden="true">
+              </i>
+
+              } @else {
+
+              <i class="fas fa-arrow-down" aria-hidden="true">
+              </i>
+
+              }
+
+            </div>
+
+
+            <div class="pay-info">
+
+              <span class="pay-who">
+
+                {{
+                isSent(p)
+                ? 'Money sent'
+                : 'Money received'
+                }}
+
+              </span>
+
+
+              <span class="pay-person">
+
+                {{
+                isSent(p)
+                ? 'To ' + p.recipientUserId
+                : 'From ' + p.senderUserId
+                }}
+
+              </span>
+
+
+              @if (p.description) {
+
+              <span class="pay-desc">
+                {{ p.description }}
+              </span>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          <!-- Date -->
+
+          <div class="pay-date">
+
+            {{ p.createdAt | date:'dd MMM yyyy' }}
+
+            <small>
+              {{ p.createdAt | date:'HH:mm' }}
+            </small>
+
+          </div>
+
+
+          <!-- Status -->
+
+          <div>
+
+            <span class="status-badge" [class]="statusClass(p.status)">
+
+              {{ p.status }}
+
+            </span>
+
+          </div>
+
+
+          <!-- Amount -->
+
+          <div class="pay-amount" [class.sent]="isSent(p)" [class.received]="!isSent(p)">
+
+            {{ isSent(p) ? '-' : '+' }}
+            R{{ p.amount | number:'1.2-2' }}
+
+          </div>
+
+        </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Pagination -->
+
+    <div class="pagination">
+
+      <button class="page-btn" type="button" aria-label="Previous payment page" [disabled]="page() === 0"
+        (click)="prevPage()">
+
+        <i class="fas fa-chevron-left" aria-hidden="true">
+        </i>
+
+        Previous
+
+      </button>
+
+
+      <span>
+        Page {{ page() + 1 }}
+      </span>
+
+
+      <button class="page-btn" type="button" aria-label="Next payment page" [disabled]="payments().length < 20"
+        (click)="nextPage()">
+
+        Next
+
+        <i class="fas fa-chevron-right" aria-hidden="true">
+        </i>
+
+      </button>
+
+    </div>
+
     }
-  </div>
-  <div class="pagination">
-    <button class="page-btn" [disabled]="page() === 0" (click)="prevPage()">← Prev</button>
-    <span>Page {{ page() + 1 }}</span>
-    <button class="page-btn" [disabled]="payments().length < 20" (click)="nextPage()">Next →</button>
-  </div>
-  }
+
+  </section>
+
 </div>
 
-<!-- Send Money Modal -->
+
+<!-- =============================================================
+     SEND MONEY MODAL
+============================================================= -->
+
 @if (showSendModal()) {
+
 <div class="modal-overlay" (click)="closeSend()">
-  <div class="modal" (click)="$event.stopPropagation()">
-    <div class="modal-top-line"></div>
+
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="send-money-title"
+    (click)="$event.stopPropagation()">
+
+
     <div class="modal-header">
-      <h3>Send Money</h3>
-      <button class="modal-close" (click)="closeSend()">×</button>
-    </div>
-    <form [formGroup]="sendForm" (ngSubmit)="submitSend()">
-      <div class="form-group">
-        <label>Recipient User ID</label>
-        <input type="text" formControlName="recipientUserId" placeholder="Paste recipient's user ID" />
-        @if (sendForm.get('recipientUserId')?.invalid && sendForm.get('recipientUserId')?.touched) {
-        <span class="error-msg">Recipient is required</span>
-        }
-      </div>
-      <div class="form-group">
-        <label>Amount (ZAR)</label>
-        <div class="amount-wrap">
-          <span class="prefix">R</span>
-          <input type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01" />
+
+      <div class="modal-heading">
+
+        <span class="modal-icon">
+
+          <i class="fas fa-paper-plane" aria-hidden="true">
+          </i>
+
+        </span>
+
+
+        <div>
+
+          <span class="eyebrow">
+            TRANSFER
+          </span>
+
+          <h3 id="send-money-title">
+            Send Money
+          </h3>
+
         </div>
+
       </div>
-      <div class="form-group">
-        <label>Description <span class="opt">(optional)</span></label>
-        <input type="text" formControlName="description" placeholder="e.g. Lunch split" />
-      </div>
-      <div class="form-group">
-        <label>Reference <span class="opt">(optional)</span></label>
-        <input type="text" formControlName="referenceNote" placeholder="e.g. INV-001" />
-      </div>
-      <button type="submit" class="btn btn-primary btn-full" [disabled]="sendForm.invalid || submitting()">
-        @if (submitting()) { <span class="spinner"></span> Sending... } @else { Send Money → }
+
+
+      <button class="modal-close" type="button" aria-label="Close send money dialog" title="Close"
+        (click)="closeSend()">
+
+        <i class="fas fa-xmark" aria-hidden="true">
+        </i>
+
       </button>
+
+    </div>
+
+
+    <form [formGroup]="sendForm" (ngSubmit)="submitSend()">
+
+
+      <div class="form-group">
+
+        <label for="payment-recipient">
+          Recipient Email
+        </label>
+
+        <input id="payment-recipient" type="email" formControlName="recipientEmail" placeholder="recipient@example.com">
+
+        @if (
+        sendForm.get('recipientEmail')?.invalid &&
+        sendForm.get('recipientEmail')?.touched
+        ) {
+
+        <span class="error-msg">
+      @if (sendForm.get('recipientEmail')?.hasError('required')) {
+        Recipient email is required.
+      } @else if (sendForm.get('recipientEmail')?.hasError('email')) {
+        Please enter a valid email address.
+      }
+    </span>
+
+        }
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="payment-amount">
+          Amount
+        </label>
+
+        <div class="amount-wrap">
+
+          <span class="prefix">
+            R
+          </span>
+
+          <input id="payment-amount" type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01">
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="payment-description">
+
+          Description
+
+          <span class="opt">
+            Optional
+          </span>
+
+        </label>
+
+        <input id="payment-description" type="text" formControlName="description" placeholder="e.g. Lunch split">
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label for="payment-reference">
+
+          Reference
+
+          <span class="opt">
+            Optional
+          </span>
+
+        </label>
+
+        <input id="payment-reference" type="text" formControlName="referenceNote" placeholder="e.g. INV-001">
+
+      </div>
+
+
+      <button type="submit" class="submit-btn" [disabled]="sendForm.invalid || submitting()">
+
+        @if (submitting()) {
+
+        <span class="spinner"></span>
+
+        Sending...
+
+        } @else {
+
+        <i class="fas fa-paper-plane" aria-hidden="true">
+        </i>
+
+        Send Money
+
+        }
+
+      </button>
+
     </form>
+
   </div>
+
 </div>
+
 }

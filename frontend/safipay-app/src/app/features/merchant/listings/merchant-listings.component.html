@@ -1,0 +1,727 @@
+<section class="merchant-listings-page">
+
+  <header class="page-header">
+
+    <div class="header-copy">
+
+      <span class="eyebrow">
+        MERCHANT DASHBOARD
+      </span>
+
+      <h1>
+        Listings
+      </h1>
+
+      <p>
+        Create and manage the products and services
+        shown in the SafiPay marketplace.
+      </p>
+
+    </div>
+
+
+    <div class="header-actions">
+
+      <div
+        class="merchant-selector"
+        *ngIf="merchants().length > 1">
+
+        <label for="merchant-select">
+          Business
+        </label>
+
+        <select
+          id="merchant-select"
+          [value]="selectedMerchantId()"
+          (change)="merchantChanged($any($event.target).value)">
+
+          <option
+            *ngFor="let merchant of merchants()"
+            [value]="merchant.id">
+
+            {{ merchant.businessName }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="primary-btn"
+        [disabled]="
+          !selectedMerchant() ||
+          selectedMerchant()?.status !== 'ACTIVE'
+        "
+        (click)="openCreate()">
+
+        <i
+          class="fas fa-plus"
+          aria-hidden="true">
+        </i>
+
+        Add listing
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <div
+    class="merchant-banner"
+    *ngIf="selectedMerchant() as merchant">
+
+    <div>
+
+      <span>
+        Managing
+      </span>
+
+      <strong>
+        {{ merchant.businessName }}
+      </strong>
+
+    </div>
+
+    <span
+      class="merchant-status"
+      [class.active]="merchant.status === 'ACTIVE'">
+
+      {{ merchant.status }}
+
+    </span>
+
+  </div>
+
+
+  <div
+    class="state-card state-card--error"
+    *ngIf="error()">
+
+    <i
+      class="fas fa-circle-exclamation"
+      aria-hidden="true">
+    </i>
+
+    <span>
+      {{ error() }}
+    </span>
+
+  </div>
+
+
+  <div
+    class="state-card"
+    *ngIf="loading()">
+
+    Loading merchant listings...
+
+  </div>
+
+
+  <div
+    class="state-card"
+    *ngIf="
+      !loading() &&
+      merchants().length === 0
+    ">
+
+    You do not have a merchant account yet.
+
+  </div>
+
+
+  <ng-container
+    *ngIf="
+      !loading() &&
+      merchants().length > 0
+    ">
+
+    <section class="stats">
+
+      <button
+        type="button"
+        [class.selected]="filter() === 'ALL'"
+        (click)="setFilter('ALL')">
+
+        <span>
+          All listings
+        </span>
+
+        <strong>
+          {{ listings().length }}
+        </strong>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.selected]="filter() === 'ACTIVE'"
+        (click)="setFilter('ACTIVE')">
+
+        <span>
+          Active
+        </span>
+
+        <strong>
+          {{ activeCount() }}
+        </strong>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.selected]="filter() === 'INACTIVE'"
+        (click)="setFilter('INACTIVE')">
+
+        <span>
+          Inactive
+        </span>
+
+        <strong>
+          {{ inactiveCount() }}
+        </strong>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.selected]="filter() === 'PRODUCT'"
+        (click)="setFilter('PRODUCT')">
+
+        <span>
+          Products
+        </span>
+
+        <strong>
+          {{ productCount() }}
+        </strong>
+
+      </button>
+
+
+      <button
+        type="button"
+        [class.selected]="filter() === 'SERVICE'"
+        (click)="setFilter('SERVICE')">
+
+        <span>
+          Services
+        </span>
+
+        <strong>
+          {{ serviceCount() }}
+        </strong>
+
+      </button>
+
+    </section>
+
+
+    <div
+      class="state-card"
+      *ngIf="
+        listings().length === 0
+      ">
+
+      <i
+        class="fas fa-store"
+        aria-hidden="true">
+      </i>
+
+      <strong>
+        No listings yet
+      </strong>
+
+      <span>
+        Add your first product or service to
+        make it available in the marketplace.
+      </span>
+
+    </div>
+
+
+    <div
+      class="state-card"
+      *ngIf="
+        listings().length > 0 &&
+        visibleListings().length === 0
+      ">
+
+      No listings match this filter.
+
+    </div>
+
+
+    <div
+      class="listing-grid"
+      *ngIf="
+        visibleListings().length > 0
+      ">
+
+      <article
+        class="listing-card"
+        *ngFor="
+          let listing of visibleListings()
+        "
+        [class.inactive]="!listing.active">
+
+        <div class="listing-image">
+
+          <div class="image-placeholder">
+
+            <i
+              [class]="
+                listing.type === 'PRODUCT'
+                  ? 'fas fa-box'
+                  : 'fas fa-briefcase'
+              "
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+
+          <img
+            *ngIf="listing.imageUrl"
+            [src]="listing.imageUrl"
+            [alt]="listing.title"
+            (error)="hideBrokenImage($event)">
+
+          <span
+            class="type-badge"
+            [class.service]="
+              listing.type === 'SERVICE'
+            ">
+
+            {{ listing.type }}
+
+          </span>
+
+          <span
+            class="availability-badge"
+            [class.inactive]="
+              !listing.active
+            ">
+
+            {{
+              listing.active
+                ? 'ACTIVE'
+                : 'INACTIVE'
+            }}
+
+          </span>
+
+        </div>
+
+
+        <div class="listing-body">
+
+          <div class="listing-heading">
+
+            <div>
+
+              <h2>
+                {{ listing.title }}
+              </h2>
+
+              <p>
+                {{
+                  listing.description ||
+                  'No description provided.'
+                }}
+              </p>
+
+            </div>
+
+
+            <strong class="price">
+
+              {{
+                listing.price
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+
+            </strong>
+
+          </div>
+
+
+          <div class="listing-meta">
+
+            <span
+              [class.out-of-stock]="
+                listing.type === 'PRODUCT' &&
+                (listing.stockQuantity ?? 0) <= 0
+              ">
+
+              <i
+                class="fas fa-boxes-stacked"
+                aria-hidden="true">
+              </i>
+
+              {{ stockLabel(listing) }}
+
+            </span>
+
+
+            <span
+              *ngIf="listing.updatedAt">
+
+              <i
+                class="far fa-clock"
+                aria-hidden="true">
+              </i>
+
+              Updated
+              {{
+                listing.updatedAt
+                  | date:'dd MMM yyyy'
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <footer class="listing-footer">
+
+          <button
+            type="button"
+            class="secondary-btn"
+            (click)="openEdit(listing)">
+
+            <i
+              class="fas fa-pen"
+              aria-hidden="true">
+            </i>
+
+            Edit / stock
+
+          </button>
+
+
+          <button
+            *ngIf="listing.active"
+            type="button"
+            class="danger-btn"
+            [disabled]="
+              changingListingId() === listing.id
+            "
+            (click)="deactivate(listing)">
+
+            {{
+              changingListingId() === listing.id
+                ? 'Updating...'
+                : 'Deactivate'
+            }}
+
+          </button>
+
+
+          <button
+            *ngIf="!listing.active"
+            type="button"
+            class="activate-btn"
+            [disabled]="
+              changingListingId() === listing.id
+            "
+            (click)="reactivate(listing)">
+
+            {{
+              changingListingId() === listing.id
+                ? 'Updating...'
+                : 'Reactivate'
+            }}
+
+          </button>
+
+        </footer>
+
+      </article>
+
+    </div>
+
+  </ng-container>
+
+</section>
+
+
+<div
+  class="modal-overlay"
+  *ngIf="modalOpen()"
+  (click)="closeModal()">
+
+  <section
+    class="listing-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="listing-modal-title"
+    (click)="$event.stopPropagation()">
+
+    <header class="modal-header">
+
+      <div>
+
+        <span class="eyebrow">
+          MARKETPLACE LISTING
+        </span>
+
+        <h2 id="listing-modal-title">
+
+          {{
+            editingListing()
+              ? 'Edit listing'
+              : 'Add listing'
+          }}
+
+        </h2>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Close listing form"
+        (click)="closeModal()">
+
+        <i
+          class="fas fa-xmark"
+          aria-hidden="true">
+        </i>
+
+      </button>
+
+    </header>
+
+
+    <form
+      [formGroup]="listingForm"
+      (ngSubmit)="saveListing()">
+
+      <div class="form-grid">
+
+        <div class="form-group full">
+
+          <label for="listing-title">
+            Title
+          </label>
+
+          <input
+            id="listing-title"
+            type="text"
+            formControlName="title"
+            placeholder="e.g. Fresh Produce Box">
+
+          <small
+            class="field-error"
+            *ngIf="
+              listingForm.get('title')?.invalid &&
+              listingForm.get('title')?.touched
+            ">
+
+            Enter a listing title.
+
+          </small>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="listing-type">
+            Type
+          </label>
+
+          <select
+            id="listing-type"
+            formControlName="type">
+
+            <option value="PRODUCT">
+              Product
+            </option>
+
+            <option value="SERVICE">
+              Service
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label for="listing-price">
+            Price
+          </label>
+
+          <div class="money-input">
+
+            <span>
+              R
+            </span>
+
+            <input
+              id="listing-price"
+              type="number"
+              min="0.01"
+              step="0.01"
+              formControlName="price"
+              placeholder="0.00">
+
+          </div>
+
+          <small
+            class="field-error"
+            *ngIf="
+              listingForm.get('price')?.invalid &&
+              listingForm.get('price')?.touched
+            ">
+
+            Enter a valid price above R0.
+
+          </small>
+
+        </div>
+
+
+        <div
+          class="form-group"
+          *ngIf="isProductForm()">
+
+          <label for="listing-stock">
+            Stock quantity
+          </label>
+
+          <input
+            id="listing-stock"
+            type="number"
+            min="0"
+            step="1"
+            formControlName="stockQuantity"
+            placeholder="0">
+
+          <small
+            class="field-hint">
+
+            Set this to 0 when the product
+            is temporarily out of stock.
+
+          </small>
+
+        </div>
+
+
+        <div
+          class="form-group"
+          [class.full]="!isProductForm()">
+
+          <label for="listing-image">
+            Image URL
+          </label>
+
+          <input
+            id="listing-image"
+            type="url"
+            formControlName="imageUrl"
+            placeholder="https://...">
+
+          <small class="field-hint">
+            Optional
+          </small>
+
+        </div>
+
+
+        <div class="form-group full">
+
+          <label for="listing-description">
+            Description
+          </label>
+
+          <textarea
+            id="listing-description"
+            rows="4"
+            formControlName="description"
+            placeholder="Describe the product or service">
+          </textarea>
+
+        </div>
+
+      </div>
+
+
+      <div class="service-note"
+        *ngIf="!isProductForm()">
+
+        <i
+          class="fas fa-circle-info"
+          aria-hidden="true">
+        </i>
+
+        <span>
+          Services do not use stock quantities.
+          SafiPay will keep service quantity at one
+          during checkout.
+        </span>
+
+      </div>
+
+
+      <footer class="modal-actions">
+
+        <button
+          type="button"
+          class="cancel-btn"
+          [disabled]="saving()"
+          (click)="closeModal()">
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="submit"
+          class="primary-btn"
+          [disabled]="
+            listingForm.invalid ||
+            saving()
+          ">
+
+          <span
+            class="spinner"
+            *ngIf="saving()">
+          </span>
+
+          {{
+            saving()
+              ? 'Saving...'
+              : editingListing()
+                ? 'Save changes'
+                : 'Create listing'
+          }}
+
+        </button>
+
+      </footer>
+
+    </form>
+
+  </section>
+
+</div>

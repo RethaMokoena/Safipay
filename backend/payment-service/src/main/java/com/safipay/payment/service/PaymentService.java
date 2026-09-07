@@ -30,57 +30,171 @@ public class PaymentService {
 
     // ── Send Money ────────────────────────────────────────────────
 
-    public PaymentResponse sendMoney(String senderUserId, SendMoneyRequest req) {
-        if (senderUserId.equals(req.getRecipientUserId())) {
-            throw new PaymentException("Cannot send money to yourself");
-        }
+    // public PaymentResponse sendMoney(String senderUserId, SendMoneyRequest req) {
+    //     if (senderUserId.equals(req.getRecipientUserId())) {
+    //         throw new PaymentException("Cannot send money to yourself");
+    //     }
 
-        Payment payment = paymentRepo.save(Payment.builder()
-                .senderUserId(senderUserId)
-                .recipientUserId(req.getRecipientUserId())
-                .amount(req.getAmount())
-                .description(req.getDescription())
-                .referenceNote(req.getReferenceNote())
-                .status(Payment.PaymentStatus.PENDING)
-                .type(Payment.PaymentType.SEND_MONEY)
-                .build());
+    //     Payment payment = paymentRepo.save(Payment.builder()
+    //             .senderUserId(senderUserId)
+    //             .recipientUserId(req.getRecipientUserId())
+    //             .amount(req.getAmount())
+    //             .description(req.getDescription())
+    //             .referenceNote(req.getReferenceNote())
+    //             .status(Payment.PaymentStatus.PENDING)
+    //             .type(Payment.PaymentType.SEND_MONEY)
+    //             .build());
 
-        // Fraud check
-        String fraudDecision = fraudClient.evaluate(
-                payment.getId(), senderUserId, req.getAmount(),
-                "PEER_TRANSFER", req.getRecipientUserId());
+    //     // Fraud check
+    //     String fraudDecision = fraudClient.evaluate(
+    //             payment.getId(), senderUserId, req.getAmount(),
+    //             "PEER_TRANSFER", req.getRecipientUserId());
 
-        if ("BLOCKED".equals(fraudDecision)) {
-            payment.setStatus(Payment.PaymentStatus.FAILED);
-            paymentRepo.save(payment);
-            throw new PaymentException("Transaction blocked by fraud prevention system");
-        }
+    //     if ("BLOCKED".equals(fraudDecision)) {
+    //         payment.setStatus(Payment.PaymentStatus.FAILED);
+    //         paymentRepo.save(payment);
+    //         throw new PaymentException("Transaction blocked by fraud prevention system");
+    //     }
 
-        // Wallet debit/credit
-        try {
-            walletClient.debit(senderUserId, req.getAmount(), payment.getId(),
-                    req.getDescription() != null ? req.getDescription() : "Transfer");
-            walletClient.credit(req.getRecipientUserId(), req.getAmount(), payment.getId(),
-                    req.getDescription() != null ? req.getDescription() : "Transfer received");
-            payment.setStatus(Payment.PaymentStatus.COMPLETED);
-        } catch (Exception e) {
-            payment.setStatus(Payment.PaymentStatus.FAILED);
-            paymentRepo.save(payment);
-            throw new PaymentException("Payment failed: " + e.getMessage());
-        }
+    //     // Wallet debit/credit
+    //     try {
+    //         walletClient.debit(senderUserId, req.getAmount(), payment.getId(),
+    //                 req.getDescription() != null ? req.getDescription() : "Transfer");
+    //         walletClient.credit(req.getRecipientUserId(), req.getAmount(), payment.getId(),
+    //                 req.getDescription() != null ? req.getDescription() : "Transfer received");
+    //         payment.setStatus(Payment.PaymentStatus.COMPLETED);
+    //     } catch (Exception e) {
+    //         payment.setStatus(Payment.PaymentStatus.FAILED);
+    //         paymentRepo.save(payment);
+    //         throw new PaymentException("Payment failed: " + e.getMessage());
+    //     }
 
-        paymentRepo.save(payment);
-        ledgerClient.postTransfer(senderUserId, req.getRecipientUserId(),
-                req.getAmount(), payment.getId(),
-                req.getDescription() != null ? req.getDescription() : "P2P Transfer");
+    //     paymentRepo.save(payment);
+    //     ledgerClient.postTransfer(senderUserId, req.getRecipientUserId(),
+    //             req.getAmount(), payment.getId(),
+    //             req.getDescription() != null ? req.getDescription() : "P2P Transfer");
 
-        webhookClient.firePaymentEvent("payment.completed", senderUserId,
-                payment.getId(), req.getAmount(), "COMPLETED");
+    //     webhookClient.firePaymentEvent("payment.completed", senderUserId,
+    //             payment.getId(), req.getAmount(), "COMPLETED");
 
-        log.info("Payment {} completed: R{} {} → {}",
-                payment.getId(), req.getAmount(), senderUserId, req.getRecipientUserId());
-        return toResponse(payment);
+    //     log.info("Payment {} completed: R{} {} → {}",
+    //             payment.getId(), req.getAmount(), senderUserId, req.getRecipientUserId());
+    //     return toResponse(payment);
+    // }
+
+public PaymentResponse sendMoney(String senderUserId, SendMoneyRequest req) {
+
+    // Resolve the email to the recipient's user ID
+    WalletClient.WalletResponse recipientWallet =
+            walletClient.getWalletByEmail(req.getRecipientEmail());
+
+    if (recipientWallet == null || recipientWallet.getUserId() == null) {
+        throw new PaymentException(
+                "No SafiPay user found with email: " + req.getRecipientEmail()
+        );
     }
+
+    String recipientUserId = recipientWallet.getUserId();
+
+    // Prevent sending money to yourself
+    if (senderUserId.equals(recipientUserId)) {
+        throw new PaymentException("Cannot send money to yourself");
+    }
+
+    Payment payment = paymentRepo.save(
+            Payment.builder()
+                    .senderUserId(senderUserId)
+                    .recipientUserId(recipientUserId)
+                    .amount(req.getAmount())
+                    .description(req.getDescription())
+                    .referenceNote(req.getReferenceNote())
+                    .status(Payment.PaymentStatus.PENDING)
+                    .type(Payment.PaymentType.SEND_MONEY)
+                    .build()
+    );
+
+    // Fraud check
+    String fraudDecision = fraudClient.evaluate(
+            payment.getId(),
+            senderUserId,
+            req.getAmount(),
+            "PEER_TRANSFER",
+            recipientUserId
+    );
+
+    if ("BLOCKED".equals(fraudDecision)) {
+        payment.setStatus(Payment.PaymentStatus.FAILED);
+        paymentRepo.save(payment);
+
+        throw new PaymentException(
+                "Transaction blocked by fraud prevention system"
+        );
+    }
+
+    // Wallet debit / credit
+    try {
+
+        walletClient.debit(
+                senderUserId,
+                req.getAmount(),
+                payment.getId(),
+                req.getDescription() != null
+                        ? req.getDescription()
+                        : "Transfer"
+        );
+
+        walletClient.credit(
+                recipientUserId,
+                req.getAmount(),
+                payment.getId(),
+                req.getDescription() != null
+                        ? req.getDescription()
+                        : "Transfer received"
+        );
+
+        payment.setStatus(Payment.PaymentStatus.COMPLETED);
+
+    } catch (Exception e) {
+
+        payment.setStatus(Payment.PaymentStatus.FAILED);
+        paymentRepo.save(payment);
+
+        throw new PaymentException(
+                "Payment failed: " + e.getMessage()
+        );
+    }
+
+    paymentRepo.save(payment);
+
+    ledgerClient.postTransfer(
+            senderUserId,
+            recipientUserId,
+            req.getAmount(),
+            payment.getId(),
+            req.getDescription() != null
+                    ? req.getDescription()
+                    : "P2P Transfer"
+    );
+
+    webhookClient.firePaymentEvent(
+            "payment.completed",
+            senderUserId,
+            payment.getId(),
+            req.getAmount(),
+            "COMPLETED"
+    );
+
+    log.info(
+            "Payment {} completed: R{} {} → {} ({})",
+            payment.getId(),
+            req.getAmount(),
+            senderUserId,
+            recipientUserId,
+            req.getRecipientEmail()
+    );
+
+    return toResponse(payment);
+}
 
     // ── Request Money ─────────────────────────────────────────────
 

@@ -1,0 +1,413 @@
+<div class="safi-page">
+
+  <section class="safi-card">
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <div class="hero">
+
+      <div class="hero-copy">
+
+        <div class="eyebrow">
+          SAFIPAY AI
+        </div>
+
+        <h1>
+          Ask <strong>Safi</strong> about your money
+        </h1>
+
+        <p>
+          Get quick answers about your wallet, payments,
+          stokvels and businesses.
+        </p>
+
+      </div>
+
+
+      <!-- Safi Robot -->
+      <div class="robot-wrapper">
+
+        <div class="robot">
+
+          <div class="robot-head">
+
+            <div class="robot-screen">
+              <span class="robot-eye"></span>
+              <span class="robot-eye"></span>
+            </div>
+
+            <span class="robot-antenna"></span>
+
+          </div>
+
+
+          <div class="robot-body">
+
+            <span class="robot-arm left"></span>
+            <span class="robot-arm right"></span>
+
+            <span class="robot-leg left-leg"></span>
+            <span class="robot-leg right-leg"></span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         CHAT
+    ========================================================== -->
+
+    <div class="chat-panel">
+
+
+      <!-- =======================================================
+           SUGGESTIONS
+
+           Only show when the conversation has not started.
+      ======================================================== -->
+
+      @if (messages().length <= 1) {
+
+        <div class="suggestion-area">
+
+          <div class="suggestions-header">
+
+            <span>
+              <i class="far fa-lightbulb"></i>
+              Suggested questions
+            </span>
+
+          </div>
+
+
+          <div class="suggestions">
+
+            @for (suggestion of suggestions; track suggestion) {
+
+              <button
+                type="button"
+                class="suggestion"
+                (click)="useSuggestion(suggestion)"
+                [disabled]="loading()"
+              >
+
+                <span>
+                  {{ suggestion }}
+                </span>
+
+                <i class="fas fa-arrow-right"></i>
+
+              </button>
+
+            }
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- =======================================================
+           CHAT HEADER
+      ======================================================== -->
+
+      @if (messages().length > 1) {
+
+        <div class="chat-header">
+
+          <div class="chat-header-title">
+
+            <div class="chat-status-dot"></div>
+
+            <span>
+              Conversation
+            </span>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="clear-chat"
+            (click)="clearChat()"
+          >
+
+            <i class="far fa-trash-alt"></i>
+
+            <span>
+              Clear chat
+            </span>
+
+          </button>
+
+        </div>
+
+      }
+
+
+      <!-- =======================================================
+           CONVERSATION
+      ======================================================== -->
+
+      <div
+        #messagesContainer
+        class="conversation"
+        [class.empty-conversation]="messages().length <= 1"
+      >
+
+
+        <!-- Empty state -->
+        @if (messages().length <= 1 && !loading()) {
+
+          <div class="empty-chat">
+
+            <div class="empty-bot">
+
+              <div class="mini-screen">
+                <span></span>
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <strong>
+              Ask Safi anything about SafiPay
+            </strong>
+
+            <span>
+              Your wallet, payments, stokvels and businesses.
+            </span>
+
+          </div>
+
+        }
+
+
+        <!-- Messages -->
+        @for (
+          message of messages();
+          track $index
+        ) {
+
+          @if ($index > 0) {
+
+            <div
+              class="message-row"
+              [class.user-row]="message.role === 'user'"
+            >
+
+
+              <!-- Safi avatar -->
+              @if (message.role === 'assistant') {
+
+                <div class="mini-robot">
+
+                  <div class="mini-screen">
+                    <span></span>
+                    <span></span>
+                  </div>
+
+                </div>
+
+              }
+
+
+              <!-- Bubble -->
+              <div
+                class="message"
+                [class.user-message]="message.role === 'user'"
+                [class.assistant-message]="message.role === 'assistant'"
+              >
+
+                <span class="message-owner">
+                  {{ message.role === 'user' ? 'You' : 'Safi' }}
+                </span>
+
+
+                <p>
+                  {{ message.text }}
+                </p>
+
+
+                <!-- Sources -->
+                @if (message.sources?.length) {
+
+                  <div class="sources">
+
+                    <i class="fas fa-database"></i>
+
+                    <span class="source-label">
+                      Used:
+                    </span>
+
+
+                    @for (
+                      source of message.sources;
+                      track source
+                    ) {
+
+                      <span class="source-chip">
+                        {{ source }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+            </div>
+
+          }
+
+        }
+
+
+        <!-- Safi typing -->
+        @if (loading()) {
+
+          <div class="message-row">
+
+            <div class="mini-robot">
+
+              <div class="mini-screen">
+                <span></span>
+                <span></span>
+              </div>
+
+            </div>
+
+
+            <div
+              class="message assistant-message loading-message"
+            >
+
+              <span class="message-owner">
+                Safi
+              </span>
+
+
+              <div class="typing">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- =======================================================
+           COMPOSER
+           Always remains at bottom
+      ======================================================== -->
+
+      <div class="composer-area">
+
+        <form
+          class="composer"
+          [formGroup]="form"
+          (ngSubmit)="send()"
+        >
+
+          <textarea
+            formControlName="question"
+            rows="1"
+            maxlength="1000"
+            placeholder="Ask Safi something..."
+            aria-label="Ask Safi a question"
+            (keydown.enter)="$event.preventDefault(); send()"
+          ></textarea>
+
+
+          <div class="composer-footer">
+
+            <div class="composer-left">
+
+              <span class="ai-pill">
+
+                <i class="fas fa-robot"></i>
+
+                Safi AI
+
+              </span>
+
+
+              <span class="secure-pill">
+
+                <i class="fas fa-shield-alt"></i>
+
+                Secure
+
+              </span>
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="send-button"
+              [disabled]="form.invalid || loading()"
+            >
+
+              @if (loading()) {
+
+                <span>
+                  Thinking...
+                </span>
+
+              } @else {
+
+                <span>
+                  Ask Safi
+                </span>
+
+                <i class="fas fa-arrow-up"></i>
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         DISCLAIMER
+    ========================================================== -->
+
+    <div class="ai-disclaimer">
+
+      <i class="fas fa-lock"></i>
+
+      <span>
+        Safi can explain your SafiPay data but cannot move money
+        or perform financial actions.
+      </span>
+
+    </div>
+
+  </section>
+
+</div>

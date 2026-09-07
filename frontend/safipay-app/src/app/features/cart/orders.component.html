@@ -1,0 +1,638 @@
+<section class="orders-page">
+
+  <header class="page-header">
+
+    <div>
+
+      <p class="eyebrow">
+        SAFIPAY MARKETPLACE
+      </p>
+
+      <h1>
+        My orders
+      </h1>
+
+      <p>
+        Track your marketplace purchases,
+        fulfilment progress and receipts.
+      </p>
+
+    </div>
+
+
+    <div class="page-actions">
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="refreshing()"
+        (click)="refreshOrders()"
+      >
+        <i
+          class="fas fa-rotate-right"
+          [class.spinning]="refreshing()"
+          aria-hidden="true"
+        ></i>
+
+        {{
+          refreshing()
+            ? 'Refreshing...'
+            : 'Refresh'
+        }}
+      </button>
+
+
+      <a
+        routerLink="/dashboard/marketplace"
+        class="marketplace-button"
+      >
+        Browse marketplace
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <div
+    *ngIf="loading()"
+    class="state-card"
+  >
+    Loading your orders...
+  </div>
+
+
+  <div
+    *ngIf="error()"
+    class="state-card state-card--error"
+  >
+    {{ error() }}
+  </div>
+
+
+  <div
+    *ngIf="
+      !loading() &&
+      !error() &&
+      orders().length === 0
+    "
+    class="state-card"
+  >
+
+    <strong>
+      No marketplace orders yet
+    </strong>
+
+    <p>
+      Orders you place through SafiPay
+      will appear here.
+    </p>
+
+    <a
+      routerLink="/dashboard/marketplace"
+      class="marketplace-button"
+    >
+      Browse marketplace
+    </a>
+
+  </div>
+
+
+  <div
+    *ngIf="
+      !loading() &&
+      !error() &&
+      orders().length > 0
+    "
+    class="orders-list"
+  >
+
+    <article
+      class="order-card"
+      *ngFor="let order of orders()"
+    >
+
+      <header class="order-header">
+
+        <div>
+
+          <span class="order-date">
+            {{
+              order.createdAt
+                | date:'medium'
+            }}
+          </span>
+
+          <h2>
+            Order #{{ shortId(order.checkoutId) }}
+          </h2>
+
+        </div>
+
+
+        <span
+          class="status"
+          [class.status--paid]="
+            order.status === 'PAID'
+          "
+          [class.status--partial]="
+            order.status === 'PARTIALLY_PAID'
+          "
+          [class.status--failed]="
+            order.status === 'FAILED' ||
+            order.status === 'CANCELLED'
+          "
+        >
+          {{ order.status }}
+        </span>
+
+      </header>
+
+
+      <div class="order-details">
+
+        <div>
+
+          <span>
+            Merchants
+          </span>
+
+          <strong>
+            {{ order.merchantOrders.length }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Items
+          </span>
+
+          <strong>
+            {{ itemCount(order) }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            Total
+          </span>
+
+          <strong class="total">
+            {{
+              order.grandTotal
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="merchants">
+
+        <span
+          *ngFor="
+            let merchant of order.merchantOrders
+          "
+        >
+          {{ merchant.merchantName }}
+        </span>
+
+      </div>
+
+
+      <div class="order-items">
+
+        <section
+          class="merchant-items"
+          *ngFor="
+            let merchant of order.merchantOrders
+          "
+        >
+
+          <div class="merchant-items-header">
+
+            <div class="merchant-heading">
+
+              <strong>
+                {{ merchant.merchantName }}
+              </strong>
+
+              <span
+                class="merchant-order-status"
+                [ngClass]="
+                  statusClass(merchant.status)
+                "
+              >
+                {{
+                  merchantStatusLabel(
+                    merchant.status
+                  )
+                }}
+              </span>
+
+            </div>
+
+
+            <span class="merchant-total">
+              {{
+                merchant.totalAmount
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+            </span>
+
+          </div>
+
+
+          <section
+            class="fulfilment-card"
+            *ngIf="
+              isTimelineStatus(
+                merchant.status
+              )
+            "
+          >
+
+            <div class="timeline">
+
+              <div
+                class="timeline-step"
+                [class.timeline-step--complete]="
+                  isStepComplete(
+                    merchant,
+                    'PAYMENT'
+                  )
+                "
+              >
+
+                <span class="timeline-dot">
+
+                  <i
+                    class="fas fa-check"
+                    *ngIf="
+                      isStepComplete(
+                        merchant,
+                        'PAYMENT'
+                      )
+                    "
+                    aria-hidden="true"
+                  ></i>
+
+                </span>
+
+                <span class="timeline-label">
+                  Payment received
+                </span>
+
+              </div>
+
+
+              <span
+                class="timeline-connector"
+                [class.timeline-connector--complete]="
+                  isConnectorComplete(
+                    merchant,
+                    'PAYMENT_TO_PROCESSING'
+                  )
+                "
+              ></span>
+
+
+              <div
+                class="timeline-step"
+                [class.timeline-step--complete]="
+                  isStepComplete(
+                    merchant,
+                    'PROCESSING'
+                  )
+                "
+                [class.timeline-step--current]="
+                  isStepCurrent(
+                    merchant,
+                    'PROCESSING'
+                  )
+                "
+              >
+
+                <span class="timeline-dot">
+
+                  <i
+                    class="fas fa-check"
+                    *ngIf="
+                      isStepComplete(
+                        merchant,
+                        'PROCESSING'
+                      )
+                    "
+                    aria-hidden="true"
+                  ></i>
+
+                </span>
+
+                <span class="timeline-label">
+                  Processing
+                </span>
+
+              </div>
+
+
+              <span
+                class="timeline-connector"
+                [class.timeline-connector--complete]="
+                  isConnectorComplete(
+                    merchant,
+                    'PROCESSING_TO_COMPLETED'
+                  )
+                "
+              ></span>
+
+
+              <div
+                class="timeline-step"
+                [class.timeline-step--complete]="
+                  isStepComplete(
+                    merchant,
+                    'COMPLETED'
+                  )
+                "
+                [class.timeline-step--current]="
+                  isStepCurrent(
+                    merchant,
+                    'COMPLETED'
+                  )
+                "
+              >
+
+                <span class="timeline-dot">
+
+                  <i
+                    class="fas fa-check"
+                    *ngIf="
+                      isStepComplete(
+                        merchant,
+                        'COMPLETED'
+                      )
+                    "
+                    aria-hidden="true"
+                  ></i>
+
+                </span>
+
+                <span class="timeline-label">
+                  Completed
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <p class="fulfilment-message">
+              {{
+                merchantStatusMessage(
+                  merchant
+                )
+              }}
+            </p>
+
+          </section>
+
+
+          <div
+            class="exception-state"
+            *ngIf="
+              !isTimelineStatus(
+                merchant.status
+              )
+            "
+            [class.exception-state--danger]="
+              merchant.status === 'PAYMENT_FAILED' ||
+              merchant.status === 'CANCELLED'
+            "
+            [class.exception-state--refund]="
+              merchant.status === 'REFUNDED'
+            "
+          >
+
+            <i
+              class="fas"
+              [class.fa-circle-info]="
+                merchant.status === 'PENDING_PAYMENT'
+              "
+              [class.fa-circle-exclamation]="
+                merchant.status === 'PAYMENT_FAILED' ||
+                merchant.status === 'CANCELLED'
+              "
+              [class.fa-arrow-rotate-left]="
+                merchant.status === 'REFUNDED'
+              "
+              aria-hidden="true"
+            ></i>
+
+            <span>
+              {{
+                merchantStatusMessage(
+                  merchant
+                )
+              }}
+            </span>
+
+          </div>
+
+
+          <div
+            class="retry-payment-card"
+            *ngIf="
+              merchant.status ===
+              'PAYMENT_FAILED'
+            "
+          >
+
+            <div class="retry-payment-copy">
+
+              <strong>
+                Retry this merchant only
+              </strong>
+
+              <span>
+                Successful merchant payments in this checkout
+                will not be charged again.
+              </span>
+
+              <small
+                class="retry-error"
+                *ngIf="
+                  retryErrorFor(
+                    merchant.orderId
+                  ) as retryError
+                "
+              >
+                {{ retryError }}
+              </small>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="retry-payment-button"
+              [disabled]="
+                retryingOrderId() !== null
+              "
+              (click)="
+                retryMerchantPayment(
+                  order,
+                  merchant
+                )
+              "
+            >
+
+              <i
+                class="fas"
+                [class.fa-rotate-right]="
+                  retryingOrderId() !==
+                  merchant.orderId
+                "
+                [class.fa-circle-notch]="
+                  retryingOrderId() ===
+                  merchant.orderId
+                "
+                [class.spinning]="
+                  retryingOrderId() ===
+                  merchant.orderId
+                "
+                aria-hidden="true"
+              ></i>
+
+              {{
+                retryingOrderId() ===
+                merchant.orderId
+                  ? 'Retrying...'
+                  : 'Retry payment'
+              }}
+
+            </button>
+
+          </div>
+
+
+          <div
+            class="ordered-item"
+            *ngFor="
+              let item of merchant.items
+            "
+          >
+
+            <div>
+
+              <strong>
+                {{ item.title }}
+              </strong>
+
+              <span>
+                {{
+                  item.type === 'PRODUCT'
+                    ? 'Product'
+                    : 'Service'
+                }}
+              </span>
+
+            </div>
+
+
+            <div class="ordered-item-price">
+
+              <span>
+                {{ item.quantity }}
+                ×
+                {{
+                  item.unitPrice
+                    | currency:
+                        'ZAR':
+                        'symbol-narrow':
+                        '1.2-2'
+                }}
+              </span>
+
+              <strong>
+                {{
+                  item.subtotal
+                    | currency:
+                        'ZAR':
+                        'symbol-narrow':
+                        '1.2-2'
+                }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+
+
+      <footer class="order-footer">
+
+        <div class="order-reference">
+
+          <span>
+            Checkout reference
+          </span>
+
+          <code>
+            {{ order.checkoutId }}
+          </code>
+
+        </div>
+
+
+        <div class="order-actions">
+
+          <button
+            type="button"
+            class="download-button"
+            (click)="downloadOverall(order)"
+          >
+            <i
+              class="fas fa-file-pdf"
+              aria-hidden="true"
+            ></i>
+
+            Download PDF
+          </button>
+
+
+          <a
+            [routerLink]="[
+              '/dashboard/receipt',
+              order.checkoutId
+            ]"
+            class="receipt-button"
+          >
+            View receipt
+          </a>
+
+        </div>
+
+      </footer>
+
+    </article>
+
+  </div>
+
+</section>

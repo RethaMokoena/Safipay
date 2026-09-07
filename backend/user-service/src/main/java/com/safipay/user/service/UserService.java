@@ -1,5 +1,6 @@
 package com.safipay.user.service;
 
+import com.safipay.user.client.WalletClient;
 import com.safipay.user.dto.request.*;
 import com.safipay.user.dto.response.*;
 import com.safipay.user.exception.*;
@@ -12,42 +13,58 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service @RequiredArgsConstructor @Slf4j @Transactional
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final WalletClient walletClient;
 
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail()))
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserAlreadyExistsException("Email already registered: " + request.getEmail());
-        if (request.getPhoneNumber() != null && userRepository.existsByPhoneNumber(request.getPhoneNumber()))
+        }
+        if (request.getPhoneNumber() != null && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
             throw new UserAlreadyExistsException("Phone number already registered");
+        }
 
         User user = User.builder()
-            .firstName(request.getFirstName())
-            .lastName(request.getLastName())
-            .email(request.getEmail())
-            .password(passwordEncoder.encode(request.getPassword()))
-            .phoneNumber(request.getPhoneNumber())
-            .build();
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .build();
 
         user = userRepository.save(user);
-        log.info("Registered new user: {}", user.getEmail());
+        walletClient.createWallet(
+                user.getId(),
+                user.getEmail()
+        );
+
+        log.info(
+                "Registered new user: {}",
+                user.getEmail()
+        );
 
         return buildAuthResponse(user);
     }
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-            .orElseThrow(InvalidCredentialsException::new);
+                .orElseThrow(InvalidCredentialsException::new);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword()))
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException();
+        }
 
-        if (user.getStatus() == User.UserStatus.SUSPENDED)
+        if (user.getStatus() == User.UserStatus.SUSPENDED) {
             throw new InvalidCredentialsException();
+        }
 
         log.info("User logged in: {}", user.getEmail());
         return buildAuthResponse(user);
@@ -60,10 +77,18 @@ public class UserService {
 
     public UserResponse updateProfile(String userId, UpdateProfileRequest request) {
         User user = getUserOrThrow(userId);
-        if (request.getFirstName() != null) user.setFirstName(request.getFirstName());
-        if (request.getLastName() != null) user.setLastName(request.getLastName());
-        if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
-        if (request.getProfilePictureUrl() != null) user.setProfilePictureUrl(request.getProfilePictureUrl());
+        if (request.getFirstName() != null) {
+            user.setFirstName(request.getFirstName());
+        }
+        if (request.getLastName() != null) {
+            user.setLastName(request.getLastName());
+        }
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getProfilePictureUrl() != null) {
+            user.setProfilePictureUrl(request.getProfilePictureUrl());
+        }
         return toUserResponse(userRepository.save(user));
     }
 
@@ -79,28 +104,27 @@ public class UserService {
 
     private AuthResponse buildAuthResponse(User user) {
         return AuthResponse.builder()
-            .accessToken(jwtUtil.generateAccessToken(user))
-            .refreshToken(jwtUtil.generateRefreshToken(user))
-            .tokenType("Bearer")
-            .expiresIn(86400000L)
-            .user(toUserResponse(user))
-            .build();
+                .accessToken(jwtUtil.generateAccessToken(user))
+                .refreshToken(jwtUtil.generateRefreshToken(user))
+                .tokenType("Bearer")
+                .expiresIn(86400000L)
+                .user(toUserResponse(user))
+                .build();
     }
 
     private UserResponse toUserResponse(User user) {
         return UserResponse.builder()
-            .id(user.getId())
-            .email(user.getEmail())
-            .firstName(user.getFirstName())
-            .lastName(user.getLastName())
-            .fullName(user.getFullName())
-            .phoneNumber(user.getPhoneNumber())
-            .role(user.getRole())
-            .status(user.getStatus())
-            .emailVerified(user.getEmailVerified())
-            .profilePictureUrl(user.getProfilePictureUrl())
-            .createdAt(user.getCreatedAt())
-            .build();
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .role(user.getRole())
+                .status(user.getStatus())
+                .emailVerified(user.getEmailVerified())
+                .profilePictureUrl(user.getProfilePictureUrl())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }
-// NOTE: The following methods are appended — merge with the class body manually if needed

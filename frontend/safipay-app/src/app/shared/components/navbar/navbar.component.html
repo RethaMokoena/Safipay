@@ -1,44 +1,244 @@
-<nav class="navbar" [class.scrolled]="scrolled()">
-  <div class="navbar-container container">
+<nav
+  class="navbar"
+  [class.scrolled]="scrolled()">
 
-    <!-- Logo -->
-    <a class="logo" routerLink="/">
-      <div class="logo-mark">SP</div>
-      <span class="logo-text">Safi<em>Pay</em></span>
+  <div class="navbar-container">
+
+    <!-- =========================================================
+         LOGO
+    ========================================================== -->
+
+    <a
+      class="logo"
+      routerLink="/"
+      aria-label="SafiPay home"
+      (click)="closeMenu()">
+
+      <div class="logo-mark">
+        S
+      </div>
+
+      <span class="logo-text">
+        Safi<span>Pay</span>
+      </span>
+
     </a>
 
-    <!-- Desktop Nav Links -->
-     
-    <ul class="nav-links" [class.active]="menuOpen()">
-      <li><a (click)="scrollTo('features')">Features</a></li>
-      <li><a (click)="scrollTo('how-it-works')">How It Works</a></li>
-      <li><a (click)="scrollTo('testimonials')">Testimonials</a></li>
-      <li><a (click)="scrollTo('faq')">FAQ</a></li>
+
+    <!-- =========================================================
+         DESKTOP / MOBILE NAV
+    ========================================================== -->
+
+    <ul
+      class="nav-links"
+      [class.active]="menuOpen()">
+
+
+      <li>
+
+        <button
+          type="button"
+          class="nav-link"
+          (click)="scrollTo('features'); closeMenu()">
+
+          Features
+
+        </button>
+
+      </li>
+
+
+      <li>
+
+        <button
+          type="button"
+          class="nav-link"
+          (click)="scrollTo('compare'); closeMenu()">
+
+          Why SafiPay
+
+        </button>
+
+      </li>
+
+
+      <li>
+
+        <button
+          type="button"
+          class="nav-link"
+          (click)="scrollTo('how-it-works'); closeMenu()">
+
+          How It Works
+
+        </button>
+
+      </li>
+
+
+      <li>
+
+        <button
+          type="button"
+          class="nav-link"
+          (click)="scrollTo('faq'); closeMenu()">
+
+          FAQ
+
+        </button>
+
+      </li>
+
+
+      <!-- =====================================================
+           AUTHENTICATED
+      ====================================================== -->
 
       @if (authService.isLoggedIn()) {
-        <li>
-          <a routerLink="/dashboard" class="nav-login" (click)="closeMenu()">Dashboard</a>
+
+        <li class="nav-divider-item">
+          <span class="nav-divider"></span>
         </li>
+
+
         <li>
-          <button class="btn btn-ghost btn-outline" (click)="logout()">Logout</button>
-        </li>
-      } @else {
-        <li>
-          <a routerLink="/auth/login" class="nav-login" (click)="closeMenu()">Login</a>
-        </li>
-        <li>
-          <a routerLink="/auth/register" class="btn btn-primary btn-outline" (click)="closeMenu()">
-            Get Started
+
+          <a
+            routerLink="/dashboard"
+            class="dashboard-link"
+            (click)="closeMenu()">
+
+            <i
+              class="fas fa-grid-2"
+              aria-hidden="true">
+            </i>
+
+            Dashboard
+
           </a>
+
         </li>
+
+
+        <li>
+
+          <button
+            type="button"
+            class="logout-btn"
+            (click)="logout()">
+
+            <i
+              class="fas fa-arrow-right-from-bracket"
+              aria-hidden="true">
+            </i>
+
+            Logout
+
+          </button>
+
+        </li>
+
+      } @else {
+
+        <!-- ===================================================
+             GUEST
+        ==================================================== -->
+
+        <li class="nav-divider-item">
+          <span class="nav-divider"></span>
+        </li>
+
+
+        <li>
+
+          <a
+            routerLink="/auth/login"
+            class="login-link"
+            (click)="closeMenu()">
+
+            Sign In
+
+          </a>
+
+        </li>
+
+
+        <li>
+
+          <a
+            routerLink="/auth/register"
+            class="get-started-btn"
+            (click)="closeMenu()">
+
+            Get Started
+
+            <i
+              class="fas fa-arrow-right"
+              aria-hidden="true">
+            </i>
+
+          </a>
+
+        </li>
+
       }
+
     </ul>
 
-    <!-- Mobile Toggle -->
-    <button class="menu-toggle" (click)="toggleMenu()" aria-label="Toggle menu">
-      <span [style.transform]="menuOpen() ? 'rotate(45deg) translate(5px,5px)' : 'none'"></span>
-      <span [style.opacity]="menuOpen() ? '0' : '1'"></span>
-      <span [style.transform]="menuOpen() ? 'rotate(-45deg) translate(5px,-5px)' : 'none'"></span>
+
+    <!-- =========================================================
+         MOBILE TOGGLE
+    ========================================================== -->
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-label="Toggle navigation menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="toggleMenu()">
+
+      <span
+        [style.transform]="
+          menuOpen()
+            ? 'rotate(45deg) translate(5px, 5px)'
+            : 'none'
+        ">
+      </span>
+
+      <span
+        [style.opacity]="
+          menuOpen()
+            ? '0'
+            : '1'
+        ">
+      </span>
+
+      <span
+        [style.transform]="
+          menuOpen()
+            ? 'rotate(-45deg) translate(5px, -5px)'
+            : 'none'
+        ">
+      </span>
+
     </button>
+
   </div>
+
+
+  <!-- =========================================================
+       MOBILE OVERLAY
+  ========================================================== -->
+
+  @if (menuOpen()) {
+
+    <button
+      type="button"
+      class="mobile-overlay"
+      aria-label="Close navigation menu"
+      (click)="closeMenu()">
+    </button>
+
+  }
+
 </nav>

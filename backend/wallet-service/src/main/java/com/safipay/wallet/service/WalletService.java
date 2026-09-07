@@ -5,9 +5,11 @@ import com.safipay.wallet.dto.response.*;
 import com.safipay.wallet.exception.WalletException;
 import com.safipay.wallet.model.*;
 import com.safipay.wallet.repository.*;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.*;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,130 +17,562 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service @RequiredArgsConstructor @Slf4j @Transactional
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class WalletService {
 
     private final WalletRepository walletRepo;
     private final TransactionRepository txRepo;
 
     public WalletResponse createWallet(String userId) {
-        if (walletRepo.existsByUserId(userId))
-            throw new WalletException("Wallet already exists for user: " + userId);
-        Wallet wallet = walletRepo.save(Wallet.builder().userId(userId).build());
-        log.info("Created wallet {} for user {}", wallet.getId(), userId);
+
+        if (userId == null || userId.isBlank()) {
+            throw new WalletException("User ID cannot be null or blank");
+        }
+
+        if (walletRepo.existsByUserId(userId)) {
+            throw new WalletException(
+                    "Wallet already exists for user: " + userId
+            );
+        }
+
+        Wallet wallet = Wallet.builder()
+                .userId(userId)
+                .build();
+
+        wallet = walletRepo.save(wallet);
+
+        log.info(
+                "Created wallet {} for user {}",
+                wallet.getId(),
+                userId
+        );
+
         return toWalletResponse(wallet);
     }
+
+    /**
+     * Used when a user registers.
+     *
+     * If the user already has a wallet, the existing wallet is returned.
+     * Otherwise, a new wallet is automatically created.
+     */
+//     public WalletResponse createWalletIfAbsent(String userId) {
+
+//         log.info(
+//                 "Checking whether wallet exists for userId={}",
+//                 userId
+//         );
+
+//         if (userId == null || userId.isBlank()) {
+
+//             log.error(
+//                     "Cannot create wallet because userId is null or blank"
+//             );
+
+//             throw new WalletException(
+//                     "User ID cannot be null or blank"
+//             );
+//         }
+
+//         return walletRepo.findByUserId(userId)
+//                 .map(wallet -> {
+
+//                     log.info(
+//                             "Wallet already exists. walletId={}, userId={}",
+//                             wallet.getId(),
+//                             userId
+//                     );
+
+//                     return toWalletResponse(wallet);
+//                 })
+//                 .orElseGet(() -> {
+
+//                     log.info(
+//                             "No wallet exists for userId={}. Creating wallet...",
+//                             userId
+//                     );
+
+//                     Wallet wallet = Wallet.builder()
+//                             .userId(userId)
+//                             .build();
+
+//                     log.info(
+//                             "Wallet before save: userId={}, balance={}, lockedBalance={}, currency={}, status={}",
+//                             wallet.getUserId(),
+//                             wallet.getBalance(),
+//                             wallet.getLockedBalance(),
+//                             wallet.getCurrency(),
+//                             wallet.getStatus()
+//                     );
+
+//                     try {
+
+//                         wallet = walletRepo.save(wallet);
+
+//                         log.info(
+//                                 "Wallet saved successfully. walletId={}, userId={}",
+//                                 wallet.getId(),
+//                                 userId
+//                         );
+
+//                     } catch (Exception ex) {
+
+//                         log.error(
+//                                 "Failed to save wallet for userId={}",
+//                                 userId,
+//                                 ex
+//                         );
+
+//                         throw ex;
+//                     }
+
+//                     return toWalletResponse(wallet);
+//                 });
+//     }
+
+
+public WalletResponse createWalletIfAbsent(
+        String userId,
+        String userEmail
+) {
+
+    log.info(
+            "Checking whether wallet exists for userId={}",
+            userId
+    );
+
+    if (userId == null || userId.isBlank()) {
+        throw new WalletException(
+                "User ID cannot be null or blank"
+        );
+    }
+
+    if (userEmail == null || userEmail.isBlank()) {
+        throw new WalletException(
+                "User email cannot be null or blank"
+        );
+    }
+
+    return walletRepo.findByUserId(userId)
+            .map(wallet -> {
+
+                /*
+                 * Keep the denormalized email synchronized.
+                 */
+                if (!userEmail.equals(wallet.getUserEmail())) {
+
+                    log.info(
+                            "Updating wallet email for userId={}",
+                            userId
+                    );
+
+                    wallet.setUserEmail(userEmail);
+                    wallet = walletRepo.save(wallet);
+                }
+
+                log.info(
+                        "Wallet already exists. walletId={}, userId={}",
+                        wallet.getId(),
+                        userId
+                );
+
+                return toWalletResponse(wallet);
+            })
+            .orElseGet(() -> {
+
+                log.info(
+                        "No wallet exists for userId={}. Creating wallet...",
+                        userId
+                );
+
+                Wallet wallet = Wallet.builder()
+                        .userId(userId)
+                        .userEmail(userEmail)
+                        .build();
+
+                log.info(
+                        "Creating wallet for userId={}, email={}",
+                        userId,
+                        userEmail
+                );
+
+                try {
+
+                    wallet = walletRepo.save(wallet);
+
+                    log.info(
+                            "Wallet saved successfully. walletId={}, userId={}",
+                            wallet.getId(),
+                            userId
+                    );
+
+                } catch (Exception ex) {
+
+                    log.error(
+                            "Failed to save wallet for userId={}",
+                            userId,
+                            ex
+                    );
+
+                    throw ex;
+                }
+
+                return toWalletResponse(wallet);
+            });
+}
 
     @Transactional(readOnly = true)
     public WalletResponse getWallet(String userId) {
-        return toWalletResponse(getWalletByUser(userId));
-    }
 
-    public WalletResponse topUp(String userId, TopUpRequest req) {
         Wallet wallet = getWalletByUser(userId);
-        BigDecimal before = wallet.getBalance();
-        wallet.setBalance(before.add(req.getAmount()));
-        wallet = walletRepo.save(wallet);
-
-        saveTransaction(wallet, req.getAmount(), before, wallet.getBalance(),
-            Transaction.TransactionType.CREDIT, Transaction.TransactionStatus.COMPLETED,
-            req.getReferenceId(), "Top up");
 
         return toWalletResponse(wallet);
     }
 
-    public WalletResponse transfer(String senderUserId, TransferRequest req) {
-        if (senderUserId.equals(req.getRecipientUserId()))
-            throw new WalletException("Cannot transfer to yourself");
+    public WalletResponse topUp(
+            String userId,
+            TopUpRequest req
+    ) {
 
-        Wallet sender = getWalletByUser(senderUserId);
-        Wallet recipient = getWalletByUser(req.getRecipientUserId());
+        Wallet wallet = getWalletByUser(userId);
 
-        if (sender.getAvailableBalance().compareTo(req.getAmount()) < 0)
-            throw new WalletException("Insufficient balance");
+        BigDecimal before = wallet.getBalance();
 
-        BigDecimal senderBefore = sender.getBalance();
-        BigDecimal recipientBefore = recipient.getBalance();
+        wallet.setBalance(
+                before.add(req.getAmount())
+        );
 
-        sender.setBalance(senderBefore.subtract(req.getAmount()));
-        recipient.setBalance(recipientBefore.add(req.getAmount()));
+        wallet = walletRepo.save(wallet);
+
+        saveTransaction(
+                wallet,
+                req.getAmount(),
+                before,
+                wallet.getBalance(),
+                Transaction.TransactionType.CREDIT,
+                Transaction.TransactionStatus.COMPLETED,
+                req.getReferenceId(),
+                "Top up"
+        );
+
+        log.info(
+                "Wallet {} topped up with R{}",
+                wallet.getId(),
+                req.getAmount()
+        );
+
+        return toWalletResponse(wallet);
+    }
+
+    public WalletResponse transfer(
+            String senderUserId,
+            TransferRequest req
+    ) {
+
+        if (senderUserId.equals(req.getRecipientUserId())) {
+            throw new WalletException(
+                    "Cannot transfer to yourself"
+            );
+        }
+
+        Wallet sender
+                = getWalletByUser(senderUserId);
+
+        Wallet recipient
+                = getWalletByUser(req.getRecipientUserId());
+
+        if (sender.getAvailableBalance()
+                .compareTo(req.getAmount()) < 0) {
+
+            throw new WalletException(
+                    "Insufficient balance"
+            );
+        }
+
+        BigDecimal senderBefore
+                = sender.getBalance();
+
+        BigDecimal recipientBefore
+                = recipient.getBalance();
+
+        sender.setBalance(
+                senderBefore.subtract(req.getAmount())
+        );
+
+        recipient.setBalance(
+                recipientBefore.add(req.getAmount())
+        );
 
         walletRepo.save(sender);
         walletRepo.save(recipient);
 
-        String desc = req.getDescription() != null ? req.getDescription() : "Transfer";
-        saveTransaction(sender, req.getAmount(), senderBefore, sender.getBalance(),
-            Transaction.TransactionType.DEBIT, Transaction.TransactionStatus.COMPLETED,
-            null, desc, req.getRecipientUserId());
-        saveTransaction(recipient, req.getAmount(), recipientBefore, recipient.getBalance(),
-            Transaction.TransactionType.CREDIT, Transaction.TransactionStatus.COMPLETED,
-            null, desc, senderUserId);
+        String description
+                = req.getDescription() != null
+                ? req.getDescription()
+                : "Transfer";
 
-        log.info("Transfer R{} from {} to {}", req.getAmount(), senderUserId, req.getRecipientUserId());
+        saveTransaction(
+                sender,
+                req.getAmount(),
+                senderBefore,
+                sender.getBalance(),
+                Transaction.TransactionType.DEBIT,
+                Transaction.TransactionStatus.COMPLETED,
+                null,
+                description,
+                req.getRecipientUserId()
+        );
+
+        saveTransaction(
+                recipient,
+                req.getAmount(),
+                recipientBefore,
+                recipient.getBalance(),
+                Transaction.TransactionType.CREDIT,
+                Transaction.TransactionStatus.COMPLETED,
+                null,
+                description,
+                senderUserId
+        );
+
+        log.info(
+                "Transfer R{} from user {} to user {}",
+                req.getAmount(),
+                senderUserId,
+                req.getRecipientUserId()
+        );
+
         return toWalletResponse(sender);
     }
 
     @Transactional(readOnly = true)
-    public List<TransactionResponse> getTransactions(String userId, int page, int size) {
+    public List<TransactionResponse> getTransactions(
+            String userId,
+            int page,
+            int size
+    ) {
+
         Wallet wallet = getWalletByUser(userId);
-        return txRepo.findByWalletIdOrderByCreatedAtDesc(wallet.getId(), PageRequest.of(page, size))
-            .stream().map(this::toTxResponse).collect(Collectors.toList());
+
+        return txRepo
+                .findByWalletIdOrderByCreatedAtDesc(
+                        wallet.getId(),
+                        PageRequest.of(page, size)
+                )
+                .stream()
+                .map(this::toTxResponse)
+                .collect(Collectors.toList());
     }
 
-    // Internal: credit/debit directly (used by payment-service, stokvel-service)
-    public void internalCredit(String userId, BigDecimal amount, String referenceId, String description) {
-        Wallet wallet = getWalletByUser(userId);
-        BigDecimal before = wallet.getBalance();
-        wallet.setBalance(before.add(amount));
+    /**
+     * Internal service operation. Used by payment-service, stokvel-service,
+     * etc.
+     */
+    public void internalCredit(
+            String userId,
+            BigDecimal amount,
+            String referenceId,
+            String description
+    ) {
+
+        Wallet wallet
+                = getWalletByUser(userId);
+
+        BigDecimal before
+                = wallet.getBalance();
+
+        wallet.setBalance(
+                before.add(amount)
+        );
+
         walletRepo.save(wallet);
-        saveTransaction(wallet, amount, before, wallet.getBalance(),
-            Transaction.TransactionType.CREDIT, Transaction.TransactionStatus.COMPLETED, referenceId, description);
+
+        saveTransaction(
+                wallet,
+                amount,
+                before,
+                wallet.getBalance(),
+                Transaction.TransactionType.CREDIT,
+                Transaction.TransactionStatus.COMPLETED,
+                referenceId,
+                description
+        );
+
+        log.info(
+                "Internal credit R{} applied to wallet {}",
+                amount,
+                wallet.getId()
+        );
     }
 
-    public void internalDebit(String userId, BigDecimal amount, String referenceId, String description) {
-        Wallet wallet = getWalletByUser(userId);
-        if (wallet.getAvailableBalance().compareTo(amount) < 0)
-            throw new WalletException("Insufficient balance for: " + referenceId);
-        BigDecimal before = wallet.getBalance();
-        wallet.setBalance(before.subtract(amount));
+    /**
+     * Internal service operation. Used by payment-service, stokvel-service,
+     * etc.
+     */
+    public void internalDebit(
+            String userId,
+            BigDecimal amount,
+            String referenceId,
+            String description
+    ) {
+
+        Wallet wallet
+                = getWalletByUser(userId);
+
+        if (wallet.getAvailableBalance()
+                .compareTo(amount) < 0) {
+
+            throw new WalletException(
+                    "Insufficient balance for: "
+                    + referenceId
+            );
+        }
+
+        BigDecimal before
+                = wallet.getBalance();
+
+        wallet.setBalance(
+                before.subtract(amount)
+        );
+
         walletRepo.save(wallet);
-        saveTransaction(wallet, amount, before, wallet.getBalance(),
-            Transaction.TransactionType.DEBIT, Transaction.TransactionStatus.COMPLETED, referenceId, description);
+
+        saveTransaction(
+                wallet,
+                amount,
+                before,
+                wallet.getBalance(),
+                Transaction.TransactionType.DEBIT,
+                Transaction.TransactionStatus.COMPLETED,
+                referenceId,
+                description
+        );
+
+        log.info(
+                "Internal debit R{} applied to wallet {}",
+                amount,
+                wallet.getId()
+        );
     }
 
-    private Wallet getWalletByUser(String userId) {
-        return walletRepo.findByUserId(userId)
-            .orElseThrow(() -> new WalletException("Wallet not found for user: " + userId));
+    private Wallet getWalletByUser(
+            String userId
+    ) {
+
+        return walletRepo
+                .findByUserId(userId)
+                .orElseThrow(
+                        () -> new WalletException(
+                                "Wallet not found for user: "
+                                + userId
+                        )
+                );
     }
 
-    private void saveTransaction(Wallet w, BigDecimal amount, BigDecimal before, BigDecimal after,
-            Transaction.TransactionType type, Transaction.TransactionStatus status,
-            String refId, String desc) {
-        saveTransaction(w, amount, before, after, type, status, refId, desc, null);
+    private void saveTransaction(
+            Wallet wallet,
+            BigDecimal amount,
+            BigDecimal before,
+            BigDecimal after,
+            Transaction.TransactionType type,
+            Transaction.TransactionStatus status,
+            String referenceId,
+            String description
+    ) {
+
+        saveTransaction(
+                wallet,
+                amount,
+                before,
+                after,
+                type,
+                status,
+                referenceId,
+                description,
+                null
+        );
     }
 
-    private void saveTransaction(Wallet w, BigDecimal amount, BigDecimal before, BigDecimal after,
-            Transaction.TransactionType type, Transaction.TransactionStatus status,
-            String refId, String desc, String counterparty) {
-        txRepo.save(Transaction.builder()
-            .wallet(w).amount(amount).balanceBefore(before).balanceAfter(after)
-            .type(type).status(status).referenceId(refId).description(desc)
-            .counterpartyUserId(counterparty).build());
+    private void saveTransaction(
+            Wallet wallet,
+            BigDecimal amount,
+            BigDecimal before,
+            BigDecimal after,
+            Transaction.TransactionType type,
+            Transaction.TransactionStatus status,
+            String referenceId,
+            String description,
+            String counterpartyUserId
+    ) {
+
+        Transaction transaction
+                = Transaction.builder()
+                        .wallet(wallet)
+                        .amount(amount)
+                        .balanceBefore(before)
+                        .balanceAfter(after)
+                        .type(type)
+                        .status(status)
+                        .referenceId(referenceId)
+                        .description(description)
+                        .counterpartyUserId(counterpartyUserId)
+                        .build();
+
+        txRepo.save(transaction);
     }
 
-    private WalletResponse toWalletResponse(Wallet w) {
+    private WalletResponse toWalletResponse(
+            Wallet wallet
+    ) {
+
         return WalletResponse.builder()
-            .id(w.getId()).userId(w.getUserId()).balance(w.getBalance())
-            .lockedBalance(w.getLockedBalance()).availableBalance(w.getAvailableBalance())
-            .currency(w.getCurrency()).status(w.getStatus()).createdAt(w.getCreatedAt()).build();
+                .id(wallet.getId())
+                .userId(wallet.getUserId())
+                .userEmail(wallet.getUserEmail())
+                .balance(wallet.getBalance())
+                .lockedBalance(wallet.getLockedBalance())
+                .availableBalance(
+                        wallet.getAvailableBalance()
+                )
+                .currency(wallet.getCurrency())
+                .status(wallet.getStatus())
+                .createdAt(wallet.getCreatedAt())
+                .build();
     }
 
-    private TransactionResponse toTxResponse(Transaction t) {
+    private TransactionResponse toTxResponse(
+            Transaction transaction
+    ) {
+
         return TransactionResponse.builder()
-            .id(t.getId()).walletId(t.getWallet().getId()).amount(t.getAmount())
-            .balanceBefore(t.getBalanceBefore()).balanceAfter(t.getBalanceAfter())
-            .type(t.getType()).status(t.getStatus()).referenceId(t.getReferenceId())
-            .description(t.getDescription()).counterpartyUserId(t.getCounterpartyUserId())
-            .createdAt(t.getCreatedAt()).build();
+                .id(transaction.getId())
+                .walletId(
+                        transaction.getWallet().getId()
+                )
+                .amount(transaction.getAmount())
+                .balanceBefore(
+                        transaction.getBalanceBefore()
+                )
+                .balanceAfter(
+                        transaction.getBalanceAfter()
+                )
+                .type(transaction.getType())
+                .status(transaction.getStatus())
+                .referenceId(
+                        transaction.getReferenceId()
+                )
+                .description(
+                        transaction.getDescription()
+                )
+                .counterpartyUserId(
+                        transaction.getCounterpartyUserId()
+                )
+                .createdAt(
+                        transaction.getCreatedAt()
+                )
+                .build();
     }
 }

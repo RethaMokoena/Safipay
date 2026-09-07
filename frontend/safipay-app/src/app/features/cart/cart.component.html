@@ -1,0 +1,460 @@
+<section class="cart-page">
+
+  <a
+    routerLink="/dashboard/marketplace"
+    class="back-link"
+  >
+    ← Continue shopping
+  </a>
+
+
+  <header class="cart-header">
+
+    <div>
+
+      <p class="eyebrow">
+        SAFIPAY MARKETPLACE
+      </p>
+
+      <h1>
+        Your cart
+      </h1>
+
+      <p>
+        Shop from multiple SafiPay merchants
+        in one checkout.
+      </p>
+
+    </div>
+
+
+    <div
+      class="cart-count"
+      *ngIf="!cartService.empty()"
+    >
+
+      <strong>
+        {{ cartService.itemCount() }}
+      </strong>
+
+      <span>
+        {{
+          cartService.itemCount() === 1
+            ? 'item'
+            : 'items'
+        }}
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <!-- EMPTY CART -->
+
+  <section
+    class="empty-cart"
+    *ngIf="cartService.empty()"
+  >
+
+    <div class="empty-icon">
+      🛒
+    </div>
+
+    <h2>
+      Your cart is empty
+    </h2>
+
+    <p>
+      Browse SafiPay merchants and add
+      products or services to your cart.
+    </p>
+
+    <a
+      routerLink="/dashboard/marketplace"
+      class="primary-button"
+    >
+      Browse marketplace
+    </a>
+
+  </section>
+
+
+  <!-- CART -->
+
+  <div
+    class="cart-layout"
+    *ngIf="!cartService.empty()"
+  >
+
+    <main class="cart-items">
+
+      <section
+        class="merchant-group"
+        *ngFor="
+          let group of cartService.groups();
+          trackBy: trackGroup
+        "
+      >
+
+        <header class="merchant-heading">
+
+          <div>
+
+            <span>
+              MERCHANT
+            </span>
+
+            <strong>
+              {{ group.merchantName }}
+            </strong>
+
+          </div>
+
+
+          <div class="merchant-heading__right">
+
+            <div class="merchant-subtotal">
+
+              <span>
+                Merchant subtotal
+              </span>
+
+              <strong>
+                {{
+                  group.subtotal
+                    | currency:
+                        'ZAR':
+                        'symbol-narrow':
+                        '1.2-2'
+                }}
+              </strong>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="merchant-clear"
+              (click)="clearMerchant(group)"
+            >
+              Remove merchant
+            </button>
+
+          </div>
+
+        </header>
+
+
+        <article
+          class="cart-item"
+          *ngFor="
+            let item of group.items;
+            trackBy: trackItem
+          "
+        >
+
+          <div class="item-image">
+
+            <img
+              *ngIf="
+                item.imageUrl;
+                else itemFallback
+              "
+              [src]="item.imageUrl"
+              [attr.alt]="item.title"
+              [attr.title]="item.title"
+            />
+
+            <ng-template #itemFallback>
+
+              <span>
+                {{
+                  item.title
+                    .charAt(0)
+                    .toUpperCase()
+                }}
+              </span>
+
+            </ng-template>
+
+          </div>
+
+
+          <div class="item-details">
+
+            <span class="item-type">
+              {{
+                item.type === 'PRODUCT'
+                  ? 'PRODUCT'
+                  : 'SERVICE'
+              }}
+            </span>
+
+            <h3>
+              {{ item.title }}
+            </h3>
+
+            <span class="unit-price">
+              {{
+                item.price
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+            </span>
+
+          </div>
+
+
+          <div class="quantity-section">
+
+            <span class="quantity-label">
+              Quantity
+            </span>
+
+
+            <div
+              class="quantity-control"
+              *ngIf="
+                item.type === 'PRODUCT'
+              "
+            >
+
+              <button
+                type="button"
+                (click)="decrease(item)"
+                [attr.aria-label]="
+                  'Decrease quantity of ' +
+                  item.title
+                "
+              >
+                −
+              </button>
+
+
+              <strong>
+                {{ item.quantity }}
+              </strong>
+
+
+              <button
+                type="button"
+                (click)="increase(item)"
+                [disabled]="
+                  !canIncrease(item)
+                "
+                [attr.aria-label]="
+                  'Increase quantity of ' +
+                  item.title
+                "
+              >
+                +
+              </button>
+
+            </div>
+
+
+            <span
+              class="service-quantity"
+              *ngIf="
+                item.type === 'SERVICE'
+              "
+            >
+              1 booking
+            </span>
+
+          </div>
+
+
+          <div class="item-total">
+
+            <strong>
+              {{
+                item.price *
+                item.quantity
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+            </strong>
+
+
+            <button
+              type="button"
+              class="remove-button"
+              (click)="remove(item)"
+            >
+              Remove
+            </button>
+
+          </div>
+
+        </article>
+
+
+        <footer class="merchant-footer">
+
+          <span>
+            {{ group.itemCount }}
+            {{
+              group.itemCount === 1
+                ? 'item'
+                : 'items'
+            }}
+            from
+            {{ group.merchantName }}
+          </span>
+
+
+          <strong>
+            {{
+              group.subtotal
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </strong>
+
+        </footer>
+
+      </section>
+
+
+      <button
+        type="button"
+        class="clear-cart"
+        (click)="clearCart()"
+      >
+        Clear entire cart
+      </button>
+
+    </main>
+
+
+    <!-- CHECKOUT SUMMARY -->
+
+    <aside class="cart-summary">
+
+      <p class="summary-eyebrow">
+        ORDER SUMMARY
+      </p>
+
+      <h2>
+        Checkout summary
+      </h2>
+
+
+      <div class="summary-row">
+
+        <span>
+          Merchants
+        </span>
+
+        <strong>
+          {{ cartService.merchantCount() }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-row">
+
+        <span>
+          Items
+        </span>
+
+        <strong>
+          {{ cartService.itemCount() }}
+        </strong>
+
+      </div>
+
+
+      <div class="receipt-preview">
+
+        <div
+          class="receipt-preview__merchant"
+          *ngFor="
+            let group of cartService.groups();
+            trackBy: trackGroup
+          "
+        >
+
+          <span>
+            {{ group.merchantName }}
+          </span>
+
+          <strong>
+            {{
+              group.subtotal
+                | currency:
+                    'ZAR':
+                    'symbol-narrow':
+                    '1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-total">
+
+        <span>
+          Overall total
+        </span>
+
+        <strong>
+          {{
+            cartService.subtotal()
+              | currency:
+                  'ZAR':
+                  'symbol-narrow':
+                  '1.2-2'
+          }}
+        </strong>
+
+      </div>
+
+
+      <button
+  type="button"
+  class="checkout-button"
+  (click)="checkout()"
+  [disabled]="checkoutLoading()"
+>
+  {{
+    checkoutLoading()
+      ? 'Processing payment...'
+      : 'Continue to checkout'
+  }}
+</button>
+
+<p
+  *ngIf="checkoutError()"
+  class="checkout-error"
+>
+  {{ checkoutError() }}
+</p>
+
+
+      <p class="checkout-note">
+        Your checkout will create a separate
+        merchant order and receipt for each
+        merchant, plus one overall SafiPay
+        receipt.
+      </p>
+
+    </aside>
+
+  </div>
+
+</section>

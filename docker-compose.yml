@@ -1,6 +1,5 @@
-version: "3.8"
-
 services:
+
   postgres:
     image: postgres:15
     container_name: safipay-postgres
@@ -12,127 +11,220 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./scripts/init-databases.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "5432:5432"
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U safipay"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   user-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /user-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_users
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_users
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
+
+      WALLET_SERVICE_URL: http://wallet-service:8082
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   wallet-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /wallet-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_wallets
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
-      USER_SERVICE_URL: http://user-service:8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_wallets
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
+
+      USER_SERVICE_URL: http://user-service:8081
+
     depends_on:
-      - postgres
-      - user-service
+      postgres:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+
 
   payment-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /payment-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_payments
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
-      WALLET_SERVICE_URL: http://wallet-service:8080
-      FRAUD_SERVICE_URL: http://fraud-service:8080
-      LEDGER_SERVICE_URL: http://ledger-service:8080
-      WEBHOOK_SERVICE_URL: http://webhook-service:8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_payments
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
+
+      WALLET_SERVICE_URL: http://wallet-service:8082
+      FRAUD_SERVICE_URL: http://fraud-service:8087
+      LEDGER_SERVICE_URL: http://ledger-service:8085
+      WEBHOOK_SERVICE_URL: http://webhook-service:8088
+
     depends_on:
-      - postgres
-      - wallet-service
+      postgres:
+        condition: service_healthy
+      wallet-service:
+        condition: service_started
+
 
   fraud-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /fraud-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_fraud
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_fraud
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   ledger-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /ledger-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_ledger
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_ledger
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   merchant-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /merchant-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_merchants
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
-      WALLET_SERVICE_URL: http://wallet-service:8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_merchants
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
+
+      WALLET_SERVICE_URL: http://wallet-service:8082
+      LEDGER_SERVICE_URL: http://ledger-service:8085
+      FRAUD_SERVICE_URL: http://fraud-service:8087
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   stokvel-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /stokvel-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_stokvel
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
-      WALLET_SERVICE_URL: http://wallet-service:8080
-      FRAUD_SERVICE_URL: http://fraud-service:8080
-      LEDGER_SERVICE_URL: http://ledger-service:8080
-      WEBHOOK_SERVICE_URL: http://webhook-service:8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_stokvel
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
+
+      WALLET_SERVICE_URL: http://wallet-service:8082
+      FRAUD_SERVICE_URL: http://fraud-service:8087
+      LEDGER_SERVICE_URL: http://ledger-service:8085
+      WEBHOOK_SERVICE_URL: http://webhook-service:8088
+
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   webhook-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /webhook-service/Dockerfile
     environment:
-      DATABASE_URL: jdbc:postgresql://postgres:5432/safipay_webhooks
-      DATABASE_USERNAME: safipay
-      DATABASE_PASSWORD: safipay
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/safipay_webhooks
+      SPRING_DATASOURCE_USERNAME: safipay
+      SPRING_DATASOURCE_PASSWORD: safipay
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+
 
   gateway-service:
     build:
-      context: ./backend  
+      context: ./backend
       dockerfile: /gateway-service/Dockerfile
+
     ports:
-      - "80:8080"
+      - "8080:8080"
+
     environment:
-      USER_SERVICE_URL: http://user-service:8080
-      WALLET_SERVICE_URL: http://wallet-service:8080
-      PAYMENT_SERVICE_URL: http://payment-service:8080
-      STOKVEL_SERVICE_URL: http://stokvel-service:8080
-      LEDGER_SERVICE_URL: http://ledger-service:8080
-      MERCHANT_SERVICE_URL: http://merchant-service:8080
-      FRAUD_SERVICE_URL: http://fraud-service:8080
-      WEBHOOK_SERVICE_URL: http://webhook-service:8080
+      USER_SERVICE_URL: http://user-service:8081
+      WALLET_SERVICE_URL: http://wallet-service:8082
+      PAYMENT_SERVICE_URL: http://payment-service:8083
+      STOKVEL_SERVICE_URL: http://stokvel-service:8084
+      LEDGER_SERVICE_URL: http://ledger-service:8085
+      MERCHANT_SERVICE_URL: http://merchant-service:8086
+      FRAUD_SERVICE_URL: http://fraud-service:8087
+      WEBHOOK_SERVICE_URL: http://webhook-service:8088
+      AI_SERVICE_URL: http://ai-service:8090
+
     depends_on:
       - user-service
       - wallet-service
       - payment-service
+      - ai-service
 
+
+  frontend:
+    image: node:20-alpine
+
+    working_dir: /app
+
+    ports:
+      - "4200:4200"
+
+    volumes:
+      - ./frontend/safipay-app:/app
+      - frontend_node_modules:/app/node_modules
+
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+      NG_CLI_ANALYTICS: "false"
+
+    command: >
+      sh -c "
+      npm install &&
+      npx ng serve
+      --host 0.0.0.0
+      --port 4200
+      --poll=1000
+      "
+
+    depends_on:
+      - gateway-service
+  ai-service:
+    build:
+      context: ./backend/ai-service
+      dockerfile: Dockerfile
+
+    environment:
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY}
+      OLLAMA_HOST: https://ollama.com
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-gpt-oss:120b}
+
+      WALLET_SERVICE_URL: http://wallet-service:8082
+      PAYMENT_SERVICE_URL: http://payment-service:8083
+      STOKVEL_SERVICE_URL: http://stokvel-service:8084
+      MERCHANT_SERVICE_URL: http://merchant-service:8086
+
+    depends_on:
+      - wallet-service
+      - payment-service
+      - stokvel-service
+      - merchant-service
+
+    restart: unless-stopped
+  
 volumes:
   postgres_data:
+  frontend_node_modules:

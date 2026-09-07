@@ -1,0 +1,182 @@
+<section class="marketplace-page">
+  <header class="marketplace-hero">
+    <div>
+      <p class="eyebrow">SAFIPAY MARKETPLACE</p>
+
+      <h1>Discover local SafiPay merchants</h1>
+
+      <p class="hero-copy">
+        Choose a merchant to see the products and
+        services they currently offer.
+      </p>
+    </div>
+
+    <div class="hero-badge">
+      <span class="hero-badge__value">
+        {{ resultLabel() }}
+      </span>
+
+      <span class="hero-badge__label">
+        currently shown
+      </span>
+    </div>
+  </header>
+
+  <div class="filters">
+    <div class="search-field">
+      <label for="merchant-search">
+        Search merchants
+      </label>
+
+      <div class="search-control">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+
+        <input
+          id="merchant-search"
+          type="search"
+          placeholder="Search merchants or categories"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+        />
+      </div>
+    </div>
+
+    <div class="filter-field">
+      <label for="merchant-category">
+        Category
+      </label>
+
+      <select
+        id="merchant-category"
+        [ngModel]="selectedCategory()"
+        (ngModelChange)="setCategory($event)"
+      >
+        <option value="">All categories</option>
+
+        <option
+          *ngFor="let category of categories"
+          [value]="category.value"
+        >
+          {{ category.label }}
+        </option>
+      </select>
+    </div>
+
+    <button
+      *ngIf="searchQuery().trim() || selectedCategory()"
+      class="clear-button"
+      type="button"
+      (click)="clearFilters()"
+    >
+      Clear
+    </button>
+  </div>
+
+  <div
+    *ngIf="error()"
+    class="state-card state-card--error"
+  >
+    <strong>Marketplace unavailable</strong>
+
+    <span>{{ error() }}</span>
+
+    <button
+      type="button"
+      (click)="loadMerchants()"
+    >
+      Try again
+    </button>
+  </div>
+
+  <div
+    *ngIf="loading() && !error()"
+    class="merchant-grid"
+    aria-label="Loading merchants"
+  >
+    <div
+      class="merchant-skeleton"
+      *ngFor="let item of [1, 2, 3, 4, 5, 6]"
+    ></div>
+  </div>
+
+  <ng-container *ngIf="!loading() && !error()">
+    <div class="results-heading">
+      <div>
+        <h2>Merchants</h2>
+        <p>{{ resultLabel() }}</p>
+      </div>
+    </div>
+
+    <div
+      *ngIf="filteredMerchants().length > 0"
+      class="merchant-grid"
+    >
+      <article
+        class="merchant-card"
+        *ngFor="
+          let merchant of filteredMerchants();
+          trackBy: trackByMerchantId
+        "
+      >
+        <div class="merchant-media">
+          <img
+            *ngIf="merchant.logoUrl; else logoFallback"
+            [src]="merchant.logoUrl"
+            [attr.alt]="merchant.businessName + ' logo'"
+            [attr.title]="merchant.businessName"
+          />
+
+          <ng-template #logoFallback>
+            <div class="logo-fallback">
+              {{ merchantInitials(merchant.businessName) }}
+            </div>
+          </ng-template>
+
+          <span class="category-badge">
+            {{ formatCategory(merchant.category) }}
+          </span>
+        </div>
+
+        <div class="merchant-content">
+          <h3>{{ merchant.businessName }}</h3>
+
+          <p>
+            {{
+              merchant.description ||
+              'Explore this merchant on the SafiPay marketplace.'
+            }}
+          </p>
+
+          <a
+            class="store-button"
+            [routerLink]="[
+              '/dashboard/marketplace',
+              merchant.id
+            ]"
+          >
+            {{ storeButtonLabel(merchant) }}
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div
+      *ngIf="filteredMerchants().length === 0"
+      class="state-card"
+    >
+      <strong>No merchants found</strong>
+
+      <span>
+        Try a different search or category.
+      </span>
+
+      <button
+        type="button"
+        (click)="clearFilters()"
+      >
+        Clear filters
+      </button>
+    </div>
+  </ng-container>
+</section>
