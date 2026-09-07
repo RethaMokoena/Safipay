@@ -1,447 +1,924 @@
-# SafiPay — Full Stack Monorepo
+# SafiPay
 
-> Modern digital wallet, instant payments & stokvel savings platform for South Africa.
-> **Stack:** Spring Boot 3.2 microservices (Java 17) · Angular 17 (standalone) · JWT auth · H2 (dev)
+> AI powered fintech and commerce platform for digital wallets, payments, stokvel savings, merchant tools and marketplace checkout.
 
----
+SafiPay is a full stack portfolio project built around a microservices architecture. It combines consumer payments, group savings, merchant functionality, a multi merchant marketplace and an AI assistant into one platform.
 
-## Table of Contents
-
-1. [Project Structure](#project-structure)
-2. [Architecture Overview](#architecture-overview)
-3. [Backend Services](#backend-services)
-4. [Frontend Application](#frontend-application)
-5. [API Reference](#api-reference)
-6. [Cross-Service Call Chain](#cross-service-call-chain)
-7. [Event Types](#event-types)
-8. [Quick Start](#quick-start)
-9. [Environment Config](#environment-config)
-10. [Roadmap](#roadmap)
+The project was built to demonstrate backend engineering, distributed system design, API development, authentication, database design, Docker, frontend integration and practical AI integration.
 
 ---
 
-## Project Structure
+## Project Status
 
+**Portfolio version: Complete**
+
+SafiPay is complete as a portfolio project and includes the main end to end flows needed to demonstrate the platform.
+
+It is not presented as a production banking or regulated financial system.
+
+---
+
+# Screenshots
+
+
+## Dashboard
+
+![SafiPay Dashboard](docs/screenshots/dashboard.png)
+
+> Screenshot placeholder: Main dashboard showing wallet balance, recent payments, marketplace orders, stokvels, quick actions and Ask Safi.
+
+---
+
+## Marketplace
+
+![SafiPay Marketplace](docs/screenshots/marketplace.png)
+
+> Screenshot placeholder: Marketplace discovery page showing products and services from active merchants.
+
+---
+
+## Merchant Storefront
+
+![Merchant Storefront](docs/screenshots/merchant-storefront.png)
+
+> Screenshot placeholder: Individual merchant storefront with active listings.
+
+---
+
+## Shopping Cart
+
+![Shopping Cart](docs/screenshots/cart.png)
+
+> Screenshot placeholder: Multi merchant shopping cart showing grouped products and checkout total.
+
+---
+
+## Checkout Receipt
+
+![Checkout Receipt](docs/screenshots/receipt.png)
+
+> Screenshot placeholder: Successful marketplace checkout receipt.
+
+---
+
+## Customer Orders
+
+![Customer Orders](docs/screenshots/orders.png)
+
+> Screenshot placeholder: Customer order history with fulfilment status timeline.
+
+---
+
+## Merchant Portal
+
+![Merchant Portal](docs/screenshots/merchant-portal.png)
+
+> Screenshot placeholder: Merchant dashboard with listings, payments and incoming orders.
+
+---
+
+## Merchant Order Management
+
+![Merchant Orders](docs/screenshots/merchant-orders.png)
+
+> Screenshot placeholder: Merchant order management page showing PAID, PROCESSING and COMPLETED orders.
+
+---
+
+## Stokvels
+
+![SafiPay Stokvels](docs/screenshots/stokvels.png)
+
+> Screenshot placeholder: Stokvel dashboard showing group savings and contribution information.
+
+---
+
+## Ask Safi
+
+![Ask Safi](docs/screenshots/ask-safi.png)
+
+> Screenshot placeholder: Ask Safi recommending marketplace listings or explaining SafiPay data.
+
+---
+
+# Core Features
+
+## Authentication
+
+SafiPay supports authenticated user access using JWT based authentication.
+
+Main capabilities include:
+
+* User registration
+* User login
+* Protected routes
+* Authenticated service requests
+* Role based administrative protection
+* Secure password hashing
+
+---
+
+## Digital Wallet
+
+Each user can access a SafiPay wallet.
+
+Features include:
+
+* Automatic wallet creation
+* Wallet balance retrieval
+* Wallet top up
+* Internal debit and credit operations
+* Wallet based payment settlement
+
+---
+
+## P2P Payments
+
+Users can transfer money to other SafiPay users.
+
+Features include:
+
+* Authenticated sender
+* Wallet debit and credit
+* Payment history
+* Transfer validation
+* Transaction tracking
+
+---
+
+## Stokvel Savings
+
+SafiPay includes digital stokvel functionality for group savings.
+
+Features include:
+
+* Create and join stokvels
+* View owned or joined stokvels
+* Member contributions
+* Group pool balances
+* Contribution tracking
+* Payout support
+* Stokvel discovery
+
+---
+
+## Merchant Accounts
+
+Users can create merchant accounts for businesses.
+
+Features include:
+
+* Merchant registration
+* Merchant approval and suspension
+* Merchant wallet creation
+* Merchant ownership checks
+* API key management
+* Payment history
+* Refund support
+
+---
+
+# Marketplace
+
+The SafiPay marketplace is implemented inside the merchant service.
+
+Merchants can create:
+
+```text
+PRODUCT
+SERVICE
 ```
+
+Products support stock quantities while services do not require stock.
+
+Marketplace capabilities include:
+
+* Product and service listings
+* Public marketplace discovery
+* Merchant storefronts
+* Search
+* Merchant category filtering
+* Listing type filtering
+* Maximum price filtering
+* Active and inactive listing management
+* Product stock tracking
+
+---
+
+# Shopping Cart
+
+The Angular frontend includes a local marketplace cart.
+
+The cart supports:
+
+* Products from multiple merchants
+* Merchant grouped cart items
+* Product quantity changes
+* Stock limited quantities
+* Service quantity fixed at one
+* Local cart persistence
+* Server authoritative checkout pricing
+
+The frontend sends listing identifiers and quantities only.
+
+The backend determines:
+
+```text
+Authenticated buyer
+Database listing price
+Merchant ownership
+Order total
+```
+
+This prevents the browser from becoming the authoritative source for payment amounts.
+
+---
+
+# Multi Merchant Checkout
+
+A single SafiPay checkout can contain products from multiple merchants.
+
+Example:
+
+```text
+MarketplaceCheckout
+│
+├── MerchantOrder
+│   ├── MerchantOrderItem
+│   └── MerchantOrderItem
+│
+└── MerchantOrder
+    └── MerchantOrderItem
+```
+
+Each merchant receives a separate order while the customer sees one overall checkout.
+
+Checkout statuses include:
+
+```text
+PENDING
+PROCESSING
+PAID
+PARTIALLY_PAID
+FAILED
+CANCELLED
+```
+
+Merchant order statuses include:
+
+```text
+PENDING_PAYMENT
+PAID
+PAYMENT_FAILED
+PROCESSING
+COMPLETED
+CANCELLED
+REFUNDED
+```
+
+---
+
+# Marketplace Payments
+
+Marketplace payments use the authenticated buyer and server stored order totals.
+
+Payment flow:
+
+```text
+Customer
+   ↓
+Marketplace Checkout
+   ↓
+Merchant Order
+   ↓
+Buyer Wallet Debit
+   ↓
+Merchant Wallet Credit
+   ↓
+Merchant Payment
+   ↓
+Order PAID
+   ↓
+Stock Reduction
+```
+
+SafiPay currently applies a **1.5% merchant fee**.
+
+The customer pays the full order amount while the merchant receives the order amount minus the merchant fee.
+
+---
+
+# Failed Payment Recovery
+
+Multi merchant checkout supports partial failure recovery.
+
+If one merchant payment fails while others succeed:
+
+```text
+Checkout
+   ↓
+PARTIALLY_PAID
+   ↓
+Failed Merchant Order
+   ↓
+Retry Payment
+   ↓
+PAID
+```
+
+Customers can retry only the merchant order that failed.
+
+Successful merchant orders are not charged again.
+
+---
+
+# Payment Idempotency
+
+Marketplace payment flows include protection against duplicate payment attempts.
+
+This helps protect against:
+
+* Double clicking payment buttons
+* Browser retries
+* Duplicate HTTP requests
+* Repeated marketplace payment processing
+
+---
+
+# Stock Concurrency Protection
+
+SafiPay uses database locking to protect product stock during marketplace payment.
+
+The product row is locked before the payment attempt so two customers cannot both purchase the final unit.
+
+Example:
+
+```text
+Stock = 1
+
+Customer A
+   ↓
+Locks product
+   ↓
+Pays
+   ↓
+Stock becomes 0
+   ↓
+Commit
+
+Customer B
+   ↓
+Waits for lock
+   ↓
+Reads stock = 0
+   ↓
+Rejected before payment
+```
+
+---
+
+# Merchant Order Fulfilment
+
+Merchants can manage incoming marketplace orders.
+
+Supported transitions:
+
+```text
+PAID
+  ↓
+PROCESSING
+  ↓
+COMPLETED
+```
+
+The backend verifies:
+
+* The authenticated user owns the merchant
+* The order belongs to that merchant
+* The requested status transition is valid
+
+---
+
+# Customer Order Tracking
+
+Customers can view marketplace order history and fulfilment progress.
+
+The order timeline includes:
+
+```text
+Payment received
+Processing
+Completed
+```
+
+The UI also handles:
+
+```text
+PAYMENT_FAILED
+CANCELLED
+REFUNDED
+```
+
+---
+
+# Refunds
+
+Merchant payment refunds are connected to marketplace orders.
+
+Refund flow:
+
+```text
+Merchant Payment
+COMPLETED
+   ↓
+Refund
+   ↓
+Merchant Payment
+REFUNDED
+   ↓
+Merchant Order
+REFUNDED
+```
+
+A financial refund does not automatically restore product stock because a refund and a physical product return are treated as separate business actions.
+
+---
+
+# PDF Receipts
+
+Customer receipts can be exported as PDF files directly in the browser.
+
+The frontend uses:
+
+```text
+jsPDF
+jspdf-autotable
+```
+
+The backend stores checkout, order and payment information rather than PDF files.
+
+---
+
+# Ask Safi AI
+
+SafiPay includes an AI assistant called **Ask Safi**.
+
+Architecture:
+
+```text
+Angular
+   ↓
+Gateway
+   ↓
+AI Service
+   ↓
+Controlled SafiPay APIs
+   ↓
+Sanitised Context
+   ↓
+Ollama Cloud
+   ↓
+Answer
+```
+
+Ask Safi can help users:
+
+* Discover marketplace products
+* Compare available services
+* Explore stokvels
+* Understand SafiPay features
+* Answer questions using live SafiPay context
+
+Marketplace recommendations are grounded in real listing data supplied by SafiPay.
+
+The AI is not given direct database access.
+
+Sensitive fields are removed before context is sent to the external AI provider.
+
+---
+
+# Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │   Angular Frontend  │
+                         │      Port 4200      │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │   Gateway Service   │
+                         │      Port 8080      │
+                         └──────────┬──────────┘
+                                    │
+        ┌───────────────────────────┼───────────────────────────┐
+        │                           │                           │
+        ▼                           ▼                           ▼
+┌───────────────┐          ┌────────────────┐          ┌────────────────┐
+│ User Service  │          │ Wallet Service │          │Payment Service │
+│     8081      │          │      8082      │          │      8083      │
+└───────────────┘          └────────────────┘          └────────────────┘
+
+        │                           │                           │
+        ▼                           ▼                           ▼
+┌───────────────┐          ┌────────────────┐          ┌────────────────┐
+│Stokvel Service│          │ Ledger Service │          │Merchant Service│
+│     8084      │          │      8085      │          │      8086      │
+└───────────────┘          └────────────────┘          └────────────────┘
+
+        │                           │                           │
+        ▼                           ▼                           ▼
+┌───────────────┐          ┌────────────────┐          ┌────────────────┐
+│ Fraud Service │          │Webhook Service │          │   AI Service   │
+│     8087      │          │      8088      │          │      8090      │
+└───────────────┘          └────────────────┘          └────────────────┘
+
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │     PostgreSQL      │
+                         └─────────────────────┘
+```
+
+---
+
+# Technology Stack
+
+## Backend
+
+```text
+Java 17
+Spring Boot
+Spring Security
+Spring Data JPA
+PostgreSQL
+JWT
+Maven
+Docker
+```
+
+## Frontend
+
+```text
+Angular 17
+TypeScript
+SCSS
+Angular Signals
+RxJS
+jsPDF
+```
+
+## AI
+
+```text
+Python
+FastAPI
+Ollama Cloud
+gpt-oss:120b
+```
+
+## Infrastructure
+
+```text
+Docker
+Docker Compose
+PostgreSQL 15
+REST APIs
+Microservices
+```
+
+---
+
+# Project Structure
+
+```text
 safipay/
+│
 ├── backend/
-│   ├── pom.xml                   ← Parent POM (multi-module Maven)
-│   ├── gateway-service/          ← Port 8080
-│   ├── user-service/             ← Port 8081
-│   ├── wallet-service/           ← Port 8082
-│   ├── payment-service/          ← Port 8083
-│   ├── stokvel-service/          ← Port 8084
-│   ├── ledger-service/           ← Port 8085
-│   ├── merchant-service/         ← Port 8086
-│   ├── fraud-service/            ← Port 8087
-│   └── webhook-service/          ← Port 8088
-└── frontend/
-    └── safipay-app/              ← Angular 17 SPA (port 4200)
+│   ├── pom.xml
+│   ├── gateway-service/
+│   ├── user-service/
+│   ├── wallet-service/
+│   ├── payment-service/
+│   ├── stokvel-service/
+│   ├── ledger-service/
+│   ├── merchant-service/
+│   ├── fraud-service/
+│   ├── webhook-service/
+│   └── ai-service/
+│
+├── frontend/
+│   └── safipay-app/
+│
+├── docs/
+│   └── screenshots/
+│
+├── docker-compose.yml
+├── .env.example
+└── README.md
 ```
 
 ---
 
-## Architecture Overview
+# Running SafiPay
 
-```
-Angular SPA (4200)
-      │
-      ▼  HTTP + Bearer JWT
-┌─────────────────────────────────────────────┐
-│         Gateway Service  (8080)              │
-│  • JWT validation (AuthFilter)              │
-│  • Rate limiting  (100 req/min/IP)          │
-│  • Request logging (X-Request-Id tracing)   │
-│  • Routes to all 8 downstream services      │
-└──────┬──────┬──────┬──────┬──────┬──────┬──┘
-       │      │      │      │      │      │
-   user  wallet pay stokvl ledger merchant fraud
-   8081  8082  8083  8084   8085   8086   8087
-                                          │
-                                     webhook
-                                      8088
+## Prerequisites
 
-Internal (service-to-service, no gateway):
-  payment-service  → fraud-service    /internal/fraud/evaluate
-  payment-service  → wallet-service   /internal/wallets/{id}/debit|credit
-  payment-service  → ledger-service   /internal/ledger/transactions
-  payment-service  → webhook-service  /internal/webhooks/events
-  stokvel-service  → wallet-service   /internal/wallets/{id}/debit|credit
-  stokvel-service  → fraud-service    /internal/fraud/evaluate
-  stokvel-service  → ledger-service   /internal/ledger/transactions
-  stokvel-service  → webhook-service  /internal/webhooks/events
-  merchant-service → wallet-service   /internal/wallets/{id}/debit|credit
-  user-service     → (internal)       /internal/users/{id}
+Install:
+
+```text
+Docker
+Docker Compose
+Git
 ```
 
 ---
 
-## Backend Services
+## Clone
 
-| Service | Port | Java Files | Responsibility |
-|---------|------|-----------|----------------|
-| **gateway-service** | 8080 | 6 | JWT validation, rate limiting, request tracing, routing |
-| **user-service** | 8081 | 23 | Registration, login, profile, password change, token refresh, admin user management |
-| **wallet-service** | 8082 | 19 | Balances, top-up, P2P transfer, transaction history, admin freeze/unfreeze |
-| **payment-service** | 8083 | 19 | Send money, request money, approve/decline, refund, fraud check, ledger posting, webhook events |
-| **stokvel-service** | 8084 | 28 | ROSCA & pool savings groups, contributions, payouts, wallet integration, fraud check, ledger + webhooks |
-| **ledger-service** | 8085 | 22 | Double-entry bookkeeping, account statements, reversal, idempotent posting |
-| **merchant-service** | 8086 | 21 | Business accounts, HMAC API key lifecycle, charge customers, refunds, 1.5% fee calculation |
-| **fraud-service** | 8087 | 22 | 11-rule risk scoring engine, fraud alerts, blacklisting, per-user risk profiles |
-| **webhook-service** | 8088 | 21 | Endpoint registration, HMAC-SHA256 signed delivery, async retry scheduler, delivery audit trail |
-
-**Total: 181 Java files**
-
-### Send Money — full call chain
-```
-Client → Gateway (JWT + rate limit + log)
-  → payment-service
-      ├─ fraud-service     evaluate transaction        [APPROVED / REVIEW / BLOCKED]
-      ├─ wallet-service    debit sender wallet
-      ├─ wallet-service    credit recipient wallet
-      ├─ ledger-service    post double-entry record
-      └─ webhook-service   fire payment.completed event
-```
-
-### H2 Consoles (dev only)
-| Service | Console URL |
-|---------|-------------|
-| user | http://localhost:8081/h2-console |
-| wallet | http://localhost:8082/h2-console |
-| payment | http://localhost:8083/h2-console |
-| stokvel | http://localhost:8084/h2-console |
-| ledger | http://localhost:8085/h2-console |
-| merchant | http://localhost:8086/h2-console |
-| fraud | http://localhost:8087/h2-console |
-| webhook | http://localhost:8088/h2-console |
-
----
-
-## Frontend Application
-
-**Stack:** Angular 17 · Standalone components · TypeScript · SCSS · Signal-based state · Lazy-loaded routes
-
-**Total: 64 source files**
-
-### Feature Modules
-
-| Route | Component | Description |
-|-------|-----------|-------------|
-| `/` | LandingComponent | Public marketing page — hero, features, comparison, testimonials, FAQ |
-| `/auth/login` | LoginComponent | JWT login with form validation |
-| `/auth/register` | RegisterComponent | 2-step registration (details → password) |
-| `/dashboard` | DashboardComponent | Overview — wallet balance, recent payments, stokvels summary |
-| `/dashboard/wallet` | WalletComponent | Balance card, top-up modal, transfer modal, paginated transaction history |
-| `/dashboard/payments` | PaymentsComponent | Send money, request money, approve/decline requests, refund, history with filter tabs |
-| `/dashboard/stokvel` | StokvelComponent | Create/join/browse stokvels, contribute, trigger payouts, detail view |
-| `/dashboard/merchant` | MerchantComponent | Register business, generate API keys (shown once), payment history, refunds |
-| `/dashboard/profile` | ProfileComponent | Edit personal details, change password, account info, danger zone |
-| `/dashboard/security` | SecurityComponent | Risk tier, velocity stats, transaction evaluation history with score display |
-| `/dashboard/webhooks` | WebhooksComponent | Register HTTPS endpoints, subscribe to events, view delivery history |
-| `/dashboard/admin` | AdminComponent | User management (suspend/reactivate/promote), wallet management (freeze/unfreeze) |
-
-### Core Services
-
-| Service | Calls |
-|---------|-------|
-| `AuthService` | `/api/auth/**` — login, register, profile, change password, refresh token |
-| `WalletService` | `/api/wallets/**` — balance, top-up, transfer, transaction history |
-| `PaymentService` | `/api/payments/**` — send, request, approve, decline, refund, history |
-| `StokvelService` | `/api/stokvels/**` — CRUD, join, contribute, payouts |
-| `MerchantService` | `/api/merchants/**` — register, API keys, payments |
-| `LedgerService` | `/api/ledger/**` — account, entries, statement |
-| `FraudService` | `/api/fraud/**` — risk profile, evaluation history, alerts |
-| `WebhookService` | `/api/webhooks/**` — endpoints, events, deliveries |
-| `AdminService` | `/api/admin/**` — user management, wallet management |
-
-### Shared Infrastructure
-
-| Item | Description |
-|------|-------------|
-| `JwtInterceptor` | Attaches `Authorization: Bearer <token>` to every request, handles 401 → logout |
-| `AuthGuard` | Blocks unauthenticated access to `/dashboard/**` |
-| `GuestGuard` | Redirects logged-in users away from `/auth/**` |
-| `ToastService` + `ToastComponent` | Signal-based toast notifications (success/error/info/warning) |
-| `ConfirmDialogComponent` | Reusable confirmation modal with danger mode |
-| `ZarPipe` | Formats amounts as `R 1,234.50` with optional sign |
-| `RelativeDatePipe` | Human-readable dates: "2h ago", "3d ago" |
-
----
-
-## API Reference
-
-All requests through the **gateway on port 8080**.
-Protected routes require: `Authorization: Bearer <token>`
-
-### Auth
-```
-POST   /api/auth/register              { firstName, lastName, email, password, phoneNumber? }
-POST   /api/auth/login                 { email, password }
-GET    /api/auth/me                    ← current user
-PUT    /api/auth/me                    { firstName?, lastName?, phoneNumber? }
-PUT    /api/auth/change-password       { currentPassword, newPassword }
-POST   /api/auth/refresh               { refreshToken }
-```
-
-### Admin — Users
-```
-GET    /api/admin/users                ?page=0&size=20
-GET    /api/admin/users/{id}
-POST   /api/admin/users/{id}/suspend
-POST   /api/admin/users/{id}/reactivate
-POST   /api/admin/users/{id}/promote
-```
-
-### Wallet
-```
-POST   /api/wallets                    ← create wallet
-GET    /api/wallets/me
-POST   /api/wallets/top-up             { amount, referenceId? }
-POST   /api/wallets/transfer           { recipientUserId, amount, description? }
-GET    /api/wallets/transactions       ?page=0&size=20
-```
-
-### Admin — Wallets
-```
-GET    /api/admin/wallets              ?page=0&size=20
-POST   /api/admin/wallets/{userId}/freeze
-POST   /api/admin/wallets/{userId}/unfreeze
-```
-
-### Payments
-```
-POST   /api/payments/send              { recipientUserId, amount, description?, referenceNote? }
-POST   /api/payments/request           { fromUserId, amount, description? }
-POST   /api/payments/requests/{id}/approve
-POST   /api/payments/requests/{id}/decline
-POST   /api/payments/{id}/refund
-GET    /api/payments/history           ?page=0&size=20
-GET    /api/payments/pending-requests
-GET    /api/payments/{id}
-```
-
-### Stokvels
-```
-POST   /api/stokvels                   { name, type (ROSCA|POOL), contributionAmount, contributionFrequency, maxMembers }
-GET    /api/stokvels                   ← all stokvels
-GET    /api/stokvels/my                ← my stokvels
-GET    /api/stokvels/{id}
-POST   /api/stokvels/{id}/join
-POST   /api/stokvels/{id}/activate     ← admin only
-POST   /api/stokvels/{id}/contribute   { amount, transactionId }
-POST   /api/stokvels/{id}/payouts/rosca               ← admin, ROSCA only
-POST   /api/stokvels/{id}/payouts/pool/{recipientId}  ← admin, POOL only
-GET    /api/stokvels/{id}/contributions
-GET    /api/stokvels/{id}/payouts
-```
-
-### Ledger
-```
-POST   /api/ledger/accounts            { ownerId, type }
-GET    /api/ledger/accounts/me
-GET    /api/ledger/accounts/{ownerId}
-GET    /api/ledger/entries             ?page=0&size=20
-GET    /api/ledger/statement           ?from=ISO_DATE&to=ISO_DATE
-POST   /api/ledger/transactions/{id}/reverse
-```
-
-### Merchant
-```
-POST   /api/merchants                  { businessName, category, ... }
-GET    /api/merchants/my
-GET    /api/merchants/{id}
-POST   /api/merchants/{id}/approve     ← admin only
-POST   /api/merchants/{id}/suspend     ← admin only
-POST   /api/merchants/{id}/api-keys    { label, environment (TEST|LIVE) }
-GET    /api/merchants/{id}/api-keys
-DELETE /api/merchants/{id}/api-keys/{keyId}
-POST   /api/merchants/{id}/payments/charge       { amount, payerUserId, description?, merchantReference? }
-POST   /api/merchants/{id}/payments/{id}/refund
-GET    /api/merchants/{id}/payments    ?page=0&size=20
-```
-
-### Fraud
-```
-GET    /api/fraud/profile/me
-GET    /api/fraud/history/me           ?page=0&size=20
-GET    /api/fraud/alerts               ?page=0&size=20
-POST   /api/fraud/alerts/{id}/resolve  { resolution, notes? }
-POST   /api/fraud/users/{id}/blacklist
-POST   /api/fraud/users/{id}/unblacklist
-GET    /api/fraud/users/{id}/profile
-```
-
-### Webhooks
-```
-POST   /api/webhooks/endpoints         { targetUrl, subscribedEvents[] }
-GET    /api/webhooks/endpoints
-POST   /api/webhooks/endpoints/{id}/pause
-DELETE /api/webhooks/endpoints/{id}
-GET    /api/webhooks/events
-GET    /api/webhooks/events/{id}/deliveries
+```bash
+git clone <your-repository-url>
+cd Safipay
 ```
 
 ---
 
-## Cross-Service Call Chain
+## Environment
 
-### Send Money
+Create your local environment file from the example:
+
+```bash
+cp .env.example .env
 ```
+
+Add the required local values.
+
+Do not commit secrets to Git.
+
+---
+
+## Start the Platform
+
+From the repository root:
+
+```bash
+docker compose up --build
+```
+
+Main local URLs:
+
+```text
+Frontend
+http://localhost:4200
+
+Gateway
+http://localhost:8080
+```
+
+---
+
+## Stop the Platform
+
+```bash
+docker compose down
+```
+
+Avoid:
+
+```bash
+docker compose down -v
+```
+
+unless you intentionally want to remove local PostgreSQL volumes and seeded data.
+
+---
+
+# Main API Areas
+
+## Authentication
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+```
+
+---
+
+## Wallet
+
+```http
+GET  /api/wallets/me
+POST /api/wallets/top-up
+```
+
+---
+
+## Payments
+
+```http
 POST /api/payments/send
-  1. fraud-service     → score transaction           BLOCKED = abort
-  2. wallet-service    → debit sender
-  3. wallet-service    → credit recipient
-  4. ledger-service    → post TRANSFER entry
-  5. webhook-service   → fire payment.completed
-```
-
-### Stokvel Contribution
-```
-POST /api/stokvels/{id}/contribute
-  1. fraud-service     → score contribution          BLOCKED = abort
-  2. wallet-service    → debit member wallet
-  3. ledger-service    → post STOKVEL_CONTRIBUTION
-  4. webhook-service   → fire stokvel.contribution
-```
-
-### ROSCA Payout
-```
-POST /api/stokvels/{id}/payouts/rosca
-  1. wallet-service    → credit recipient
-  2. ledger-service    → post STOKVEL_PAYOUT
-  3. webhook-service   → fire stokvel.payout
-```
-
-### Merchant Charge
-```
-POST /api/merchants/{id}/payments/charge
-  1. wallet-service    → debit customer (full amount)
-  2. wallet-service    → credit merchant  (net of 1.5% fee)
-  3. ledger            → (planned)
 ```
 
 ---
 
-## Event Types
+## Merchants
 
-| Event | Fired by | Trigger |
-|-------|---------|---------|
-| `payment.completed` | payment-service | Successful P2P transfer |
-| `payment.refunded` | payment-service | Refund processed |
-| `stokvel.contribution` | stokvel-service | Member contributes to stokvel |
-| `stokvel.payout` | stokvel-service | ROSCA rotation or pool withdrawal |
-
-Webhook deliveries are signed with **HMAC-SHA256**.
-Verify with: `X-SafiPay-Signature: sha256=<hex>`
-
----
-
-## Quick Start
-
-### Prerequisites
-- Java 17+, Maven 3.8+
-- Node.js 18+, Angular CLI 17 (`npm i -g @angular/cli`)
-
-### Backend — start all services
-
-```bash
-# Run each in its own terminal in order:
-cd backend/user-service     && mvn spring-boot:run   # 8081
-cd backend/wallet-service   && mvn spring-boot:run   # 8082
-cd backend/payment-service  && mvn spring-boot:run   # 8083
-cd backend/stokvel-service  && mvn spring-boot:run   # 8084
-cd backend/ledger-service   && mvn spring-boot:run   # 8085
-cd backend/merchant-service && mvn spring-boot:run   # 8086
-cd backend/fraud-service    && mvn spring-boot:run   # 8087
-cd backend/webhook-service  && mvn spring-boot:run   # 8088
-cd backend/gateway-service  && mvn spring-boot:run   # 8080 ← start last
-```
-
-Or build all at once from the backend root:
-```bash
-cd backend && mvn clean package -DskipTests
-```
-
-### Frontend
-
-```bash
-cd frontend/safipay-app
-npm install
-ng serve
-# → http://localhost:4200
+```http
+POST /api/merchants
+GET  /api/merchants/my
+GET  /api/merchants/{merchantId}
 ```
 
 ---
 
-## Environment Config
+## Marketplace Listings
 
-### Backend `application.yml` (all services share this secret)
-```yaml
-jwt:
-  secret: safipay-super-secret-key-for-jwt-signing-must-be-256-bits-long
-  expiration: 86400000        # 24h access token
-  refresh-expiration: 604800000  # 7d refresh token
-```
-
-> ⚠️ **Change the JWT secret before any production deployment.**
-
-### Frontend `src/environments/environment.ts`
-```ts
-export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:8080'  // Gateway
-};
-```
-
-### Service URL dependencies
-```
-gateway-service  → routes to all 8 services
-payment-service  → wallet (8082), fraud (8087), ledger (8085), webhook (8088)
-stokvel-service  → wallet (8082), fraud (8087), ledger (8085), webhook (8088)
-merchant-service → wallet (8082)
-ledger-service   → (standalone)
-fraud-service    → (standalone)
-webhook-service  → (standalone — delivers to external URLs)
+```http
+GET    /api/merchants/listings
+POST   /api/merchants/{merchantId}/listings
+GET    /api/merchants/{merchantId}/listings/manage
+GET    /api/merchants/{merchantId}/listings
+GET    /api/merchants/{merchantId}/listings/{listingId}
+PUT    /api/merchants/{merchantId}/listings/{listingId}
+DELETE /api/merchants/{merchantId}/listings/{listingId}
 ```
 
 ---
 
-## Fraud Rule Engine
+## Checkout
 
-The `FraudRuleEngine` scores every transaction 0–100 using 11 rules:
+```http
+POST /api/merchants/checkout
+POST /api/merchants/checkout/{checkoutId}/pay
+GET  /api/merchants/checkout/{checkoutId}
+GET  /api/merchants/checkouts/my
+```
 
-| Rule | Score Delta | Triggers when |
-|------|-------------|---------------|
-| `USER_BLACKLISTED` | +100 | User is on blacklist |
-| `OPEN_FRAUD_ALERTS` | +20 per alert | User has unresolved alerts |
-| `VELOCITY_TX_COUNT` | +25 | ≥10 transactions in last hour |
-| `VELOCITY_AMOUNT_HOURLY` | +25 | ≥R10,000 in last hour |
-| `VELOCITY_AMOUNT_DAILY` | +20 | ≥R50,000 in last day |
-| `AMOUNT_10X_ABOVE_AVERAGE` | +30 | Amount > 10× user's average |
-| `AMOUNT_5X_ABOVE_AVERAGE` | +15 | Amount > 5× user's average |
-| `LARGE_AMOUNT_50K` | +20 | Single transaction ≥R50,000 |
-| `LARGE_AMOUNT_20K` | +10 | Single transaction ≥R20,000 |
-| `REPEATED_FAILURES` | +30 | ≥3 blocked transactions in last hour |
-| `NEW_DEVICE` | +10 | Device ID changed |
-| `NEW_IP_ADDRESS` | +5 | IP address changed |
-
-**Thresholds:** LOW < 30 · MEDIUM 30–59 · HIGH 60–79 · CRITICAL ≥80
-
-**Decisions:** APPROVED → REVIEW → BLOCKED
+Failed merchant payments can also be retried individually.
 
 ---
 
-## Roadmap
+## Merchant Orders
 
-- [ ] **PostgreSQL** — replace H2 datasources for persistence
-- [ ] **Docker Compose** — full stack local dev in one command
-- [ ] **Refresh token rotation** — silent token refresh in Angular JWT interceptor
-- [ ] **Email verification** — send verification link on registration
-- [ ] **Push notifications** — WebSocket or SSE for real-time updates
-- [ ] **Stokvel invites** — share invite link by email or phone
-- [ ] **Ledger in merchant-service** — post ledger entries on merchant charges
-- [ ] **Redis rate limiting** — replace in-memory token bucket in gateway
-- [ ] **ML fraud scoring** — replace rule engine with a trained model
-- [ ] **Unit tests** — JUnit 5 + Mockito (backend), Jasmine (Angular)
-- [ ] **POPIA compliance** — data retention, right to erasure
-- [ ] **Production secrets** — Vault or AWS Secrets Manager for JWT secret
+```http
+GET /api/merchants/{merchantId}/orders
+GET /api/merchants/{merchantId}/orders/{orderId}
+PUT /api/merchants/{merchantId}/orders/{orderId}/status
+```
+
+---
+
+## Merchant Payments
+
+```http
+GET  /api/merchants/{merchantId}/payments
+POST /api/merchants/{merchantId}/payments/{paymentId}/refund
+```
+
+---
+
+## Ask Safi
+
+```http
+/api/ai/**
+```
+
+---
+
+# Demo Flow
+
+A good SafiPay demonstration can follow this sequence:
+
+```text
+1. Register or log in
+
+2. Open wallet
+   ↓
+   Top up balance
+
+3. Open marketplace
+   ↓
+   Browse merchant listings
+
+4. Add products to cart
+   ↓
+   Multi merchant checkout
+
+5. Pay
+   ↓
+   Receipt generated
+
+6. Open My Orders
+   ↓
+   Track fulfilment
+
+7. Open Merchant Portal
+   ↓
+   Move order from PAID
+   to PROCESSING
+   to COMPLETED
+
+8. Open Ask Safi
+   ↓
+   Ask for a product or stokvel recommendation
+```
+
+---
+
+# Security Design
+
+SafiPay includes several security focused design decisions:
+
+* JWT authentication
+* Password hashing
+* Protected backend routes
+* Merchant ownership checks
+* Administrative authorization
+* Server side marketplace pricing
+* Authenticated buyer identity
+* Payment idempotency
+* Product stock locking
+* Sensitive AI context sanitisation
+* API secrets stored outside source control
+
+---
+
+# Known Limitations
+
+SafiPay is a portfolio system rather than a production financial platform.
+
+A production version would require significantly more work around:
+
+* Regulatory compliance
+* POPIA and financial data governance
+* Formal security review
+* Penetration testing
+* Distributed tracing
+* Production observability
+* Advanced fraud detection
+* Strong distributed transaction coordination
+* Automated reconciliation
+* High availability
+* Disaster recovery
+* Production payment provider integration
+* Large scale performance testing
+
+---
+
+# Portfolio Highlights
+
+SafiPay demonstrates experience with:
+
+```text
+Microservices architecture
+Java and Spring Boot
+Angular
+REST APIs
+PostgreSQL
+Docker
+JWT authentication
+Distributed payment flows
+Database concurrency
+Idempotency
+Marketplace design
+AI integration
+Secure API design
+Error recovery
+Frontend and backend integration
+```
+
+---
+
+# Future Improvements
+
+SafiPay is feature complete for its portfolio scope.
+
+Possible future extensions include:
+
+* Merchant analytics
+* Advanced transaction search
+* Better observability
+* More automated tests
+* Event driven workflows
+* Stronger saga or outbox patterns
+* Deployment to a public cloud environment
+* Mobile application support
+
+These are optional extensions rather than requirements for the current portfolio version.
+
+---
+
+# Author
+
+**Rethabile Mokoena**
+
+Computer Science Graduate  
+Full Stack Software Developer
+
+---
+
+# License
+
+This project was created for educational and portfolio purposes.
+
+
