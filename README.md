@@ -87,7 +87,7 @@ It is not presented as a production banking or regulated financial system.
 
 ## Stokvels
 
-![SafiPay Stokvels](docs/screenshots/stokvels.png)
+![SafiPay Stokvels](docs/screenshots/stokvel.png)
 
 > Screenshot placeholder: Stokvel dashboard showing group savings and contribution information.
 
