@@ -55,7 +55,7 @@ It is not presented as a production banking or regulated financial system.
 
 ## Checkout Receipt
 
-![Checkout Receipt](docs/screenshots/receipt.png)
+![Checkout Receipt](docs/screenshots/receipts.png)
 
 > Screenshot placeholder: Successful marketplace checkout receipt.
 
