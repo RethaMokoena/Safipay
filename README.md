@@ -71,7 +71,7 @@ It is not presented as a production banking or regulated financial system.
 
 ## Merchant Portal
 
-![Merchant Portal](docs/screenshots/merchant-portal.png)
+![Merchant Portal](docs/screenshots/merchantportal.png)
 
 > Screenshot placeholder: Merchant dashboard with listings, payments and incoming orders.
 
@@ -95,7 +95,7 @@ It is not presented as a production banking or regulated financial system.
 
 ## Ask Safi
 
-![Ask Safi](docs/screenshots/ask-safi.png)
+![Ask Safi](docs/screenshots/safiAI.png)
 
 > Screenshot placeholder: Ask Safi recommending marketplace listings or explaining SafiPay data.
 
