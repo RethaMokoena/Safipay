@@ -4,13 +4,14 @@
     routerLink="/dashboard/marketplace"
     class="back-link"
   >
-    ← Continue shopping
+    <i class="fas fa-arrow-left"></i>
+    Continue shopping
   </a>
 
 
   <header class="cart-header">
 
-    <div>
+    <div class="cart-header-copy">
 
       <p class="eyebrow">
         SAFIPAY MARKETPLACE
@@ -21,8 +22,8 @@
       </h1>
 
       <p>
-        Shop from multiple SafiPay merchants
-        in one checkout.
+        Review your items before creating
+        a secure multi-merchant checkout.
       </p>
 
     </div>
@@ -32,25 +33,31 @@
       class="cart-count"
       *ngIf="!cartService.empty()"
     >
-
-      <strong>
-        {{ cartService.itemCount() }}
-      </strong>
-
-      <span>
-        {{
-          cartService.itemCount() === 1
-            ? 'item'
-            : 'items'
-        }}
+      <span class="cart-count-icon">
+        <i class="fas fa-shopping-cart"></i>
       </span>
 
+      <div>
+        <strong>
+          {{ cartService.itemCount() }}
+        </strong>
+
+        <span>
+          {{
+            cartService.itemCount() === 1
+              ? 'item'
+              : 'items'
+          }}
+        </span>
+      </div>
     </div>
 
   </header>
 
 
-  <!-- EMPTY CART -->
+  <!-- =========================================================
+       EMPTY CART
+  ========================================================== -->
 
   <section
     class="empty-cart"
@@ -58,7 +65,7 @@
   >
 
     <div class="empty-icon">
-      🛒
+      <i class="fas fa-shopping-cart"></i>
     </div>
 
     <h2>
@@ -80,7 +87,9 @@
   </section>
 
 
-  <!-- CART -->
+  <!-- =========================================================
+       CART
+  ========================================================== -->
 
   <div
     class="cart-layout"
@@ -90,39 +99,201 @@
     <main class="cart-items">
 
       <section
-        class="merchant-group"
+        class="merchant-card"
         *ngFor="
           let group of cartService.groups();
           trackBy: trackGroup
         "
       >
 
-        <header class="merchant-heading">
+        <!-- Merchant header -->
 
-          <div>
+        <header class="merchant-card-header">
 
-            <span>
-              MERCHANT
-            </span>
+          <div class="merchant-identity">
 
-            <strong>
-              {{ group.merchantName }}
-            </strong>
+            <div class="merchant-icon">
+              {{ group.merchantName.charAt(0).toUpperCase() }}
+            </div>
+
+            <div>
+
+              <span class="merchant-kicker">
+                MERCHANT
+              </span>
+
+              <h2>
+                {{ group.merchantName }}
+              </h2>
+
+              <span class="merchant-meta">
+                {{ group.itemCount }}
+                {{
+                  group.itemCount === 1
+                    ? 'item'
+                    : 'items'
+                }}
+              </span>
+
+            </div>
 
           </div>
 
 
-          <div class="merchant-heading__right">
+          <div class="merchant-header-total">
 
-            <div class="merchant-subtotal">
+            <span>
+              Subtotal
+            </span>
 
-              <span>
-                Merchant subtotal
+            <strong>
+              {{
+                group.subtotal
+                  | currency:
+                      'ZAR':
+                      'symbol-narrow':
+                      '1.2-2'
+              }}
+            </strong>
+
+          </div>
+
+        </header>
+
+
+        <!-- Merchant items -->
+
+        <div class="merchant-items">
+
+          <article
+            class="cart-item"
+            *ngFor="
+              let item of group.items;
+              trackBy: trackItem
+            "
+          >
+
+            <div class="item-image">
+
+              <img
+                *ngIf="
+                  item.imageUrl;
+                  else itemFallback
+                "
+                [src]="item.imageUrl"
+                [attr.alt]="item.title"
+                [attr.title]="item.title"
+              />
+
+              <ng-template #itemFallback>
+                <span>
+                  {{
+                    item.title
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
+                </span>
+              </ng-template>
+
+            </div>
+
+
+            <div class="item-details">
+
+              <span class="item-type">
+                {{
+                  item.type === 'PRODUCT'
+                    ? 'PRODUCT'
+                    : 'SERVICE'
+                }}
               </span>
+
+              <h3>
+                {{ item.title }}
+              </h3>
+
+              <span class="unit-price">
+                {{
+                  item.price
+                    | currency:
+                        'ZAR':
+                        'symbol-narrow':
+                        '1.2-2'
+                }}
+                each
+              </span>
+
+            </div>
+
+
+            <div class="quantity-section">
+
+              <span class="quantity-label">
+                {{
+                  item.type === 'PRODUCT'
+                    ? 'Quantity'
+                    : 'Booking'
+                }}
+              </span>
+
+
+              <div
+                class="quantity-control"
+                *ngIf="
+                  item.type === 'PRODUCT'
+                "
+              >
+
+                <button
+                  type="button"
+                  (click)="decrease(item)"
+                  [attr.aria-label]="
+                    'Decrease quantity of ' +
+                    item.title
+                  "
+                >
+                  −
+                </button>
+
+
+                <strong>
+                  {{ item.quantity }}
+                </strong>
+
+
+                <button
+                  type="button"
+                  (click)="increase(item)"
+                  [disabled]="!canIncrease(item)"
+                  [attr.aria-label]="
+                    'Increase quantity of ' +
+                    item.title
+                  "
+                >
+                  +
+                </button>
+
+              </div>
+
+
+              <span
+                class="service-quantity"
+                *ngIf="
+                  item.type === 'SERVICE'
+                "
+              >
+                1 booking
+              </span>
+
+            </div>
+
+
+            <div class="item-total">
 
               <strong>
                 {{
-                  group.subtotal
+                  item.price *
+                  item.quantity
                     | currency:
                         'ZAR':
                         'symbol-narrow':
@@ -130,150 +301,45 @@
                 }}
               </strong>
 
-            </div>
-
-
-            <button
-              type="button"
-              class="merchant-clear"
-              (click)="clearMerchant(group)"
-            >
-              Remove merchant
-            </button>
-
-          </div>
-
-        </header>
-
-
-        <article
-          class="cart-item"
-          *ngFor="
-            let item of group.items;
-            trackBy: trackItem
-          "
-        >
-
-          <div class="item-image">
-
-            <img
-              *ngIf="
-                item.imageUrl;
-                else itemFallback
-              "
-              [src]="item.imageUrl"
-              [attr.alt]="item.title"
-              [attr.title]="item.title"
-            />
-
-            <ng-template #itemFallback>
-
-              <span>
-                {{
-                  item.title
-                    .charAt(0)
-                    .toUpperCase()
-                }}
-              </span>
-
-            </ng-template>
-
-          </div>
-
-
-          <div class="item-details">
-
-            <span class="item-type">
-              {{
-                item.type === 'PRODUCT'
-                  ? 'PRODUCT'
-                  : 'SERVICE'
-              }}
-            </span>
-
-            <h3>
-              {{ item.title }}
-            </h3>
-
-            <span class="unit-price">
-              {{
-                item.price
-                  | currency:
-                      'ZAR':
-                      'symbol-narrow':
-                      '1.2-2'
-              }}
-            </span>
-
-          </div>
-
-
-          <div class="quantity-section">
-
-            <span class="quantity-label">
-              Quantity
-            </span>
-
-
-            <div
-              class="quantity-control"
-              *ngIf="
-                item.type === 'PRODUCT'
-              "
-            >
-
               <button
                 type="button"
-                (click)="decrease(item)"
-                [attr.aria-label]="
-                  'Decrease quantity of ' +
-                  item.title
-                "
+                class="remove-button"
+                (click)="remove(item)"
               >
-                −
-              </button>
-
-
-              <strong>
-                {{ item.quantity }}
-              </strong>
-
-
-              <button
-                type="button"
-                (click)="increase(item)"
-                [disabled]="
-                  !canIncrease(item)
-                "
-                [attr.aria-label]="
-                  'Increase quantity of ' +
-                  item.title
-                "
-              >
-                +
+                <i class="far fa-trash-alt"></i>
+                Remove
               </button>
 
             </div>
 
+          </article>
 
-            <span
-              class="service-quantity"
-              *ngIf="
-                item.type === 'SERVICE'
-              "
-            >
-              1 booking
+        </div>
+
+
+        <!-- Merchant footer -->
+
+        <footer class="merchant-card-footer">
+
+          <button
+            type="button"
+            class="merchant-clear"
+            (click)="clearMerchant(group)"
+          >
+            <i class="far fa-trash-alt"></i>
+            Remove merchant
+          </button>
+
+
+          <div class="merchant-footer-total">
+
+            <span>
+              Merchant subtotal
             </span>
-
-          </div>
-
-
-          <div class="item-total">
 
             <strong>
               {{
-                item.price *
-                item.quantity
+                group.subtotal
                   | currency:
                       'ZAR':
                       'symbol-narrow':
@@ -281,43 +347,7 @@
               }}
             </strong>
 
-
-            <button
-              type="button"
-              class="remove-button"
-              (click)="remove(item)"
-            >
-              Remove
-            </button>
-
           </div>
-
-        </article>
-
-
-        <footer class="merchant-footer">
-
-          <span>
-            {{ group.itemCount }}
-            {{
-              group.itemCount === 1
-                ? 'item'
-                : 'items'
-            }}
-            from
-            {{ group.merchantName }}
-          </span>
-
-
-          <strong>
-            {{
-              group.subtotal
-                | currency:
-                    'ZAR':
-                    'symbol-narrow':
-                    '1.2-2'
-            }}
-          </strong>
 
         </footer>
 
@@ -329,47 +359,60 @@
         class="clear-cart"
         (click)="clearCart()"
       >
+        <i class="far fa-trash-alt"></i>
         Clear entire cart
       </button>
 
     </main>
 
 
-    <!-- CHECKOUT SUMMARY -->
+    <!-- =========================================================
+         CHECKOUT SUMMARY
+    ========================================================== -->
 
     <aside class="cart-summary">
 
-      <p class="summary-eyebrow">
-        ORDER SUMMARY
-      </p>
+      <div class="summary-header">
 
-      <h2>
-        Checkout summary
-      </h2>
-
-
-      <div class="summary-row">
-
-        <span>
-          Merchants
+        <span class="summary-icon">
+          <i class="fas fa-receipt"></i>
         </span>
 
-        <strong>
-          {{ cartService.merchantCount() }}
-        </strong>
+        <div>
+          <p class="summary-eyebrow">
+            ORDER SUMMARY
+          </p>
+
+          <h2>
+            Checkout summary
+          </h2>
+        </div>
 
       </div>
 
 
-      <div class="summary-row">
+      <div class="summary-stats">
 
-        <span>
-          Items
-        </span>
+        <div>
+          <span>
+            Merchants
+          </span>
 
-        <strong>
-          {{ cartService.itemCount() }}
-        </strong>
+          <strong>
+            {{ cartService.merchantCount() }}
+          </strong>
+        </div>
+
+
+        <div>
+          <span>
+            Items
+          </span>
+
+          <strong>
+            {{ cartService.itemCount() }}
+          </strong>
+        </div>
 
       </div>
 
@@ -426,32 +469,45 @@
 
 
       <button
-  type="button"
-  class="checkout-button"
-  (click)="checkout()"
-  [disabled]="checkoutLoading()"
->
-  {{
-    checkoutLoading()
-      ? 'Processing payment...'
-      : 'Continue to checkout'
-  }}
-</button>
+        type="button"
+        class="checkout-button"
+        (click)="checkout()"
+        [disabled]="checkoutLoading()"
+      >
+        <span>
+          {{
+            checkoutLoading()
+              ? 'Processing payment...'
+              : 'Continue to checkout'
+          }}
+        </span>
 
-<p
-  *ngIf="checkoutError()"
-  class="checkout-error"
->
-  {{ checkoutError() }}
-</p>
+        <i
+          *ngIf="!checkoutLoading()"
+          class="fas fa-arrow-right"
+        ></i>
+      </button>
 
 
-      <p class="checkout-note">
-        Your checkout will create a separate
-        merchant order and receipt for each
-        merchant, plus one overall SafiPay
-        receipt.
+      <p
+        *ngIf="checkoutError()"
+        class="checkout-error"
+      >
+        {{ checkoutError() }}
       </p>
+
+
+      <div class="checkout-note">
+
+        <i class="fas fa-shield-alt"></i>
+
+        <span>
+          SafiPay creates a separate merchant order
+          and receipt for each merchant, plus one
+          overall receipt.
+        </span>
+
+      </div>
 
     </aside>
 
