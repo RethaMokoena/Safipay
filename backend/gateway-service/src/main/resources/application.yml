@@ -15,6 +15,7 @@ spring:
               - "http://localhost:*"
               - "http://127.0.0.1:4200" 
               - "https://safipay-xi.vercel.app" 
+              - "https://*.vercel.app"
             allowedMethods:
               - GET
               - POST
