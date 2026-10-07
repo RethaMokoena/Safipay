@@ -13,7 +13,8 @@ spring:
             allowedOriginPatterns:
               - "http://localhost:4200"
               - "http://localhost:*"
-              - "http://127.0.0.1:4200"  # Added for safety
+              - "http://127.0.0.1:4200" 
+              - "https://safipay-xi.vercel.app" 
             allowedMethods:
               - GET
               - POST
