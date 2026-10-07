@@ -3,6 +3,8 @@ import {
   Injectable
 } from '@angular/core';
 
+import { environment } from '../../../environments/environment';
+
 import {
   HttpClient
 } from '@angular/common/http';
@@ -27,7 +29,7 @@ export class MerchantOrdersService {
     inject(HttpClient);
 
   private readonly api =
-    'http://localhost:8080/api/merchants';
+    `${environment.apiUrl}/api/merchants`;
 
 
   getMyMerchants():

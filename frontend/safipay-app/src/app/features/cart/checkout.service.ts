@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../marketplace/marketplace.models';
 
 import {
@@ -18,7 +18,7 @@ export class CheckoutService {
     inject(HttpClient);
 
   private readonly api =
-    'http://localhost:8080/api/merchants/checkout';
+    `${environment.apiUrl}/api/merchants/checkout`;
 
 
   createCheckout(
@@ -78,7 +78,7 @@ export class CheckoutService {
   return this.http.get<
     ApiResponse<CheckoutResponse[]>
   >(
-    'http://localhost:8080/api/merchants/checkouts/my'
+    `${environment.apiUrl}api/merchants/checkouts/my`
   );
 }
 }
