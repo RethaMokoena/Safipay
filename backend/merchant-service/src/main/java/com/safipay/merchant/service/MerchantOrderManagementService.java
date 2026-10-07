@@ -25,19 +25,17 @@ public class MerchantOrderManagementService {
 
     private final MerchantOrderItemRepository orderItemRepository;
 
-
     @Transactional(readOnly = true)
     public List<MerchantOrderManagementResponse> getMerchantOrders(
             String merchantId,
             String ownerUserId
     ) {
 
-        Merchant merchant =
-                getOwnedMerchant(
+        Merchant merchant
+                = getOwnedMerchant(
                         merchantId,
                         ownerUserId
                 );
-
 
         return orderRepository
                 .findByMerchantIdOrderByCreatedAtDesc(
@@ -48,7 +46,6 @@ public class MerchantOrderManagementService {
                 .toList();
     }
 
-
     @Transactional(readOnly = true)
     public MerchantOrderManagementResponse getMerchantOrder(
             String merchantId,
@@ -56,43 +53,37 @@ public class MerchantOrderManagementService {
             String ownerUserId
     ) {
 
-        Merchant merchant =
-                getOwnedMerchant(
+        Merchant merchant
+                = getOwnedMerchant(
                         merchantId,
                         ownerUserId
                 );
 
-
-        MerchantOrder order =
-                orderRepository
+        MerchantOrder order
+                = orderRepository
                         .findById(orderId)
                         .orElseThrow(
-                                () ->
-                                        new MerchantException(
-                                                "Order not found: " +
-                                                        orderId
-                                        )
+                                ()
+                                -> new MerchantException(
+                                        "Order not found: "
+                                        + orderId
+                                )
                         );
 
-
-        if (
-                !order
-                        .getMerchant()
-                        .getId()
-                        .equals(merchant.getId())
-        ) {
+        if (!order
+                .getMerchant()
+                .getId()
+                .equals(merchant.getId())) {
 
             throw new MerchantException(
                     "Order does not belong to this merchant"
             );
         }
 
-
         return toResponse(
                 order
         );
     }
-
 
     public MerchantOrderManagementResponse updateStatus(
             String merchantId,
@@ -101,173 +92,146 @@ public class MerchantOrderManagementService {
             String ownerUserId
     ) {
 
-        Merchant merchant =
-                getOwnedMerchant(
+        Merchant merchant
+                = getOwnedMerchant(
                         merchantId,
                         ownerUserId
                 );
 
-
-        MerchantOrder order =
-                orderRepository
+        MerchantOrder order
+                = orderRepository
                         .findById(orderId)
                         .orElseThrow(
-                                () ->
-                                        new MerchantException(
-                                                "Order not found: " +
-                                                        orderId
-                                        )
+                                ()
+                                -> new MerchantException(
+                                        "Order not found: "
+                                        + orderId
+                                )
                         );
 
-
-        if (
-                !order
-                        .getMerchant()
-                        .getId()
-                        .equals(merchant.getId())
-        ) {
+        if (!order
+                .getMerchant()
+                .getId()
+                .equals(merchant.getId())) {
 
             throw new MerchantException(
                     "Order does not belong to this merchant"
             );
         }
 
-
         validateStatusTransition(
                 order.getStatus(),
                 requestedStatus
         );
 
-
         order.setStatus(
                 requestedStatus
         );
 
-
         orderRepository.saveAndFlush(
                 order
         );
-
 
         return toResponse(
                 order
         );
     }
 
-
     private void validateStatusTransition(
             MerchantOrder.OrderStatus current,
             MerchantOrder.OrderStatus requested
     ) {
 
-        if (
-                current ==
-                MerchantOrder.OrderStatus.PAID
-                &&
-                requested ==
-                MerchantOrder.OrderStatus.PROCESSING
-        ) {
+        if (current
+                == MerchantOrder.OrderStatus.PAID
+                && requested
+                == MerchantOrder.OrderStatus.PROCESSING) {
             return;
         }
 
-
-        if (
-                current ==
-                MerchantOrder.OrderStatus.PROCESSING
-                &&
-                requested ==
-                MerchantOrder.OrderStatus.COMPLETED
-        ) {
+        if (current
+                == MerchantOrder.OrderStatus.PROCESSING
+                && requested
+                == MerchantOrder.OrderStatus.COMPLETED) {
             return;
         }
-
 
         throw new MerchantException(
                 "Invalid order status transition: "
-                        + current
-                        + " -> "
-                        + requested
+                + current
+                + " -> "
+                + requested
         );
     }
-
 
     private Merchant getOwnedMerchant(
             String merchantId,
             String ownerUserId
     ) {
 
-        Merchant merchant =
-                merchantRepository
+        Merchant merchant
+                = merchantRepository
                         .findById(merchantId)
                         .orElseThrow(
-                                () ->
-                                        new MerchantException(
-                                                "Merchant not found: "
-                                                        + merchantId
-                                        )
+                                ()
+                                -> new MerchantException(
+                                        "Merchant not found: "
+                                        + merchantId
+                                )
                         );
 
-
-        if (
-                !merchant
-                        .getOwnerUserId()
-                        .equals(ownerUserId)
-        ) {
+        if (!merchant
+                .getOwnerUserId()
+                .equals(ownerUserId)) {
 
             throw new MerchantException(
                     "You do not own this merchant account"
             );
         }
 
-
         return merchant;
     }
-
 
     private MerchantOrderManagementResponse toResponse(
             MerchantOrder order
     ) {
 
-        List<MerchantOrderItem> items =
-                orderItemRepository
+        List<MerchantOrderItem> items
+                = orderItemRepository
                         .findByOrderIdOrderByCreatedAtAsc(
                                 order.getId()
                         );
 
-
         List<
-                MerchantOrderManagementResponse.OrderItem
-        > responseItems =
-                items.stream()
+                MerchantOrderManagementResponse.OrderItem> responseItems
+                = items.stream()
                         .map(
-                                item ->
-                                        MerchantOrderManagementResponse
-                                                .OrderItem
-                                                .builder()
-                                                .listingId(
-                                                        item
-                                                                .getListing()
-                                                                .getId()
-                                                )
-                                                .title(
-                                                        item.getTitle()
-                                                )
-                                                .type(
-                                                        item.getType()
-                                                )
-                                                .quantity(
-                                                        item.getQuantity()
-                                                )
-                                                .unitPrice(
-                                                        item.getUnitPrice()
-                                                )
-                                                .subtotal(
-                                                        item.getSubtotal()
-                                                )
-                                                .build()
+                                item
+                                -> MerchantOrderManagementResponse.OrderItem
+                                        .builder()
+                                        .listingId(
+                                                item
+                                                        .getListing()
+                                                        .getId()
+                                        )
+                                        .title(
+                                                item.getTitle()
+                                        )
+                                        .type(
+                                                item.getType()
+                                        )
+                                        .quantity(
+                                                item.getQuantity()
+                                        )
+                                        .unitPrice(
+                                                item.getUnitPrice()
+                                        )
+                                        .subtotal(
+                                                item.getSubtotal()
+                                        )
+                                        .build()
                         )
                         .toList();
-
 
         return MerchantOrderManagementResponse
                 .builder()
