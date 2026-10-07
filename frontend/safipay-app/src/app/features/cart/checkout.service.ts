@@ -78,7 +78,7 @@ export class CheckoutService {
   return this.http.get<
     ApiResponse<CheckoutResponse[]>
   >(
-    `${environment.apiUrl}api/merchants/checkouts/my`
+    `${environment.apiUrl}/api/merchants/checkouts/my`
   );
 }
 }

@@ -25,7 +25,7 @@ public class SecurityConfig {
     }
     @Bean CorsConfigurationSource cs() {
         var c = new CorsConfiguration();
-        c.setAllowedOriginPatterns(List.of("http://localhost:4200","http://localhost:*"));
+        c.setAllowedOriginPatterns(List.of("http://localhost:4200","http://localhost:*", "https://*.vercel.app"));
         c.setAllowedMethods(List.of("GET","POST","PUT","DELETE","OPTIONS"));
         c.setAllowedHeaders(List.of("*")); c.setAllowCredentials(true);
         var s = new UrlBasedCorsConfigurationSource(); s.registerCorsConfiguration("/**", c); return s;
