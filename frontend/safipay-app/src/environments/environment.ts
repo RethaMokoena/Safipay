@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  // apiUrl: 'http://localhost:8080'
-  apiUrl: 'https://john-aftermath-veal.ngrok-free.dev'
+  apiUrl: 'http://localhost:8080'
+  // apiUrl: 'https://john-aftermath-veal.ngrok-free.dev'
 };
